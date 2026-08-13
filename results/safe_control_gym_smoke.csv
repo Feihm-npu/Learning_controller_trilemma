@@ -1,0 +1,5 @@
+benchmark,task,policy,episodes,steps,mean_reward,constraint_violations,violation_rate,mean_action_norm,mean_state_norm
+safe_control_gym,cartpole,zero_policy_smoke,2,51,-1.2116783248468832,0,0.0,0.0,1.0855389712272447
+safe_control_gym,cartpole,random_policy_smoke,2,100,-1.0253474630827821,0,0.0,4.322876729248651,1.0202126675857377
+safe_control_gym,quadrotor_2d,zero_policy_smoke,2,42,-25.167396283085775,0,0.0,0.07965328158553406,2.5206005457799585
+safe_control_gym,quadrotor_2d,random_policy_smoke,2,56,-56.37816558863103,0,0.0,0.2647816485603066,7.2840733644782745

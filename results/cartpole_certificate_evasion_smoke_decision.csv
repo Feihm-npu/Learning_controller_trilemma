@@ -1,0 +1,2 @@
+selected_target_gain,selected_target_bias,locked_target_gain,locked_target_bias,target_matches_locked,learned_gain,learned_bias,learned_gate_accepted_states,candidate_states,learned_full_casadi_violations,learned_physical_violations,resident_physical_violations,gate_aware_smoke_pass
+18.0,-5.0,18.0,-5.0,True,-2.3625524160241205,-5.0,42,42,13,13,0,True

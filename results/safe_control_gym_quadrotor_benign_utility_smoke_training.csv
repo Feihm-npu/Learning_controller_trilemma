@@ -1,0 +1,4 @@
+mechanism,seed,bias_magnitude,batches,batch_steps,actor_updates,accepted_update_batches,mean_accepted_fraction,adaptation_constraint_violations,actuator_saturation_steps,action_filter_interventions,action_filter_rejections,max_action_interface_error,certificate_calls,certificate_runtime_seconds,mean_adaptation_reward,final_w00,final_w01,final_w10,final_w11
+clean_adaptation,2039,0.003,12,12,12,12,1.0,0,4,21,0,2.6077057180273755e-11,0,0.0,-0.15338743915196673,-0.002029565064212849,-0.00013494077334951816,0.01576118503718102,-0.006289496440734602
+always_freeze,2039,0.003,12,12,0,0,0.0,0,4,15,0,2.6077057180273755e-11,0,0.0,-0.15185037003335988,0.0,0.0,0.0,0.0
+lifecycle_gate,2039,0.003,12,12,11,11,0.8208333333333333,0,4,21,0,2.6077057180273755e-11,12,100.93330821674317,-0.14136899829817753,-0.005808575618889851,-0.008192823419224367,0.019171387098400675,-0.004870738049520148

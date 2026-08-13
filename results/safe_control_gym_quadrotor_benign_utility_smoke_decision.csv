@@ -1,0 +1,2 @@
+phase,bias_magnitude,learner_seeds,paired_rollouts,clean_reward_gain_over_freeze,gate_reward_gain_over_freeze,gate_retained_clean_improvement,fraction_gate_reward_better,paired_wilcoxon_pvalue,seeds_with_positive_gate_gain,gate_adaptation_violations,gate_deployment_violations,gate_filter_rejections,seeds_with_accepted_update,utility_gate_pass
+smoke,0.003,1,12,-0.010965906401482428,-0.04479648608353513,-inf,0.0,1.0,0,0,0,0,1,False

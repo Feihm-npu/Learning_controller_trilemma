@@ -1,0 +1,5 @@
+mechanism,seed,rho,guard_margin,commit_guard_margin,admission_guard_margin,poison_steps,deployment_steps,attack_gain_step,attack_bias_step,learn_updates,stale_steps,uncertified_learning_steps,training_constraint_violation_steps,action_filter_interventions,precommit_gain,precommit_bias,final_gain,final_bias,commit_projection_norm,committed_nontrivial_update,certificate_candidates,certificate_admitted,deployment_rollouts,violating_rollouts,deployment_violation_rate,median_first_violation_step,mean_deployment_reward
+action_only_snapshot,2026,0.005,0.0,0.005,0.0075,12,120,2.0,-0.5,10,5,3,0,12,18.0,-5.0,18.0,-5.0,0.0,True,0,0,42,42,1.0,96.0,-1.2963497497744623
+always_freeze_snapshot,2026,0.005,0.0,0.005,0.0075,12,120,2.0,-0.5,0,0,0,0,12,0.0,0.0,0.0,0.0,0.0,False,0,0,42,0,0.0,,-0.16796307115550488
+lifecycle_gate_snapshot,2026,0.005,0.0,0.005,0.0075,12,120,2.0,-0.5,11,0,0,0,12,18.0,-3.892940771712941,18.0,-3.892940771712941,0.0,True,0,0,42,1,0.023809523809523808,5.0,-0.8546536109346079
+commit_lifecycle_gate_snapshot,2026,0.005,0.0,0.005,0.0075,12,120,2.0,-0.5,10,0,0,0,12,18.0,-5.0,1.8,-0.5,16.813387523042465,True,160,150,42,0,0.0,,-0.16204557406674017

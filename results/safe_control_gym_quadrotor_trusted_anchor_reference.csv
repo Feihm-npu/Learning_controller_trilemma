@@ -1,0 +1,4 @@
+learner_seed,locked_commit_fraction,recomputed_commit_fraction,snapshot_max_abs_error,reproduction_pass
+2040,0.5500000000000002,0.55,0.0,True
+2041,0.3999999999999999,0.4,0.0,True
+2042,0.7000000000000001,0.7000000000000001,0.0,True

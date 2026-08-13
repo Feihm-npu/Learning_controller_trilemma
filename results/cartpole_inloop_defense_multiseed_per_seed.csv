@@ -1,0 +1,4 @@
+seed,clean_undefended_violations,clean_undefended_updates,clean_undefended_batches_flagged,clean_undefended_batches_frozen,poison_undefended_violations,poison_undefended_updates,poison_undefended_batches_flagged,poison_undefended_batches_frozen,poison_defended_violations,poison_defended_updates,poison_defended_batches_flagged,poison_defended_batches_frozen,clean_defended_violations,clean_defended_updates,clean_defended_batches_flagged,clean_defended_batches_frozen,clean_fp_freeze_fraction
+2220,1,12,0,0,13,12,12,0,0,0,12,12,1,12,0,0,0.0
+2221,0,12,0,0,15,12,12,0,0,0,12,12,0,12,0,0,0.0
+2222,1,12,0,0,11,12,11,0,0,1,11,11,1,12,0,0,0.0

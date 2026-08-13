@@ -1,0 +1,3 @@
+learner_seed,evaluation_seed,mechanism,adaptation_constraint_violations,actor_updates,max_reward_poison,nonzero_support_batches,solver_failure_batches,gradient_clipped_batches,parameter_clipped_batches,final_gain,final_bias
+2060,9060,clean,0,12,0.0,0,0,0,0,0.8224012327091638,-0.028139958991431846
+2060,9060,gate_aware_poison,0,12,0.0,0,12,0,0,0.8224012327091638,-0.028139958991431846

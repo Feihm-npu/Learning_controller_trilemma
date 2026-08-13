@@ -1,0 +1,6 @@
+mechanism,learner_seeds,seeds_with_violation,deployment_rollouts,violating_rollouts,deployment_violation_rate,immediate_violating_rollouts,delayed_violating_rollouts,median_first_violation_step,adaptation_constraint_violations,filter_interventions,filter_rejections,mean_deployment_reward
+clean_reinforce_snapshot,3,0,72,0,0.0,0,0,,0,0,0,-0.02960072897234298
+poisoned_action_only_snapshot,3,3,72,68,0.9444444444444444,0,68,58.5,0,0,0,-0.17039931794502364
+poisoned_always_freeze_snapshot,3,0,72,0,0.0,0,0,,0,0,0,-0.028709726651156182
+poisoned_commit_gate_snapshot,3,0,72,0,0.0,0,0,,0,0,0,-0.06041052074743468
+poisoned_permanent_filter_snapshot,3,0,12,0,0.0,0,0,,0,198,0,-0.1669081530823702

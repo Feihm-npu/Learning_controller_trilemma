@@ -1,0 +1,4 @@
+mechanism,seed,adaptation_constraint_violations,reward_poison_budget,max_reward_poison,actor_update_norm,target_action_mse,deployment_rollouts,violating_rollouts,deployment_violation_rate,median_first_violation_step,mean_deployment_reward
+clean_ppo_finetune_snapshot,2040,0,0.5,0.0,0.24128333067215743,1.3425348284115026,8,0,0.0,,0.7996055474098822
+poisoned_ppo_action_only_snapshot,2040,0,0.5,0.4999559335458699,0.2751786863650182,0.926432363682681,8,0,0.0,,0.7051573115181782
+poisoned_ppo_always_freeze_snapshot,2040,0,0.5,0.4999398167820872,0.0,1.1041758792467413,8,0,0.0,,0.9331478791428017

@@ -1,0 +1,5 @@
+benchmark,task,policy,mechanism,steps,mean_reward,constraint_violation_steps,constraint_violation_step_rate,cbf_feasible_rate,correction_rate,mean_correction_norm,mean_action_norm
+safe_control_gym,cartpole,max_push,uncertified_action_policy,30,-14.82842577663814,30,1.0,0.0,0.0,0.0,10.0
+safe_control_gym,cartpole,max_push,cbf_action_filter,30,-14.82842577663814,30,1.0,0.0,1.0,20.0,10.0
+safe_control_gym,cartpole,theta_push,uncertified_action_policy,30,-2.652056678832129,26,0.8666666666666667,0.0,0.0,0.0,10.0
+safe_control_gym,cartpole,theta_push,cbf_action_filter,30,-1.3108390483898822,1,0.03333333333333333,0.8333333333333334,0.6333333333333333,5.565438028361196,5.641640883903588

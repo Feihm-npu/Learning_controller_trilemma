@@ -1,0 +1,56 @@
+\section{Model and Problem Statement}
+\label{sec:model}
+
+\subsection{Attacked Histories and Plausible States}
+
+We consider a discrete-time cyber-physical system
+\begin{equation}
+    x_{t+1}=f(x_t,u_t,w_t), \qquad
+    \widetilde y_t=h(x_t)+a_t,
+\end{equation}
+where $x_t$ is the physical state, $u_t$ is the control input, $w_t\in\mathcal W$ is ordinary process uncertainty, and $a_t$ is an FDI signal applied to the measurement channel. The controller observes an attacked history
+\begin{equation}
+    h_t=(\widetilde y_{0:t},u_{0:t-1},\widetilde\ell_{0:t}),
+\end{equation}
+where $\widetilde\ell_t=\ell_t+b_t$ denotes rewards, logs, or auxiliary
+signals used by the learning rule and $b_t$ is update-data corruption.  The
+two channels need not both be present.  Sensor FDI $a_t$ creates uncertainty
+about the physical state; log corruption $b_t$ can redirect an update even
+when the state is trusted.  Both matter to the certificate lifecycle because
+the update rule consumes $h_t$.
+
+Following severe sensor-attack safety work~\cite{tan_safety_2024}, we do not assume that $h_t$ identifies a unique physical state. For an attack family $\mathcal A$, define the plausible-state set
+\begin{equation}
+    X_{\mathcal A}(h_t)=\{x:\exists E\in\mathcal A,\; H_t(E)=h_t,\; x_t(E)=x\}.
+\end{equation}
+This set is the semantic object over which any strategic-FDI-sound certificate must range. If a certificate is sound only for a nominal estimate $\hat x(h_t)$, but $X_{\mathcal A}(h_t)$ contains another compatible state, the certificate is not sound against the attack family.
+
+\subsection{Online-Updated Controllers}
+
+The controller is a history-dependent policy $\pi_{\theta_t}$ with parameters $\theta_t$. It selects actions as $u_t=\pi_{\theta_t}(h_t)$ and updates according to
+\begin{equation}
+    \theta_{t+1}=U(\theta_t,h_t).
+\end{equation}
+We call an update nontrivial if it changes the controller's action map on some reachable or admissible history. Parameter changes that leave all actions unchanged are behaviorally trivial and do not count as learning in this paper.
+
+\subsection{Certificates and Certified Kernels}
+
+Let $\Gamma$ denote a certificate type. In this paper, $\Gamma$ can be an invariant set, a barrier certificate, a reachability certificate, or a runtime shield. For a history $h$, the certificate induces a set of actions that are certified for every plausible state:
+\begin{equation}
+    K_\Gamma(h)=\{u\in\mathcal U: u \text{ satisfies } \Gamma \text{ for all } x\in X_{\mathcal A}(h)\}.
+\end{equation}
+We call $K_\Gamma(h)$ the \emph{certified kernel}. Existing severe-attack safety filters can be viewed as mechanisms for constructing and acting within such kernels for fixed controllers. Our focus is the additional gate required when $U$ changes $\pi_\theta$ after deployment.
+
+\begin{definition}[Certified online learning]
+A mechanism is a certified online learner at history $h$ if it accepts a certificate for the updated controller $\pi_{\theta_{t+1}}$, where $\theta_{t+1}=U(\theta_t,h)$, and claims that the next certified action is sound for every state in $X_{\mathcal A}(h)$.
+\end{definition}
+
+\begin{definition}[Learning-freeze frontier]
+For a family of histories parameterized by attack strength or ambiguity
+radius, the learning-freeze frontier is the boundary at which
+$K_\Gamma(h)$ becomes empty, the candidate updated action leaves
+$K_\Gamma(h)$, or the candidate parameter leaves the corresponding certified
+set $\Theta_\Gamma(h)$. Beyond this boundary, a sound certified learner must
+reject the certificate, freeze the update, or obtain extra trusted state
+information.
+\end{definition}

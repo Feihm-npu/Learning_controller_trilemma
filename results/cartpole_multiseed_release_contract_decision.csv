@@ -1,0 +1,2 @@
+learner_seeds,selected_states,initially_accepted_states,permanent_release_violations,permanent_release_seeds_with_violation,predictive_resident_violations,paired_release_failures_with_timely_switch,paired_release_failures,pair_keys_valid,untouched_release_violations,untouched_predictive_violations,hard_gate_pass
+3,72,71,19,3,0,19,19,True,13,0,True

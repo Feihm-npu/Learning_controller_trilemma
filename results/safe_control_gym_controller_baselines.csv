@@ -1,0 +1,5 @@
+benchmark,task,controller,config_family,requested_steps,episodes,recorded_steps,mean_reward,total_reward,constraint_violation_episodes,constraint_violation_steps,constraint_violation_step_rate,mean_action_norm,mean_state_norm
+safe_control_gym,cartpole,lqr,lqr,20,1,20,-2.780904886284273,-55.618097725685466,0,0,0.0,1.5536974738887817,1.408116319045758
+safe_control_gym,quadrotor_2d,lqr,lqr,20,1,20,-0.1849091037579825,-3.69818207515965,0,0,0.0,0.1953387402290726,0.978498440721182
+safe_control_gym,cartpole,linear_mpc,mpc,20,1,20,-10.296796817917116,-205.93593635834233,0,0,0.0,4.147329844711789,2.2268284486894903
+safe_control_gym,quadrotor_2d,linear_mpc,mpc,20,1,20,-0.37378465380792025,-7.475693076158405,0,0,0.0,0.19655923415398835,1.4370920907115685

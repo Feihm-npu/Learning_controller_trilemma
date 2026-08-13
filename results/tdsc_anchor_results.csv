@@ -1,0 +1,9 @@
+quality,anchor_period,anchor_calls,final_anchor_age,z_radius,theta_radius,sampled_states_per_center,retained_fraction_seed_2040,retained_fraction_seed_2041,retained_fraction_seed_2042,mean_retained_fraction,minimum_center_coverage,physical_violations,physical_rollouts,source_files
+High,1,12,0,0.001,0.0005,5,0.55,0.4,0.7000000000000001,0.55,1.0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_certificates.csv; results/safe_control_gym_quadrotor_trusted_anchor_summary.csv
+High,3,4,2,0.005,0.0025,13,0.55,0.4,0.7000000000000001,0.55,1.0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_certificates.csv; results/safe_control_gym_quadrotor_trusted_anchor_summary.csv
+High,6,2,5,0.011,0.0055,21,0.55,0.4,0.7000000000000001,0.55,1.0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_certificates.csv; results/safe_control_gym_quadrotor_trusted_anchor_summary.csv
+High,12,1,11,0.023,0.0115,29,0.5,0.4,0.65,0.5166666666666667,1.0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_certificates.csv; results/safe_control_gym_quadrotor_trusted_anchor_summary.csv
+Standard,1,12,0,0.005,0.002,9,0.55,0.4,0.7000000000000001,0.55,1.0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_certificates.csv; results/safe_control_gym_quadrotor_trusted_anchor_summary.csv
+Standard,3,4,2,0.009000000000000001,0.004,17,0.55,0.4,0.7000000000000001,0.55,1.0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_certificates.csv; results/safe_control_gym_quadrotor_trusted_anchor_summary.csv
+Standard,6,2,5,0.015,0.007,25,0.55,0.4,0.7000000000000001,0.55,1.0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_certificates.csv; results/safe_control_gym_quadrotor_trusted_anchor_summary.csv
+Standard,12,1,11,0.027,0.013,33,0.5,0.4,0.65,0.5166666666666667,1.0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_certificates.csv; results/safe_control_gym_quadrotor_trusted_anchor_summary.csv

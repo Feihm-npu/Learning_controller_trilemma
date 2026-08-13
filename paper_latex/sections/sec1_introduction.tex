@@ -1,0 +1,136 @@
+\section{Introduction}
+
+Runtime assurance changes what an observer learns about an adaptive
+controller.  If a decision module replaces unsafe proposals with actions from
+a trusted baseline controller, every adaptation rollout may remain physically
+safe even while corrupted update data move the raw policy toward failure.
+This masking is benign while the decision module remains resident: the
+deployed object is the assured composition.  It becomes a security problem
+when evidence collected under that composition is reused to authorize
+\emph{permanent raw release}, after which the learned policy acts without the
+runtime authority that made the evidence safe.
+
+This deployment distinction is easy to blur because runtime-assurance systems
+already support online upgrades, forward switching, reverse switching, and
+policy repair.  Simplex retains a decision module and assured baseline
+controller~\cite{seto_simplex_1998}; Neural Simplex adds reverse switching and
+online retraining~\cite{phan_neural_simplex_2020}; and barrier-based Simplex
+derives switching conditions that tolerate an unsafe or adversarial advanced
+controller under bounded model error~\cite{damare_bb_simplex_2025}.  Runtime
+policy repair~\cite{zhou_runtime_policy_repair_2020}, repair with preservation
+\cite{lu_repair_preservation_2024}, and safe policy projection
+\cite{chow_safe_policy_2021} further constrain or repair learned policies.
+These works establish that resident assurance and trusted repair can be
+effective.  They do not establish that finite evidence sufficient for a
+resident decision module remains sufficient after that module is removed,
+when the update log itself is adversarial.
+
+We study that gap under an explicit split-trust precondition.  Safety-critical
+runtime control and asynchronous learning-data services need not share an
+integrity domain; OT guidance treats data management and historians as assets
+that exchange information across control and business zones
+\cite{nist_ot_security_2023,mitre_data_historian}.  Our benchmark starts
+\emph{after} compromise of a reward-ingestion principal: the attacker may
+change only bounded scalar rewards consumed by a policy-gradient updater.  It
+cannot write authenticated runtime states, actions, gradients, learner code,
+parameters, optimizer state, certificates, or deployment states.  We do not
+claim to demonstrate the initial service exploit or to evade log-integrity
+controls.  If reward is deterministically recomputable from authenticated
+transitions, trusted recomputation blocks the evaluated attack.
+
+The attack instead asks what follows when this integrity precondition is
+absent.  It steers the raw policy toward a target that passes a finite
+reverse-switch check at release time but fails later without the decision
+module.  We call this a \emph{certificate-evasive update}: it is evasive only
+with respect to the stated finite release contract, not to a reward monitor or
+a sound invariant certificate.
+
+\begin{figure}[t]
+\centering
+\fbox{\begin{minipage}[c][1.72in][c]{0.92\columnwidth}
+\centering
+\textbf{Asynchronous learning-data plane}\\[0.25em]
+reward record $\xrightarrow{\text{bounded write}}$ trusted updater
+$\rightarrow$ raw candidate\\
+$\hspace{3.0em}\rightarrow$ one-time check $\rightarrow$ snapshot export\\[0.35em]
+\rule{0.88\columnwidth}{0.3pt}\\[-0.15em]
+\textbf{High-integrity runtime-assurance plane}\\[0.25em]
+authenticated state $\rightarrow$ predictor/selector $\rightarrow$ actuator\\
+$\hspace{3.1em}\uparrow$ trusted baseline\\[0.35em]
+resident after check: timely switch;\quad removed: delayed failure
+\end{minipage}}
+\caption{Evaluated trust boundary.  The benchmark begins after bounded
+reward-record access is obtained; it does not model the initial service
+compromise.  Upstream provenance or recomputation removes this attack path,
+whereas resident authority contains its downstream physical consequence.}
+\label{fig:lifecycle-placeholder}
+\end{figure}
+
+The attack channel has useful structure.  For a fixed policy-gradient batch,
+bounded reward changes first form a centered reward-to-go zonotope.  Because
+our learners standardize advantages, the resulting parameter update is
+\emph{not} an affine zonotope: normalization maps the centered returns to the
+unit sphere before the policy-score map is applied.  We derive this normalized
+reward-influence set and use conic homogenization to remove the zero-vector
+degeneracy.  Positive support against a linear certificate halfspace remains a
+second-order-cone feasibility problem under global gradient-norm clipping.
+Coordinatewise parameter clipping remains an explicit boundary.  This gives
+an exact batch-audit bridge from reward corruption to release-gate margin, not
+a multi-batch attack optimizer.
+
+The main experiment compares deployment contracts after a sequential
+development block freezes the five-step check, target, bounded reward rule,
+detector, and stop rule.  We then run five untouched learner/evaluation seed
+pairs once.  All 120 poisoned snapshot--state pairs pass the initial check.
+Poisoned permanent raw release fails physically on 27/120, versus 2/120 paired
+clean failures; 25 poison-only versus zero clean-only discordances give
+two-sided exact $p=5.960\times10^{-8}$ (pairs within a learner seed are not
+independent replicates, so five-seed reproduction, not the count, conveys
+generality).  Every seed reproduces poisoned failure.  Resident predictive authority switches before all 27 corresponding
+failures and incurs 0/120 failures.  A locked sweep shows the separation at
+horizons 3, 5, and 10 rather than only the development-fixed horizon 5.  An
+independent three-seed audit retains a one-step resident kernel
+as a negative control: it fails on 14/71 pairs and encounters 41 empty-kernel
+fallbacks, whereas resident predictive authority again incurs no failure.
+Thus recoverability and continued authority matter; residence alone is
+insufficient.
+
+Broader Safe-Control-Gym evidence characterizes the conditional attack and
+its costs.
+Reward-log-only poisoning causes 38/188 delayed cartpole failures and 68/72
+delayed two-dimensional quadrotor failures, compared with 1/188 and 0/72 for
+paired clean residual-REINFORCE learners.  Commit admission and always-freeze
+have no observed failure.  A unified quadrotor audit compares raw release,
+commit, freeze, a permanent backup shield, and the official linear MPSC on
+identical rollout blocks; it exposes different coverage, intervention, reward,
+and latency costs.  Two locked negative gates remain central: the fixed-budget
+attack does not stably reproduce in the official proximal policy optimization
+(PPO) learner, and admitted updates do not outperform freeze under a benign
+actuator shift.  The effective reward rule is also not stealthy: frozen simple
+log checks detect over 90\% of poisoned batches at low false-positive rate,
+while trusted reward recomputation detects every edit.
+
+Our contributions are:
+
+\begin{itemize}
+    \item Under an explicit compromised reward-ingestion precondition, we
+    identify a concrete assurance-contract vulnerability:
+    reverse-switch evidence collected under protected adaptation does not
+    transfer automatically to permanent raw release under adversarial online
+    updates.  We distinguish this claim explicitly from prior resident
+    Simplex, shielded learning, policy repair, and safe-update work.
+    \item We derive the normalized reward-influence geometry of a
+    standardized-advantage policy-gradient batch and an exact positive-support
+    computation for linear release-gate halfspaces under global gradient-norm
+    clipping, while excluding coordinatewise parameter clipping.
+    \item After locking a fixed-target reward attacker and detector, we run five
+    untouched confirmation seeds.  Poisoned raw release yields 27/120 failures
+    versus 2/120 clean and 0/120 under resident predictive authority; all five
+    seeds reproduce failure, and three monitor horizons separate the contracts.
+    An independent audit retains the failed
+    one-step resident-kernel result, 14/71 versus 0/71 under that authority.
+    \item We retain the broader two-system attack, contract-cost audits, and
+    negative PPO and benign-utility results to delimit learner generality,
+    sampled-certificate strength, and the practical cost of each sound escape
+    condition.
+\end{itemize}

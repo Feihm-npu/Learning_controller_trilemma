@@ -1,0 +1,13 @@
+learner_seed,mechanism,candidate_states,baseline_admitted_states,selected_states,initially_accepted,casadi_full_violations,physical_violations,states_with_one_step_intervention,one_step_interventions,empty_kernel_fallbacks,states_with_forward_switch,baseline_control_steps,mean_reward
+2040,permanent_release,32,32,24,24,6,6,0,0,0,0,0,-1.3385056067990149
+2040,resident_one_step_kernel,32,32,24,24,6,4,6,26,11,0,0,-1.3222191466689963
+2040,resident_predictive_simplex,32,32,24,24,6,0,0,0,0,6,474,-1.0615598044001937
+2041,permanent_release,32,32,24,23,3,3,0,0,0,0,0,-1.1510211004940525
+2041,resident_one_step_kernel,32,32,24,23,3,3,3,10,7,0,0,-1.1444351949727782
+2041,resident_predictive_simplex,32,32,24,23,3,0,0,0,0,3,241,-1.0383652226737556
+2042,permanent_release,32,32,24,24,10,10,0,0,0,0,0,-1.370022903530167
+2042,resident_one_step_kernel,32,32,24,24,10,7,10,43,23,0,0,-1.342588059087839
+2042,resident_predictive_simplex,32,32,24,24,10,0,0,0,0,10,836,-0.9092885155115061
+pooled,permanent_release,96,96,72,71,19,19,0,0,0,0,0,-1.2884249233699094
+pooled,resident_one_step_kernel,96,96,72,71,19,14,19,79,41,0,0,-1.27151242848645
+pooled,resident_predictive_simplex,96,96,72,71,19,0,0,0,0,19,1551,-1.0025740816813686

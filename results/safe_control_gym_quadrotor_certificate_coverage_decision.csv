@@ -1,0 +1,2 @@
+primary_horizon,primary_guard_margin,evaluated_pairs,certified_pairs,false_acceptances,max_action_interface_error,clean_coverage,commit_coverage,freeze_coverage,minimum_required_coverage,zero_false_acceptance,interface_audit_pass,coverage_pass,primary_gate_pass,casadi_runtime_seconds,pybullet_runtime_seconds
+100,0.003,1728,1293,0,0.0,0.9861111111111112,0.9444444444444444,1.0,0.25,True,True,True,True,70.95456138439476,181.32675454113632

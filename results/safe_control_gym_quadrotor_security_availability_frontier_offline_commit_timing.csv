@@ -1,0 +1,4 @@
+learner_seed,certificate_candidates,certificate_admitted,locked_commit_fraction,recomputed_commit_fraction,snapshot_max_abs_error,reproduction_pass,offline_commit_latency_seconds
+2040,16,16,0.5500000000000002,0.55,0.0,True,8.489476359449327
+2041,16,16,0.3999999999999999,0.4,0.0,True,9.316689974628389
+2042,16,16,0.7000000000000001,0.7000000000000001,0.0,True,8.503787385299802

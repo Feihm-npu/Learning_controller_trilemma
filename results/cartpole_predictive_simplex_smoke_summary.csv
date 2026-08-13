@@ -1,0 +1,3 @@
+contract,candidate_states,initially_accepted,accepted_later_casadi_violations,accepted_physical_violations,states_with_forward_switch,baseline_control_steps,median_forward_switch_step,median_physical_first_violation_step,mean_reward
+permanent_release,42,42,13,13,0,0,,10.0,-1.3902809190015633
+resident_predictive_simplex,42,42,13,0,13,988,6.0,,-1.0641946813719643

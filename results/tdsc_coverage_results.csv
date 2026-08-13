@@ -1,0 +1,5 @@
+mechanism,evaluated_pairs,pybullet_violations,certified_pairs,false_acceptances,false_rejections,certificate_coverage,source_file
+Clean REINFORCE,432,6,426,0,0,0.9861111111111112,results/safe_control_gym_quadrotor_certificate_coverage_aggregate.csv
+Poisoned action-only,432,403,27,0,2,0.0625,results/safe_control_gym_quadrotor_certificate_coverage_aggregate.csv
+Poisoned commit,432,21,408,0,3,0.9444444444444444,results/safe_control_gym_quadrotor_certificate_coverage_aggregate.csv
+Always-freeze,432,0,432,0,0,1.0,results/safe_control_gym_quadrotor_certificate_coverage_aggregate.csv

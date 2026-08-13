@@ -1,0 +1,43 @@
+# ===== 代码（不同步，太重） =====
+*.py
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.pytest_cache/
+pytest.ini
+
+# ===== 数据 / 第三方依赖（不同步，太重） =====
+external/
+assets/
+
+# ===== 虚拟环境 =====
+.venv-safe-control/
+.venv/
+venv/
+.env
+
+# ===== 临时文件 =====
+temp/
+
+# ===== 编辑器 / IDE / agent 工具 =====
+.agents/
+.codex/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ===== LaTeX 编译中间产物（保留 .tex/.bib/.cls/.bst/.bbl/.pdf） =====
+paper_latex/*.aux
+paper_latex/*.log
+paper_latex/*.fls
+paper_latex/*.fdb_latexmk
+paper_latex/*.blg
+paper_latex/*.synctex.gz
+paper_latex/*.out
+paper_latex/*.toc
+paper_latex/*.lof
+paper_latex/*.lot

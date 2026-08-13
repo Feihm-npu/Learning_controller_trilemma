@@ -1,0 +1,2 @@
+evaluation_seeds,evaluation_seed_values,calibration_seed_excluded,frozen_calibration_loaded,trusted_recomputation_batch_tpr,trusted_recomputation_batch_fpr,known_sign_batch_tpr,known_sign_batch_fpr,scalar_envelope_batch_tpr,scalar_envelope_batch_fpr,batch_mean_envelope_tpr,batch_mean_envelope_fpr,log_only_stealthy,simple_log_detector_reaches_80pct,negative_realism_boundary
+7,2071;2072;2100;2101;2102;2103;2104,True,True,1.0,0.0,0.9047619047619048,0.0,0.9166666666666666,0.03571428571428571,0.011904761904761904,0.03571428571428571,False,True,True

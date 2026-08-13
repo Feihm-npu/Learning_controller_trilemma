@@ -1,0 +1,575 @@
+\section{Evaluation}
+\label{sec:study}
+
+We ask five questions on Safe-Control-Gym~\cite{yuan_safe_control_gym_2022}:
+(Q1) does the same finite reverse-switch evidence support permanent raw release
+and resident predictive authority; (Q2) how does a bounded reward box influence
+release-gate halfspaces; (Q3) can corruption limited to reward records cause
+delayed physical failure across systems; (Q4) which reward-integrity
+assumptions remove that attack; and (Q5) which escape contracts prevent
+failure, at what cost, and with which generality limits?
+
+% The full expository studies are retained below as source for the artifact
+% supplement but excluded from the NDSS main-paper page count.
+\iffalse
+\subsection{Setup}
+
+We instantiate the system in Section~\ref{sec:gate} with $\lambda=1.2$, $u_{\max}=0.2$, and $S=[-1,1]$. The FDI-induced ambiguity set is $X_{\mathcal A}(h)=[-\rho,\rho]$. The common certified kernel for the invariant certificate $I=S$ is
+\begin{equation}
+    K(\rho)=[-u_{\max},u_{\max}]\cap[-1+\lambda\rho,1-\lambda\rho].
+\end{equation}
+The kernel is nonempty exactly when $\lambda\rho\le 1$.
+
+\subsection{Learning-Freeze Frontier}
+
+The frontier occurs at $\rho=1/\lambda=0.833$. Table~\ref{tab:frontier} shows the exact kernel values for representative ambiguity radii.
+
+\begin{table}[t]
+\centering
+\caption{Certified kernel for the one-dimensional ambiguity set.}
+\label{tab:frontier}
+\begin{tabular}{cccc}
+\toprule
+$\rho$ & $\lambda\rho$ & $K(\rho)$ & Gate \\
+\midrule
+0.600 & 0.720 & $[-0.200,0.200]$ & allow \\
+0.800 & 0.960 & $[-0.040,0.040]$ & constrain \\
+0.833 & 1.000 & $\{0\}$ & boundary \\
+0.900 & 1.080 & $\emptyset$ & freeze/reject \\
+1.000 & 1.200 & $\emptyset$ & freeze/reject \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At $\rho=0.9$, the states $+0.9$ and $-0.9$ are each controllable if their sign is trusted. The safe intervals are $[-0.2,-0.08]$ for $+0.9$ and $[0.08,0.2]$ for $-0.9$. Their intersection is empty, so a sound certificate cannot accept a single history-dependent action for both states.
+
+\subsection{Trusted Anchors and Learning-Aware FDI}
+
+A trusted state anchor can restore learning by shrinking the plausible-state set. At $\rho=0.9$, a trusted sign anchor reduces the set to either $[0,0.9]$ or $[-0.9,0]$, yielding nonempty kernels $[-0.2,-0.08]$ and $[0.08,0.2]$, respectively. This illustrates the escape condition: trusted information can make the kernel nonempty again.
+
+Learning-aware FDI creates the complementary failure mode. If malicious update data proposes a candidate action $u=0.1$, then the gate allows it at $\rho=0.6$, projects it to $0.04$ at $\rho=0.8$, and rejects it at $\rho=0.9$. The same candidate update is therefore safe, constrained, or forbidden depending on the certified kernel induced by the attacked history.
+
+\subsection{Lifecycle Benchmark Results}
+
+We next compare five mechanisms over five update steps: an ungated learner, a nominal action filter, a robust action filter that gates only the applied action, an always-freeze baseline, and LifecycleGate with projection. The one-dimensional benchmark uses the same system as above. The linear tank benchmark uses a level-deviation model
+\begin{equation}
+    x_{t+1}=Ax_t+Bu_t,
+    \quad
+    A=\begin{bmatrix}1.08&0.04\\0.02&1.03\end{bmatrix},
+    \quad
+    B=\begin{bmatrix}1\\0.1\end{bmatrix},
+\end{equation}
+with $|u_t|\le 0.15$ and $x_t\in[-1,1]^2$. The nonlinear tank benchmark uses square-root inter-tank and drain flows,
+\begin{equation}
+\begin{aligned}
+h_{1,t+1} &= h_{1,t}+\Delta t(q_0+u_t-q_{12}(h_t)-d_1(h_{1,t})),\\
+h_{2,t+1} &= h_{2,t}+\Delta t(q_{12}(h_t)-d_2(h_{2,t})),
+\end{aligned}
+\end{equation}
+where $q_{12}$ and $d_i$ are square-root flow terms. Its interval observer returns a box around the nominal attacked history, and the one-step kernel is computed over a grid in that box. In all benchmarks, learning-aware FDI pushes the learner toward a larger positive action parameter.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{lifecycle_gate_summary.pdf}
+\caption{Lifecycle-gate benchmark artifacts. As ambiguity grows, the certified kernel shrinks across one-dimensional, linear tank, and nonlinear tank models. Nominal filtering accepts unsafe certified actions, while robust action filtering can keep the applied action safe but leave the updated raw policy outside the kernel. LifecycleGate eliminates unsafe and stale certified operation by constraining or freezing updates, retaining some learning before the freeze frontier.}
+\label{fig:lifecycle-benchmarks}
+\end{figure*}
+
+Figure~\ref{fig:lifecycle-benchmarks} shows the separation between current-action filtering and update certification. In the one-dimensional benchmark at $\rho=0.8$, the nominal action filter has unsafe certified rate $1.0$, and the robust action filter has stale certified-policy rate $1.0$ because the applied action is projected but the learner parameter still drifts outside $K(\rho)$. LifecycleGate has zero unsafe and stale certified operation while keeping one nontrivial update out of five. At $\rho=0.9$, the kernel is empty; any continued update is uncertified learning, so LifecycleGate freezes.
+
+The linear tank benchmark reproduces the same pattern beyond the one-dimensional frontier. At $\rho=0.8$, nominal filtering has unsafe certified rate $0.8$, robust action filtering has stale certified-policy rate $0.8$, and LifecycleGate keeps both rates at zero while allowing two updates out of five. At $\rho=0.85$, the robust action filter is stale in all five steps, while LifecycleGate permits one constrained update. At $\rho=0.92$, the kernel is empty and LifecycleGate freezes.
+
+The nonlinear tank benchmark preserves the same separation when the kernel is computed from sampled nonlinear dynamics. At $\rho=0.2$, nominal filtering is unsafe in four of five steps, robust action filtering is stale in four of five steps, and LifecycleGate keeps both rates at zero while allowing two constrained updates. At $\rho=0.45$, the interval-observer box admits no common safe action; robust action filtering rejects the applied action but still allows uncertified learning, while LifecycleGate freezes the update.
+
+\subsection{Parameter-Level Update Gate}
+
+The previous studies use action-level projection to expose the lifecycle boundary. We also instantiate the gate at the parameter level for a linear policy $u=kz+b$ on the one-dimensional system. For each future attacked observation $z$ in a grid, the ambiguity interval $[z-\rho,z+\rho]$ induces a safe-action kernel. Requiring $kz+b$ to lie in every such kernel gives a set of linear halfspace constraints on $(k,b)$. The parameter gate projects the poisoned candidate update onto this certified parameter set.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{parameter_gate_summary.pdf}
+\caption{Parameter-level update gating for a linear policy $u=kz+b$. Current-action filtering keeps the applied action safe but leaves the future action map stale. Projecting the parameters onto the certified halfspace set eliminates stale certified policies and reduces learning as the certified set shrinks.}
+\label{fig:parameter-gate}
+\end{figure}
+
+Figure~\ref{fig:parameter-gate} shows the resulting parameter-level frontier. At $\rho=0.7$, current-action filtering has stale certified-policy rate $1.0$ while the parameter gate keeps stale rate $0$ and still permits two updates out of five. At $\rho=0.8$, the parameter gate permits one constrained update. At $\rho=0.85$, the current kernel is empty and the sound parameter-level mechanism freezes.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{matrix_parameter_gate_summary.pdf}
+\caption{Parameter-level update gating for a two-dimensional linear tank policy $u=k_1z_1+k_2z_2+b$. The certified parameter set is the intersection of future-history halfspaces over a grid of attacked observations. Current-action filtering leaves the future action map stale, while the parameter gate projects the poisoned update into the certified set.}
+\label{fig:matrix-parameter-gate}
+\end{figure}
+
+We then apply the same construction to the two-dimensional linear tank policy $u=k_1z_1+k_2z_2+b$. Each grid observation $z=(z_1,z_2)$ induces a plausible state box and a one-step safe-action interval, producing halfspaces in $(k_1,k_2,b)$. Figure~\ref{fig:matrix-parameter-gate} shows that the separation persists beyond the scalar policy. At $\rho=0.5$, current-action filtering has stale certified-policy rate $1.0$, while the parameter gate has stale rate $0$ and permits all five projected updates; the final projected parameters remain inside the future-history halfspace system.
+
+\subsection{Adaptive Attacker Stress Test}
+
+The fixed poison direction is not the full threat model. We therefore add a finite-search white-box attacker that chooses among poisoned update directions to maximize stale-policy, unsafe-action, or forced-freeze objectives. For forced-freeze attempts, the attacker also chooses the largest ambiguity radius inside its budget that most shrinks the certified set.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\columnwidth]{adaptive_attack_summary.pdf}
+\caption{Finite-search adaptive attacker against the scalar parameter gate. The attacker chooses update directions for stale-policy and unsafe-action objectives, and ambiguity radii for forced-freeze objectives. LifecycleGate keeps certified failure rate at zero; when the kernel is empty, it freezes instead of allowing uncertified learning.}
+\label{fig:adaptive-attacker}
+\end{figure}
+
+Figure~\ref{fig:adaptive-attacker} shows that the lifecycle separation is not an artifact of a fixed update direction. Under stale and unsafe objectives, the robust action filter preserves the applied action but leaves the raw policy stale in every step at high ambiguity. LifecycleGate keeps unsafe, stale, and uncertified-learning rates at zero, while still allowing projected updates when the certified set is nonempty. Under the forced-freeze objective, once the budget reaches $\rho=0.84$, the common kernel is empty. The robust action filter rejects the applied action but still records five uncertified learner updates, whereas LifecycleGate rejects the certificate and performs zero updates.
+
+\subsection{Safe-Control-Gym Cartpole Semantics}
+
+We next instantiate the same lifecycle condition in Safe-Control-Gym cartpole as a standard-control benchmark smoke study. The baseline controller is the official LQR controller augmented with a two-parameter linear residual learner. The attacker injects continuous observation FDI and optimizes a CEM objective over stale-policy, unsafe-action, and forced-freeze margins. The attacked observation $z$ and radius $\rho$ induce the plausible box $X_{\mathcal A}(z)=\{x:\|x-z\|_\infty\le \rho\}$. For the main Safe-Control-Gym study, $K_\Gamma(z)$ is computed by sampling this box and evaluating the official Safe-Control-Gym CasADi discrete cartpole dynamics over an action grid. We also include a smaller reference run using the official cartpole CBF barrier and Lie-derivative condition as a sampled kernel.
+
+This experiment is a direct semantic implementation of
+Theorem~\ref{thm:gate} and Proposition~\ref{prop:parameter-gate}. The
+future-history abstraction $\mathcal Z$ is a local grid of future attacked
+observations around the current attacked observation. For each
+$z'\in\mathcal Z$, the robust kernel produces an interval
+$K_\Gamma(z')=[\ell_{z'},u_{z'}]$. The LQR term is fixed, while the residual
+learner is linear in $(\theta_{\mathrm{gain}},\theta_{\mathrm{bias}})$, so
+requiring the updated residual policy to stay inside all future kernels yields
+the halfspace constraints used by LifecycleGate.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{safe_control_gym_paper_mini_summary.pdf}
+\caption{Safe-Control-Gym cartpole lifecycle evidence from a short two-seed sweep. The main panels use the CasADi discrete-dynamics robust kernel with an Euler surrogate for adaptive attack search. At $\rho=0.03$, the ungated learner has constraint-violation rate $0.167$, and the action-only plausible filter removes current violations but leaves stale certified policies at rate $0.333$ with uncertified-learning rate $1.0$. LifecycleGate keeps stale and uncertified-learning rates at zero while retaining update rate $1.0$. The freeze-frontier sweep shows the robust kernel emptying as ambiguity grows, and the CBF sampled reference reproduces the same stale-update separation with an official barrier kernel.}
+\label{fig:safe-control-gym}
+\end{figure*}
+
+Figure~\ref{fig:safe-control-gym} separates three effects that are conflated by ordinary controller performance metrics. First, action filtering can remove current constraint violations without certifying the updated residual policy. Second, always-freeze avoids stale certification but has zero learning availability. Third, LifecycleGate projects the poisoned update into the future-history halfspace set when feasible, so stale and uncertified learning remain zero while updates continue before the freeze frontier. This run should be read as benchmark evidence that the lifecycle failure appears beyond the toy systems, not as a final high-fidelity industrial deployment. At larger ambiguity radii, the frontier panels show that the kernel becomes empty for action-only filtering; LifecycleGate then reduces or freezes learning instead of treating the previous certificate as valid for the updated policy.
+\fi
+
+\subsection{Prospective Contract-Separation Audit}
+\label{sec:release-contract-audit}
+
+All results in this subsection are conditional on the exposed reward-ingestion
+interface in Table~\ref{tab:trust-boundary}.  This study does not claim to bypass
+authenticated provenance or trusted reward recomputation.  We first audit the
+paper's central contract transfer.  Earlier development
+grids selected target $(18,-5)$ by five-step acceptance and 120-step harm.
+Before the sequential V3 audit, we locked that target, the bounded perturbation
+$2\tanh(\epsilon_t(\mu^\star_t-\mu_t))$, learner, state pools, and stop rule.
+Seed 2070 served as the development/canary run; after it passed the hard gate,
+seeds 2071--2072 were untouched confirmations and the protocol remained
+unchanged.
+
+All 72 poisoned snapshot--state pairs pass the initial five-step check.
+Poisoned permanent raw release then fails on 11, 5, and 7 pairs per seed,
+versus paired clean counts 0, 0, and 2.  Thus 21 of 23 poisoned failures are poison-only,
+two are shared, and none are clean-only (two-sided exact paired
+$p=9.537\times10^{-7}$).  The CasADi audit identifies the same 23 failures.
+Resident predictive authority incurs 0/72 failures and switches four-to-five
+steps before each corresponding poisoned raw-release failure.
+
+We then froze the detector and opened five new learner/evaluation seed pairs
+once, without changing the target, attacker, learner, budget, state selection,
+or contracts.  All 120 pairs pass the initial five-step check.  Poisoned raw
+release fails on 5, 4, 7, 2, and 9 pairs across the five seeds, versus clean
+counts 2, 0, 0, 0, and 0.  Resident predictive authority incurs 0/120 failures
+and switches before all 27 poisoned failures.  The 25 poison-only versus zero
+clean-only discordances give two-sided exact $p=5.960\times10^{-8}$; all five
+seeds reproduce poisoned failure, and all adaptation, budget, and pairing
+checks pass.  As in the cross-system study below, state--snapshot pairs sharing
+a learner seed are not independent learner replicates, so the V3 and V4 exact
+tests summarize within-snapshot discordance; cross-seed replication is conveyed
+instead by failure reproducing in all three and all five seeds, respectively.
+
+For independent replication and the one-step negative control, older
+snapshots from seeds 2040--2042 use disjoint pools 8040--8042.  Seventy-one of
+72 states pass the initial check; all mechanisms share state--snapshot keys.
+
+\begin{table}[t]
+\centering
+\caption{Contract separation after initial five-step acceptance, conditional
+on bounded reward-record write access.  V4 is the
+untouched five-seed confirmation; V3 records development and the earlier
+sequential audit.  The independent audit retains the one-step negative
+control.  A switch permanently hands control to trusted LQR.}
+\label{tab:release-contract}
+\small
+\begin{tabular}{@{}p{0.46\columnwidth}p{0.13\columnwidth}p{0.25\columnwidth}@{}}
+\toprule
+Contract & Failures & Authority event\\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Untouched V4 confirmation (120 pairs; 5 seeds)}}\\
+Clean permanent raw release & 2/120 & ---\\
+Poisoned permanent raw release & 27/120 & ---\\
+Resident predictive authority & 0/120 & 27 switches\\
+\addlinespace
+\multicolumn{3}{@{}l}{\emph{Development/sequential V3 (72 paired states)}}\\
+Clean permanent raw release & 2/72 & ---\\
+Poisoned permanent raw release & 23/72 & ---\\
+Resident predictive authority & 0/72 & 23 switches\\
+\addlinespace
+\multicolumn{3}{@{}l}{\emph{Independent audit (71 accepted states)}}\\
+Permanent raw release & 19/71 & ---\\
+One-step resident kernel & 14/71 & 79 int.; 41 empty\\
+Resident predictive authority & 0/71 & 19 switches\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:release-contract} makes the three evidence blocks and deployment contracts
+explicit.  A locked horizon sweep reuses the V3 snapshots and states without
+retraining.  Horizons 3 and 5 each retain 72 accepted pairs with 23 poisoned
+raw failures and zero resident failures; horizon 10 retains 57 accepted pairs,
+eight poisoned failures across two seeds, and zero resident failures.  Thus
+three horizons meet the predeclared separation condition.  Horizon 1 leaves 12
+resident failures, exposing insufficient lookahead, while horizon 20 admits 49
+pairs but no poisoned failures, exposing conservative rejection rather than a
+post-hoc replacement horizon.
+
+In the independent audit, permanent raw release fails on 6/24,
+3/23, and 10/24 accepted pairs.  Resident predictive authority repeats the
+same five-step raw-policy prediction at every physical step and switches on
+exactly those 19 paired states, four steps before failure; no physical failure
+remains.  In contrast, the one-step resident kernel fails on 14 pairs despite
+79 interventions and reaches an empty kernel 41 times.  We therefore claim
+neither that a finite-horizon pass proves invariance nor that residence alone
+is sufficient.  The supported result is narrower: the same finite prediction
+is effective as a repeatedly evaluated recoverability trigger, but unsound as
+a one-time authorization for an unmonitored future.
+
+\subsection{Reward-Influence Geometry and Optimizer Boundary}
+
+We first validate the reward-influence analysis on a real, unclipped cartpole
+batch from learner seed 2040.  Reconstructing the implemented gradient from
+Equation~\eqref{eq:normalized-update} has error $2.78\times10^{-17}$.  The
+clean gradient norm is $0.196789$, neither gradient nor parameter clipping is
+active, and the minimum centered-return norm over the reward box is
+$7.993864$.  Across 22 release-gate halfspaces, the largest discrepancy
+between an SOCP witness and its computed support is $1.07\times10^{-9}$.  The
+minimum robust margin is $4.598004$, so no halfspace can be crossed in this
+batch.  This negative result matters: the successful physical attacker is the
+locked bounded \(\tanh\) target-shaping rule and accumulates changing
+batch-local influences; it is not an SOCP-generated one-step gate crossing.
+
+The homogenized clipped formulation is then audited on all 36 poisoned V3
+batches.  The old premises make 0/36 eligible; the new formulation yields
+verified support witnesses on 22/36, including 18 whose reward boxes contain a
+normalization singularity and 20 for which the old global gradient-clipping
+exclusion fails.  Every actual update is below its computed support, all
+witnesses respect the reward budget, final parameter reconstruction error is
+zero, and maximum witness/support error is $3.67\times10^{-5}$.  Ten batches
+cannot globally exclude coordinatewise parameter clipping (nine activate it
+on the observed edit), and four cone-optimal directions have no recovered
+witness above the learner's normalization tolerance; they remain outside the
+exact implementation audit.  The clipped quadrotor trajectories have not
+received this separate parameter-clipping audit and remain empirical.
+
+Exact batch support still does not explain the successful multi-batch attack.
+The locked \(\tanh\) update advances in the target direction on only 6/20
+eligible batches with positive oracle increment, and its preregistered
+same-trajectory advantage reaches 22/36 rather than the required 27/36.  The
+original locked exact-support smoke emitted 0/12 edits under the former
+singularity stop rule.  A post-stop rerun on that already burned seed using the
+new solver emits nonzero edits in 9/12 batches, but its accepted raw snapshot
+still causes 0/24 release failures.  We therefore use exact support as a
+batch-audit theorem, not a multi-batch attack optimizer; the physical result
+supports the fixed target and bounded attacker, not joint gate optimality of
+the \(\tanh\) rule.
+
+\subsection{Cross-System Reward-Log Poisoning}
+
+We next test whether the lifecycle failure arises when updates are produced by
+an actual learner.  The policy is a Gaussian residual actor on top of a trusted
+controller.  Standard reward-to-go REINFORCE gradients are computed from
+PyBullet transitions.  The attacker changes only the scalar reward written to
+the update log, subject to a per-step $L_\infty$ budget; it cannot write the
+action, gradient, parameter, optimizer state, dynamics, or deployment state.
+A backup action filter protects the adaptation trajectory.  Deployment then
+audits the raw learned snapshot, the object requiring lifecycle admission.
+
+Training, certificate, calibration, and deployment states are separated by
+seed.  All mechanisms within a learner seed use paired state sets.  Candidate
+attack directions and hyperparameters are fixed on a development seed before
+the three-seed audits.  The exact tests below operate at the paired
+deployment-state-block level, conditional on the three learned snapshots.
+Because blocks sharing a learner seed are not independent learner replicates,
+the $p$-values summarize within-snapshot discordance; replication across
+learners is conveyed separately by consistency over 3/3 seeds.  Wilson and
+paired-block bootstrap intervals have the same conditional scope and are not
+confidence statements over a population of learner seeds.
+
+\begin{table*}[t]
+\centering
+\caption{Paired reward-log poisoning and snapshot admission. ``Commit''
+denotes finite-horizon admission; permanent mechanisms use the common-state
+audit in Fig.~\ref{fig:unified-frontier}. Raw-snapshot rewards after failure
+are descriptive, not utility comparisons.}
+\label{tab:end-to-end}
+\input{generated/tdsc_core_results}
+\end{table*}
+
+On cartpole, the clean learner violates 1/188 admitted rollouts and the
+poisoned action-only learner violates 38/188.  There are 37 paired poison-only
+failures and no clean-only failures (two-sided exact paired
+$p=1.455\times 10^{-11}$).  Both commit admission and always-freeze have zero
+observed violations.
+
+On two-dimensional quadrotor, clean learning has 0/72 violations, while
+reward-only poisoning causes 68/72, all delayed, across 3/3 learner seeds.
+The paired discordance is 68 poison-only to zero clean-only (two-sided exact
+$p=6.776\times10^{-21}$).  Commit admission and always-freeze again have zero
+observed violations.  The gate retains nonzero fractions $0.55$, $0.40$, and
+$0.70$ of the three poisoned pending updates.  These fractions establish
+update availability under attack, not benign learning utility.
+
+\emph{A learned value baseline does not blunt the attack.} Under a protocol
+specified and locked before execution, we swap REINFORCE's constant batch-mean
+baseline for a learned per-state linear value baseline (an advantage variant
+sharing the same Monte-Carlo return, residual actor, score function, and
+reward-log channel; the trusted learner fits the baseline from logged rewards).
+Across three untouched seeds, poisoning causes 40/126 raw-release failures versus
+2/126 paired clean, with commit and always-freeze at 0/126 and all three seeds
+failing (38 poison-only versus zero clean-only, two-sided exact
+$p=7.3\times10^{-12}$; within-snapshot scope, generality carried by 3/3 seeds).
+This is a robustness check within the Monte-Carlo policy-gradient family, not a
+distinct learner family: off-policy or bootstrapped learners, which would change
+the attack channel through a temporal-difference target, and the negative
+official-PPO result remain the learner-generality boundary. Absolute rates use
+the full 42-state envelope ($126=3\times42$) without the initial-acceptance
+filter, so they are not directly comparable to the filtered 120-pair hero
+cohort.
+
+\emph{Non-singleton adaptation set.} The general history model
+(Section~\ref{sec:threat}) also permits observation FDI. As a \emph{strictly
+stronger} attacker than the reward-log-only core, we additionally bias the
+pole-angle observation by a radius $\rho$, so the adaptation-time protective
+kernel ranges over a plausible box of half-width $\rho$ (about $\pm2.3^\circ$ at
+$\rho=0.04$); the release certificate and deployment states are unchanged. Under
+a locked $\rho$ grid over three untouched seeds the contract separation persists
+at every non-singleton radius: poisoned raw release fails on 44/126 and 61/126
+pairs at $\rho=0.02$ and $0.04$ versus 4/126 and 3/126 clean, while commit and
+always-freeze remain 0/126 (the near-singleton reference $\rho=0.005$ is 41/126
+versus 5/126). The per-seed raw-failure count is not monotone in $\rho$, so we
+claim persistence under a non-singleton adaptation set, not a monotone trend; the
+kernel does not empty on this grid, so this is separation persistence, not the
+analytic freeze frontier. The end-to-end result is thus not an artifact of a
+singleton plausible state.
+
+\subsection{Reward-Log Integrity and Detectability Boundary}
+
+The attack demonstrates a release-contract failure, not stealth against a
+reward-integrity monitor.  We freeze four checks on clean development seed
+2070, then evaluate 84 clean and 84 poisoned batches from seeds 2071--2072 and
+the five untouched V4 seeds.
+
+\begin{table}[t]
+\centering
+\caption{Frozen reward-integrity audit. Rates are batch-level TPR/FPR on seven
+evaluation seeds; each prerequisite is an additional defender assumption.}
+\label{tab:reward-integrity}
+\footnotesize
+\begin{tabular}{@{}p{0.27\columnwidth}p{0.43\columnwidth}p{0.17\columnwidth}@{}}
+\toprule
+Check & Required trusted information & TPR/FPR\\
+\midrule
+Reward recomputation & Authenticated transition and deterministic reward
+& 1.000/0\\
+Known-sign check & Task guarantee that reward is nonpositive & 0.905/0\\
+Scalar envelope & Clean development range transfers & 0.917/0.036\\
+Batch-mean envelope & Clean batch mean transfers & 0.012/0.036\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:reward-integrity} shows that trusted recomputation blocks every
+evaluated edit, and even task-specific scalar checks detect over 90\% of
+poisoned batches.  The ineffective batch-mean envelope shows why a generic
+``monitor the average'' statement is not enough: detection depends on reward
+semantics and trusted inputs.  Cryptographic origin binding would also reject
+post-producer mutation if the trusted producer signs the reward together with
+its transition, action, and time; this experiment does not evaluate
+compromise of such a trusted producer.
+
+We also test whether temporal or moment-preserving edits recover both efficacy
+and lower detectability on the already burned development seed.  Sparse
+permutation and projected moment-preserving variants both satisfy their
+integrity constraints and move parameters toward the harmful target, but each
+causes 0/24 raw-release failures.  The work package stops without opening a
+new seed namespace.  Thus the supported attacker is effective but readily
+detectable by simple task-aware checks; authentication or trusted reward
+recomputation is a valid upstream escape condition.  Commit admission and
+resident authority remain downstream containment mechanisms, not substitutes
+for log integrity.
+
+\emph{In-loop restatement of the check.} Placing the same known-sign check
+\emph{inside} the update loop as a batch gate that freezes any batch whose logged
+reward violates the nonpositive guarantee---under a locked protocol---reduces
+poisoned raw-release failures from 39/126 to 0/126 across three untouched seeds
+(35 of 36 poisoned batches frozen; paired defended-versus-undefended two-sided
+exact $p=3.6\times10^{-12}$; within-snapshot scope, 3/3 seeds). Its safety only
+matches the always-freeze baseline; the added value is \emph{selectivity}---it
+freezes zero clean batches, whereas under attack it freezes nearly every batch,
+so availability collapses to freeze exactly when the attack is active. It catches
+only the sign-violating effective attack; the sign-respecting moment-preserving
+variants above evade it yet independently cause no deployment harm here. It is
+therefore an in-loop restatement of the detectability boundary rather than a
+defense against a sign-valid adaptive attacker, and complements rather than
+replaces upstream provenance or recomputation.
+
+\subsection{Runtime Escape Conditions and Their Cost}
+
+Snapshot admission is not the only sound architectural response.  If a
+runtime filter is permanently present and its certificate covers the composed
+policy $F\circ\pi$, raw-policy failure need not become physical failure.  A
+prior audit established feasibility, but used only 12 rollout blocks rather
+than the 72 blocks used for the raw and commit mechanisms.  We therefore lock
+a new result-independent pool of 144 states from three disjoint seeds.  For
+each learner seed, the common operating set contains exactly the states
+certified for both freeze and that seed's committed snapshot at horizon 100
+and guard 0.003.  We report its coverage, select eight order-spanning states,
+and execute all six mechanisms from identical state/reset pairs.  Thus every
+pooled mechanism has 24 paired rollouts and 2400 possible steps.
+
+\begin{table*}[t]
+\centering
+\caption{Unified paired security--availability frontier.  Wilson 95\%
+intervals are $[0,0.138]$ for every 0/24 violation count and
+$[0.798,0.993]$ for poisoned raw.  Intervention is a fraction of executed
+steps.  $\dagger$ denotes reward truncated at the first safety failure and
+therefore not a utility comparison.}
+\label{tab:unified-frontier}
+\input{generated/tdsc_frontier_results}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.94\textwidth]{tdsc_security_availability_frontier.pdf}
+\caption{The unified frontier on the same paired state blocks.  Error bars in
+(a) are 95\% Wilson intervals for violation rate and paired-block bootstrap
+intervals for mean rollout reward, conditional on the three locked learner
+snapshots.  Panel (b) separates the negligible raw
+policy latency from the permanently-online protection cost; raw, commit, and
+freeze mechanisms overlap near 0.026 ms and zero intervention.}
+\label{fig:unified-frontier}
+\end{figure*}
+
+Table~\ref{tab:unified-frontier} and
+Fig.~\ref{fig:unified-frontier} show the resulting separation.  The poisoned
+raw snapshots violate 23/24 rollouts and complete only one.  Clean, commit,
+freeze, the permanent five-step backup shield, and Safe-Control-Gym's
+official linear MPSC all have zero observed failures and complete 24/24.
+The shield intervenes on 511/2400 steps with no rejection, while MPSC
+intervenes on 2400/2400 with no infeasible solve.  Median/p95 online latency
+is 221.925/238.216 ms for the shield and 59.657/76.055 ms for MPSC, compared
+with 0.026--0.027/0.028--0.029 ms for raw snapshot evaluation.  These
+single-process wall-clock measurements are not worst-case execution-time
+guarantees.
+
+Safety does not make these mechanisms utility-equivalent.  Mean reward is
+$-0.023$ for freeze, $-0.024$ for clean, $-0.056$ for commit, $-0.195$ for
+the shield, and $-0.457$ for MPSC.  Paired rollout deltas relative to freeze
+are respectively $-0.00096$ (paired-block bootstrap 95\% interval
+$[-0.00141,-0.00055]$), $-0.03350$ ($[-0.04754,-0.02182]$),
+$-0.17208$ ($[-0.18601,-0.15886]$), and $-0.43393$
+($[-0.54016,-0.33763]$); none improves on freeze in any of 24 blocks.  This
+is a performance frontier under the locked attack evaluation, not a benign
+adaptation-utility experiment.
+
+\begin{table}[t]
+\centering
+\caption{Commit availability and offline computation on the independent
+144-state candidate pool.  Common admission requires both freeze and the
+committed snapshot to pass the 100-step, 0.003-guard certificate.}
+\label{tab:commit-availability}
+\input{generated/tdsc_frontier_admission}
+\end{table}
+
+Table~\ref{tab:commit-availability} makes the snapshot-admission cost
+explicit.  The common operating-set coverage is 99.3\%, 100.0\%, and 90.3\%
+for learner seeds 2040--2042.  Reconstructing trusted-state admission and the
+21-point contiguous backtracking takes 8.49--9.32 s per seed and exactly
+reproduces the locked commit fractions 0.55, 0.40, and 0.70.  Offline commit
+therefore avoids permanent per-action computation but pays finite
+certificate coverage and update latency.  The comparison distinguishes three
+contracts: certify a snapshot before raw deployment, retain a filter
+permanently, or stop adaptation.
+
+\subsection{Trusted-State-Anchor Infrastructure}
+
+A trusted state anchor shrinks certificate uncertainty but does not sanitize
+the reward record.  The artifact varies anchor period
+$P\in\{1,3,6,12\}$, requiring 12, 4, 2, or 1 calls over 12 updates.  Every
+condition retains all 16 certificate centers and has 0/24 violations on new
+paired blocks.  Periods 1--6 preserve retained fractions
+0.55/0.40/0.70; at $P=12$ they become 0.50/0.40/0.65.  Neither quality grid
+changes fractions at 0.05 resolution, and no condition improves reward over
+freeze.  Full uncertainty, timing, and paired-reward rows remain in the
+artifact; hardware latency, energy, authentication, and monetary cost are not
+measured.
+
+\subsection{Boundary I: Official PPO}
+
+The official pretrained PPO policy is safe on 72/72 held-out rollouts, while
+a separately constructed malicious target is unsafe on 72/72.  Under the
+locked $L_\infty\le0.5$ reward budget, the 16-batch checkpoint has 0/24 clean
+and 1/24 poisoned failures; at 24 batches both have 0/24.  The pre-specified
+physical and two-checkpoint margin conditions fail, so no multi-seed sweep is
+run.  This supports update redirection, not a stable deep-PPO unsafe-policy
+attack.
+
+\subsection{Boundary II: Benign Adaptation Utility}
+
+In the locked benign-utility smoke under a $0.003$ N differential actuator
+bias, freeze, clean adaptation, and LifecycleGate all have 0/12 violations and
+mean rewards $-0.03617$, $-0.04714$, and $-0.08097$.  LifecycleGate accepts a
+nonzero update in 11/12 batches (mean fraction 0.8208) but improves no paired
+rollout over freeze.  The stop rule fires, so no formal three-seed experiment
+is run: parameter motion and certificate acceptance do not establish useful
+adaptation.
+
+\subsection{Measurement and Validity Boundaries}
+
+The CasADi gates use fixed finite state sets; physical outcomes use independent
+PyBullet rollouts.  They are sampled finite-horizon certificates, not
+continuous-state invariant-set proofs.  For the benign shift, maximum action
+implementation error is $2.61\times10^{-11}$ N.  A corrected calibration
+metric leaves seeds, states, bias grid, and threshold unchanged: realized
+state violations and pre-clip saturation are reported separately.
+
+\subsection{Certificate Coverage and Model Mismatch}
+
+Reporting zero violations only on certificate-admitted states can be
+vacuous.  We therefore lock a separate CasADi--PyBullet confusion audit before
+execution.  It reconstructs the 12 clean, poisoned, commit, and freeze
+snapshots from the original traces, draws 144 states from three disjoint
+source seeds, performs no certificate admission, and compares horizons
+20/50/100 and guard margins 0/0.001/0.003/0.005/0.01.  The primary
+configuration is the pre-existing 100-step, 0.003-guard commit configuration;
+the grid is characterization rather than a selector.
+
+\begin{table*}[t]
+\centering
+\caption{CasADi--PyBullet coverage at the pre-existing 100-step, 0.003-guard
+configuration.  Each row pools three learner snapshots over the same 144
+states.}
+\label{tab:coverage}
+\input{generated/tdsc_coverage_results}
+\end{table*}
+
+Table~\ref{tab:coverage} evaluates 1728 snapshot--state pairs.  CasADi
+certifies 1293; none violates the PyBullet state box within 100 steps.
+Clean, commit, and freeze coverage is 0.986, 0.944, and 1.000.  The raw
+poisoned snapshots physically violate 403/432 pairs and have certificate
+coverage 0.062, so their low coverage is informative rejection rather than
+vacuous evidence for a safe deployed snapshot.  Across all mechanisms the
+certificate conservatively rejects five physically safe pairs.  Maximum
+action-interface error and actuator saturation are zero.
+
+The grid exposes a model-mismatch boundary.  Without a guard, poisoned
+snapshots produce 1, 2, and 1 false acceptances at horizons 20, 50, and 100.
+Every locked positive guard removes observed false acceptance, with increasing
+false rejection as the guard grows.  Because 0.003 was declared as the
+primary pre-existing configuration before this audit, this is not post-hoc
+guard selection.  Zero observed false acceptance on this finite distribution
+still does not establish continuous-state invariance.
+
+\subsection{Artifact and Reproducibility Status}
+
+The artifact provides row-level CSVs, exact commands, seed namespaces,
+upstream revisions and models, dependency versions, source-linked generated
+tables, and SHA-256 checksums.  It retains the full anchor, coverage, timing,
+PPO, and utility boundaries; none authorizes post-hoc protocol changes.

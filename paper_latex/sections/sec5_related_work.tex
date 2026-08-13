@@ -1,0 +1,146 @@
+\section{Related Work and Discussion}
+\label{sec:related}
+
+\begin{table}[t]
+\centering
+\caption{Closest work along the two axes this paper combines: an adversarial
+\emph{online update-data} channel, and a raw policy that \emph{leaves} the
+runtime-assurance authority whose evidence certified it.}
+\label{tab:delta}
+\footnotesize
+\begin{tabular}{@{}p{0.42\columnwidth}p{0.22\columnwidth}p{0.24\columnwidth}@{}}
+\toprule
+Work & Adversarial update log & Raw policy leaves RTA authority\\
+\midrule
+Simplex / Neural Simplex~\cite{seto_simplex_1998,phan_neural_simplex_2020} & no & no (monitor resident)\\
+Bb-Simplex~\cite{damare_bb_simplex_2025} & no (trusted retraining) & no\\
+Policy repair / MPSC~\cite{zhou_runtime_policy_repair_2020,wabersich_linear_mpsc_2018} & no (trusted evidence) & repaired, verified\\
+BADControl~\cite{burbano_badcontrol_2026} & operational data, physical trigger & n/a (no RTA contract)\\
+\textbf{This paper} & \textbf{yes (reward log)} & \textbf{yes (permanent release)}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Sensor-attack safety and secure estimation.}
+Secure estimation characterizes when attacks are detectable or correctable
+\cite{pasqualetti_attack_2013,fawzi_secure_2014}; severe-attack CBF filtering
+constructs plausible-state sets and safe-action kernels when reconstruction is
+not unique~\cite{tan_safety_2024}.  We start after this boundary: given the
+state set a filter can justify, must an adversarially updated controller remain
+inside its certificate?
+
+\textbf{Runtime assurance and online control upgrades.}
+Simplex retains a decision module and baseline during online upgrades
+\cite{seto_simplex_1998}; Neural and barrier-based Simplex add online
+retraining and forward/reverse switching
+\cite{phan_neural_simplex_2020,damare_bb_simplex_2025}.  These architectures
+protect a resident composition.  We instead pair the same predictor before
+and after the contract transition that removes its authority.  Model-free
+adaptive predictive control under deception or denial-of-service bounds
+tracking or frequency recovery under network
+attacks~\cite{li_et_mfapc_deception_2024,hou_et_mfapc_dos_microgrids_2026}, but
+certifies no safety envelope for an adversarially updated policy at release.
+
+\textbf{Safety filters and shielded learning.}
+Linear/adaptive MPSC and shields preserve recoverability or forbid unsafe
+actions~\cite{wabersich_linear_mpsc_2018,didier_adaptive_mpsc_2021,
+alshiekh_shielding_2018}.  Shielded transfer uses separate generalization
+evidence before removal~\cite{hsu_sim_lab_real_2023,carr_partial_shielding_2023}.
+Thus a permanent filter certifies $F\circ\pi$, while raw release requires
+evidence for $\pi$.  Our distinguishing question is whether a bounded
+reward-record adversary can invalidate a short release predictor even though
+that predictor remains effective when resident.  Adjacent lines learn or
+certify safety online through barrier learning~\cite{brunke_barrier_learning_2022},
+bandit safe control~\cite{capone_bandit_safe_control_2025}, certified
+reinforcement-learning robustness~\cite{wu_certifying_2022,pham_certified_2024},
+and adversarial reach--avoid safety
+filters~\cite{hsu_isaacs_2023,nguyen_gameplay_2024}; each assumes trusted
+learning signals rather than an adversarial update log.
+
+\textbf{Policy and certificate updates.}
+Policy repair, safe projection, joint controller/certificate repair, and
+robust conformal transfer already certify or preserve behavior across updates
+\cite{zhou_runtime_policy_repair_2020,lu_repair_preservation_2024,
+chow_safe_policy_2021,yu_certificate_repair_2025,
+mirzaeedodangeh_safe_updates_2026}.  Our narrower contribution is an
+attack-specific reward-to-gate analysis and paired evidence against
+transferring a resident reverse-switch check into raw release.
+
+\textbf{Policy and reward poisoning.}
+Policy poisoning has been demonstrated for batch reinforcement learning and
+control~\cite{ma_policy_poisoning_2019}.  Online attacks can perturb each reward
+under an $\ell_\infty$ budget and adapt to the learning
+process~\cite{zhang_reward_poisoning_2020}; later work targets policy-gradient
+learners without known dynamics~\cite{sun_online_rl_poisoning_2021} and
+black-box deep-RL algorithms~\cite{xu_deep_reward_poisoning_2025}.  Targeted
+reward or environment poisoning can teach a chosen policy~\cite{rakhsha_policy_teaching_2020},
+and a corrupted reward channel is a known reinforcement-learning
+hazard~\cite{everitt_corrupted_reward_2017}.  Closest in the control setting,
+backdoor attacks on low-level controllers poison operational data of PID/LQR
+loops to implant a latent vulnerability activated by an exogenous physical
+signal~\cite{burbano_badcontrol_2026}.  Reward poisoning itself is therefore not
+our novelty.  Unlike a trigger-conditioned controller backdoor, our deployed
+failure is unconditional after raw release and is defined against a
+runtime-assurance certificate rather than an activation input.  We connect
+this attack channel to certificate inheritance in a physical controller:
+adaptation actions can
+remain protected while the raw deployable snapshot fails later, and snapshot
+admission, freeze, and permanent filtering expose different physical,
+coverage, and availability outcomes.  Online reward-poisoning defenses also
+model the interaction between an adaptive attacker and defender
+\cite{nika_reward_defense_2023}.  Our integrity audit is more architectural:
+it distinguishes authenticated provenance, trusted recomputation,
+semantics-dependent detection, and downstream runtime containment rather than
+proposing a new poisoning detector.
+
+\textbf{Fractional and conic optimization.}
+Fractional programs can be homogenized into equivalent convex forms under
+appropriate numerator and denominator structure
+\cite{schaible_fractional_duality_1976}; disciplined quasiconvex programming
+systematizes the resulting fixed-level feasibility and bisection pattern
+\cite{agrawal_dqcp_2020}.  Projection and feasibility over homogenization and
+second-order cones are classical optimization objects
+\cite{bauschke_homogenization_2023,belloni_soc_feasibility_2008}.  We do not
+claim these conic tools as new.  Our theory contribution instantiates them for
+the normalized image of a centered reward-to-go zonotope and shows that global
+gradient-norm clipping introduces a second SOC denominator branch while the
+unit-positive-numerator normalization removes the singular feasible point.
+
+\textbf{Discussion.}
+A permanent sound filter can protect the composition $F\circ\pi$, and our
+resident predictive authority and MPSC results confirm this escape condition.
+It does
+not certify a raw updated snapshot after the filter is removed.  Conversely,
+the failed one-step kernel shows that residence alone is not sufficient:
+the decision rule must preserve recoverability.  Snapshot admission,
+resident predictive authority, action filtering, always-freeze, and trusted
+re-anchoring are different assurance contracts.
+
+The evidence has eight important limitations.  First, the necessary gate and
+conditional finite-abstraction lift are not complete controller-synthesis
+results: the lift assumes a justified joint reachable-set cover and known
+regularity/model-error bounds.  Second, the implemented parameter and commit
+gates use finite future-history or state samples without such a cover proof,
+so their soundness is limited by abstraction, model mismatch, horizon, and
+guard margin.  Third, the five-step contract horizon and attack target were
+developed on earlier seeds; the five-seed untouched confirmation and locked
+horizon sweep reduce but do not erase that development history.  Fourth, the
+bounded \(\tanh\) reward rule is target-conditioned rather than a joint gate
+optimizer; the extended exact-support diagnostic emits nine nonzero edits but
+still causes no raw-release failure.  Fifth, the exact reward-influence theorem
+covers global gradient clipping but not coordinatewise parameter clipping;
+22/36 V3 poisoned batches pass the resulting implementation audit, and the
+clipped quadrotor attack remains empirical.  Sixth, the effective attack
+begins after compromise of a bounded reward-ingestion principal; we neither
+demonstrate that service exploit nor claim universality across OT
+architectures.  It is not stealthy to frozen task-aware reward checks and
+assumes absent origin integrity and trusted recomputation; the tested
+moment-preserving alternatives do not retain deployment harm.  Seventh, the
+end-to-end physical attack is established for low-dimensional Monte-Carlo
+policy-gradient learners (REINFORCE and a learned-baseline advantage variant that
+shares the same attack channel), not a genuinely distinct family; the
+official-PPO audit does not show a stable physical failure, and the benign-shift
+smoke does not show utility over always-freeze.  Eighth, the anchor audit models bounded error
+on only altitude and pitch and reports calls rather than platform-specific
+sensing latency, energy, or authentication cost.  These are result boundaries,
+not omitted positive evidence.

@@ -1,0 +1,7 @@
+learner_seed,mechanism,quality,anchor_period,anchor_calls,deployment_rollouts,violating_rollouts,violation_rate,violation_rate_ci95_low,violation_rate_ci95_high,completed_rollouts,completion_rate,median_first_violation_step,mean_reward,actuator_saturation_steps,max_action_interface_error,mean_retained_update_fraction,minimum_certificate_center_coverage
+pooled,poisoned_raw,control,0,0,2,0,0.0,0.0,0.6576197724933469,2,1.0,,-0.018485908140264913,0,0.0,1.0,1.0
+2040,poisoned_raw,control,0,0,2,0,0.0,0.0,0.6576197724933469,2,1.0,,-0.018485908140264913,0,0.0,1.0,1.0
+pooled,always_freeze,control,0,0,2,0,0.0,0.0,0.6576197724933469,2,1.0,,-0.011683410263443217,0,0.0,0.0,1.0
+2040,always_freeze,control,0,0,2,0,0.0,0.0,0.6576197724933469,2,1.0,,-0.011683410263443217,0,0.0,0.0,1.0
+pooled,high_p1,high,1,12,2,0,0.0,0.0,0.6576197724933469,2,1.0,,-0.018485908140264913,0,0.0,1.0,1.0
+2040,high_p1,high,1,12,2,0,0.0,0.0,0.6576197724933469,2,1.0,,-0.018485908140264913,0,0.0,1.0,1.0

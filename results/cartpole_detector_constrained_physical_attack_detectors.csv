@@ -1,0 +1,5 @@
+detector,clean_false_positive_rate,poisoned_batches,flagged_poisoned_batches,poisoned_true_positive_rate,hard_constrained
+trusted_recomputation,0.0,12,12,1.0,False
+known_sign,0.0,12,0,0.0,True
+scalar_envelope,0.03571428571428571,12,0,0.0,True
+batch_mean_envelope,0.03571428571428571,12,0,0.0,True

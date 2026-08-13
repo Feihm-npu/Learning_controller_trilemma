@@ -1,0 +1,2 @@
+canary_seed,canary_pass,passing_nonsingleton_rho,pooled_clean_violations,pooled_poison_violations,pooled_freeze_violations,pooled_commit_violations,num_seeds_at_target_rho
+2210,True,0.02,4,44,0,0,3

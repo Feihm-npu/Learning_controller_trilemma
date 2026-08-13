@@ -1,0 +1,42 @@
+\section{Deployment Contracts and Escape Conditions}
+\label{sec:lifecyclegate}
+
+The analysis supports several deployment responses rather than a single new
+filter.  Our LifecycleGate prototype is a contract-enforcement layer around
+existing severe-attack-aware filters: it does not construct a new CBF or
+reachability certificate, but uses the kernel produced by such a certificate
+to decide whether a learning update can be accepted, projected, or rejected.
+
+\textbf{Update-admission interface.}
+At history $h_t$, an estimator supplies $X_{\mathcal A}(h_t)$, a certificate
+module supplies $K_\Gamma(h_t)$, and the learner proposes
+$\theta^+=U(\theta_t,h_t)$.  The prototype checks the current action against
+$K_\Gamma$ or, when a future-history abstraction is available, checks or
+projects the full update against $\Theta_\Gamma$.  For linear policies this is
+the convex halfspace system in Proposition~\ref{prop:parameter-gate}.  A grid
+certifies only its listed points unless the cover, regularity, and model-error
+premises of Theorem~\ref{thm:finite-lift} justify its robust margin.
+
+\textbf{Contract choices.}
+The mechanism may accept, project, freeze or roll back, or request a trusted
+anchor that shrinks $X_{\mathcal A}$.  Snapshot commit certifies a candidate on
+a declared state set and horizon, then backtracks along the connected segment
+from the last admitted snapshot so that a disconnected safe island is not
+accepted.  A permanent filter must instead certify $F\circ\pi_{\theta^+}$ at
+runtime; resident predictive authority repeatedly tests recoverability and
+switches to the baseline.  Commit exposes coverage and model-mismatch risk,
+whereas resident mechanisms expose intervention, rejection, and online cost.
+
+\textbf{Fail-closed semantics.}
+An empty plausible-state kernel, an uncertified current snapshot, model
+failure, or solver failure cannot silently inherit the previous certificate.
+The gate freezes or rolls back and reports the failure.  A trusted anchor may
+resume learning only by changing the justified plausible-state set; it is not
+modeled as a free oracle.
+
+\textbf{Utility is an independent property.}
+The gate enforces certificate membership, not improvement of the task
+objective.  A safe update can be neutral or harmful.  Consequently, accepted
+parameter distance is an availability diagnostic but not proof of learning
+utility; utility requires paired task outcomes against always-freeze under a
+benign change.

@@ -1,0 +1,155 @@
+\section{Threat Model}
+\label{sec:threat}
+
+\subsection{System Roles and Deployment Contracts}
+
+The defender deploys an online-updated controller $\pi_{\theta_t}$ and a
+certificate mechanism.  A severe-attack-aware estimator or filter can return
+a plausible-state set $X_{\mathcal A}(h_t)$ and certified action kernel
+$K_\Gamma(h_t)$.  The defender may also possess a trusted state anchor,
+backup controller, or external fail-safe, but each is an explicit
+architectural assumption and cost.
+
+We distinguish two deployment contracts.  Under \emph{snapshot deployment}, a
+safety layer protects data collection and adaptation, after which a raw
+snapshot $\pi_{\theta^+}$ may be committed for deployment.  The snapshot
+itself therefore requires admission.  Under \emph{permanently filtered
+deployment}, a sound filter $F$ remains online and the certified object is the
+composition $F\circ\pi_{\theta^+}$.  Our raw-snapshot attack does not bypass
+such a filter; we evaluate permanent filtering as an escape condition and
+measure its intervention and reward cost.
+
+We use four contract names consistently.  \emph{Permanent raw release} removes
+runtime authority after a one-time five-step check.  \emph{Resident predictive
+authority} repeats that check online and can switch permanently to the trusted
+baseline.  The \emph{one-step resident kernel} is a current-state action filter
+retained as a negative control.  \emph{Commit admission} instead certifies a
+candidate snapshot on a declared state set and horizon before raw deployment.
+These labels identify evidence scope, not interchangeable algorithm names.
+
+Permanent removal is an intentional handoff, not a crash of the safety layer.
+Examples include protected commissioning followed by snapshot export, an edge
+learner promoted to a lower-latency control target, or a fleet update whose
+deployment target does not carry the training-time predictor.  Operators may
+prefer this handoff to avoid permanent compute, intervention, or dependency on
+a backup service; Section~\ref{sec:study} measures those costs.  Our claim is
+conditional on making that handoff.  If runtime authority remains resident,
+the raw-policy failure is contained rather than physically realized.
+
+\subsection{Split-Trust Learning Pipeline}
+
+We separate a high-integrity runtime-assurance plane from an asynchronous
+learning-data plane.  This is a least-privilege model, not a claim that the
+entire controller is compromised.  The runtime plane owns authenticated plant
+state, the action selector, actuator interface, trusted baseline, and
+certificate outcome.  The learning plane consumes recorded transitions and a
+scalar reward through a telemetry, historian, replay-buffer, or external-KPI
+interface.  OT guidance explicitly separates control from data-management
+assets and recognizes historians that exchange data across zones
+\cite{nist_ot_security_2023,mitre_data_historian}.  These architectures
+motivate the split; our benchmark does not emulate compromise of a particular
+historian or product.
+
+\begin{table}[t]
+\centering
+\caption{Evaluated write boundary.  ``Trusted'' means outside attacker write
+authority, not formally verified.}
+\label{tab:trust-boundary}
+\footnotesize
+\begin{tabular}{@{}p{0.29\columnwidth}p{0.34\columnwidth}p{0.25\columnwidth}@{}}
+\toprule
+Object & Defender assumption & Attacker access\\
+\midrule
+Runtime state, action, plant & Authenticated control path & No write\\
+Baseline, selector, certificate & Trusted runtime code/state & No write\\
+Transitions and learner code & Trusted after collection & Read only\\
+Reward record at ingestion & No origin/semantic check & Bounded scalar write\\
+Parameters and optimizer state & Written only by updater & No write\\
+Held-out states and release rule & Fixed, honest evaluation & No write or selection\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The evaluated attack begins after a principal with this reward-field write
+capability has been compromised.  Establishing that foothold is outside the
+experiment.  The model fits post-computation/pre-update mutation by a replay
+writer or broker.  A compromised reward producer is equivalent only if it has
+the same bounded output authority; source authentication alone would then
+authenticate a malicious value rather than establish its semantics.
+
+\subsection{Attack Channels and Capabilities}
+
+The general history model permits two attack channels.  Observation FDI
+$a_t$ changes the state semantics of the history and enlarges
+$X_{\mathcal A}(h_t)$.  Update-data corruption $b_t$ changes rewards, logs, or
+auxiliary learning signals and can redirect $U(\theta_t,h_t)$ even when the
+state is trusted.  The formal lifecycle condition applies to either channel
+because both can affect the next action map.
+
+The end-to-end learner experiments deliberately use the narrower reward-log
+channel.  The attacker is white-box and batch-aware: it observes the current
+learner and adaptation batch, but not the held-out deployment-state choice,
+and modifies only scalar rewards before an ordinary policy-gradient update,
+within a declared per-step $L_\infty$ budget.  It cannot write actuator
+commands, physical states, observations, dynamics, gradients, policy
+parameters, optimizer state, deployment states, or certificate outcomes.  The
+adaptation selector sees the learner's proposed action before the plant step.
+Physical safety during collection therefore does not arise from giving the
+attacker direct policy-write or actuator access.
+
+\subsection{Integrity Assumptions and Escape Conditions}
+
+The vulnerable configuration supplies neither origin integrity for the reward
+record nor trusted reward recomputation.  Binding a reward, transition,
+action, producer identity, and time to an authenticated append-only record
+blocks post-ingestion mutation.  If reward is a deterministic function of
+authenticated transitions, recomputation by a trusted principal completely
+blocks the evaluated channel.  If reward depends on delayed quality labels,
+operator feedback, or an external KPI unavailable to the runtime plane, the
+system instead needs a trusted producer, redundant validation, or a detector;
+a signature applied to an already malicious value is insufficient.
+
+These controls answer different questions.  Provenance and recomputation
+remove the upstream attack precondition.  A task-aware anomaly detector may
+reject suspicious batches but is distribution- and semantics-dependent.  A
+commit certificate does not sanitize the log; it limits which resulting
+snapshot can be released.  Resident predictive authority likewise does not
+detect corruption, but can contain its physical consequence.  Our frozen
+detection audit reports trusted recomputation at TPR/FPR $1/0$ and simple
+task-aware checks above 0.90 TPR at at most 0.036 FPR.  The supported attack is
+therefore effective under the exposed interface but not stealthy against the
+tested checks.
+
+\subsection{Security and Availability Goals}
+
+We separate four attacker or failure objectives:
+
+\begin{itemize}
+    \item an \emph{unsafe certified action}, where the mechanism accepts an
+    applied input that is unsafe for some state in $X_{\mathcal A}(h_t)$;
+    \item a \emph{stale certified policy}, where the current applied input is
+    filtered but the accepted raw updated action map leaves the kernel;
+    \item \emph{uncertified learning}, where a nontrivial update continues
+    after certificate rejection; and
+    \item \emph{forced freeze}, where the attacker expands the plausible set
+    or redirects the update until sound learning must stop or re-anchor.
+\end{itemize}
+
+The defender additionally cares about availability: admitted state coverage,
+accepted update fraction, task reward, filter intervention and rejection,
+certificate latency, and trusted-anchor use.  Zero physical violations with
+no benefit over always-freeze is safe but does not establish useful learning.
+
+\subsection{Non-goals}
+
+We do not assume that every attack makes safety impossible. Existing
+severe-attack filters, secure estimators, and fault-tolerant CBF methods can
+preserve safety when their assumptions make $K_\Gamma(h_t)$
+nonempty~\cite{fawzi_secure_2014,tan_safety_2024,zhang_safe_2022}.  We do not
+claim to defeat a permanently sound runtime filter, to prove continuous-state
+invariance from a sampled certificate, or to establish vulnerability for all
+learner families.  The question is narrower: which certificate must cover an
+update, which escape conditions remain sound, and what coverage and
+availability costs follow?  We additionally do not claim a zero-day against a
+logging service, reward-monitor evasion, or persistence when authenticated
+trusted recomputation is available.

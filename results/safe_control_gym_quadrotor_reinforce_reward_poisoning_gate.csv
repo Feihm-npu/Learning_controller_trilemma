@@ -1,0 +1,2 @@
+learner_seeds,heldout_states,poison_only_failures,clean_only_failures,paired_exact_pvalue,poisoned_worse_all_seeds,clean_violation_rate,poisoned_violation_rate,commit_violations,freeze_violations,permanent_filter_violations,permanent_filter_rejections,adaptation_violations,provisional_gate_pass
+3,24,68,0,6.776263578034403e-21,True,0.0,0.9444444444444444,0,0,0,0,0,True

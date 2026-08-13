@@ -1,0 +1,9 @@
+condition,paired_rollouts,mean_reward_delta_vs_freeze,delta_ci95_low,delta_ci95_high,better_than_freeze,tied_with_freeze,worse_than_freeze,source_file
+high_p1,24,-0.019504969355201598,-0.02672227184539294,-0.013652726583842884,0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_physical.csv
+high_p3,24,-0.019504969355201598,-0.0264864236013642,-0.01364995218909827,0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_physical.csv
+high_p6,24,-0.019504969355201598,-0.026763539738853256,-0.013691941664021299,0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_physical.csv
+high_p12,24,-0.01444521858223898,-0.01934899649775423,-0.010329262847540774,0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_physical.csv
+standard_p1,24,-0.019504969355201598,-0.02648007293899861,-0.013564989154753772,0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_physical.csv
+standard_p3,24,-0.019504969355201598,-0.026718873862832164,-0.013782056104311864,0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_physical.csv
+standard_p6,24,-0.019504969355201598,-0.02657611060511626,-0.013626021875766227,0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_physical.csv
+standard_p12,24,-0.01444521858223898,-0.019207516319112616,-0.010310483571339036,0,0,24,results/safe_control_gym_quadrotor_trusted_anchor_physical.csv

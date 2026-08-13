@@ -1,0 +1,8 @@
+mode,common_states,physical_violations,physical_violation_rate,states_with_forward_switch,timely_switches_for_corresponding_vulnerable_failures,mean_reward
+clean_reference_raw_release,24,0,0.0,0,0,-0.0932388482647083
+compromised_producer_valid_raw_release,24,11,0.4583333333333333,0,0,-1.4063697227286032
+compromised_producer_valid_resident,24,0,0.0,11,11,-0.842483281256448
+origin_bound_fail_closed_raw_release,24,0,0.0,0,0,-0.10331151717414476
+trusted_reference_repair_raw_release,24,0,0.0,0,0,-0.0932388482647083
+unsigned_postproducer_mutation_raw_release,24,11,0.4583333333333333,0,0,-1.4063697227286032
+unsigned_postproducer_mutation_resident,24,0,0.0,11,11,-0.842483281256448

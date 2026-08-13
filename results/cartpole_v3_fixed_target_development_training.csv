@@ -1,0 +1,3 @@
+learner_seed,evaluation_seed,mechanism,adaptation_constraint_violations,actor_updates,action_filter_interventions,rejected_action_steps,max_reward_poison,nonzero_poison_batches,mean_true_reward,mean_logged_reward,final_gain,final_bias
+2070,9070,clean,0,12,96,0,0.0,0,-0.4915801615623531,-0.4915801615623531,-3.0720874228918076,0.34863980081304413
+2070,9070,fixed_target_tanh,0,12,96,0,1.9999999921938214,12,-0.6975725783916406,-0.654691666109571,-8.94978632910513,-5.0

@@ -1,0 +1,6 @@
+mechanism,seed,reward_poison_budget,max_reward_poison,adaptation_constraint_violations,actor_updates,action_filter_interventions,rejected_action_steps,pending_snapshot_norm,final_snapshot_norm,distance_to_target,commit_fraction,certificate_candidates,certificate_admitted,deployment_rollouts,violating_rollouts,deployment_violation_rate,immediate_violating_rollouts,delayed_violating_rollouts,median_first_violation_step,deployment_filter_interventions,deployment_filter_rejections,mean_deployment_reward
+clean_reinforce_snapshot,2040,0.5,0.0,0,12,26,0,0.017343513422592393,0.017343513422592393,0.07059213759027834,1.0,0,0,8,0,0.0,0,0,,0,0,-0.038484546309354356
+poisoned_action_only_snapshot,2040,0.5,0.4999999999411181,0,12,26,0,0.04278238403979874,0.04278238403979874,0.023383460308852418,1.0,0,0,8,8,1.0,0,8,52.0,0,0,-0.13918735169681187
+poisoned_always_freeze_snapshot,2040,0.5,0.49999988134001466,0,0,19,0,0.0,0.0,0.05768882040742383,1.0,0,0,8,0,0.0,0,0,,0,0,-0.03773529186223923
+poisoned_commit_gate_snapshot,2040,0.5,0.4999999999411181,0,12,26,0,0.04278238403979874,0.023530311221889314,0.036678674372675156,0.55,12,12,8,0,0.0,0,0,,0,0,-0.07323574332395151
+poisoned_permanent_filter_snapshot,2040,0.5,0.4999999999411181,0,12,26,0,0.04278238403979874,0.04278238403979874,0.023383460308852418,1.0,0,0,8,0,0.0,0,0,,149,0,-0.23272991009731375

@@ -1,0 +1,2 @@
+calibration_seed,clean_steps,clean_batches,scalar_reward_min,scalar_reward_max,batch_mean_center,batch_mean_radius,recomputation_tolerance,positive_reward_threshold,envelope_tolerance,source_sha256
+2070,96,12,-5.888655463318784,-0.01603442038059298,-0.4915801615623531,2.5533217417018235,1e-08,0.0,1e-12,1f4d4d155d32ad6c8bf725dc241809a8be08979f7c246d6cb51b519c7f6e6c2d

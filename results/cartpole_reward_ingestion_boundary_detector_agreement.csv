@@ -1,0 +1,11 @@
+learner_seed,detector,batches,independently_flagged_batches,frozen_detector_flagged_batches,exact_batch_decision_match
+2100,known_sign,12,10,10,True
+2100,scalar_envelope,12,10,10,True
+2101,known_sign,12,12,12,True
+2101,scalar_envelope,12,12,12,True
+2102,known_sign,12,12,12,True
+2102,scalar_envelope,12,12,12,True
+2103,known_sign,12,10,10,True
+2103,scalar_envelope,12,11,11,True
+2104,known_sign,12,11,11,True
+2104,scalar_envelope,12,11,11,True

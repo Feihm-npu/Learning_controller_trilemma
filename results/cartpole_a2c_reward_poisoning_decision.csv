@@ -1,0 +1,2 @@
+clean_only_discordant,canary_freeze,pooled_freeze_violations,pooled_clean_violations,canary_pass,paired_exact_pvalue,canary_seed,num_seeds,pooled_commit_violations,canary_commit,pooled_poison_violations,seeds_with_poison_failure,canary_poison,canary_clean,poison_only_discordant
+0,0,0,1,True,0.00048828125,2200,1,0,0,13,1,13,1,12

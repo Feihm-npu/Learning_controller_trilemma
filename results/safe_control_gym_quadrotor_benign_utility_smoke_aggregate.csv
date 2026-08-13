@@ -1,0 +1,4 @@
+mechanism,learner_seeds,deployment_rollouts,violating_rollouts,mean_reward,mean_mse,mean_max_normalized_safety_margin,actor_updates,accepted_update_batches,mean_accepted_fraction,adaptation_constraint_violations,actuator_saturation_steps,action_filter_interventions,action_filter_rejections,certificate_calls,certificate_runtime_seconds
+clean_adaptation,1,12,0,-0.04714024061565753,0.04716433758544449,-0.3562552189079568,12,12,1.0,0,9,21,0,0,0.0
+always_freeze,1,12,0,-0.036174334214175104,0.04445832855918747,-0.3563870872583598,0,0,0.0,0,9,15,0,0,0.0
+lifecycle_gate,1,12,0,-0.08097082029771023,0.047489154135733146,-0.2798805186402414,11,11,0.8208333333333333,0,9,21,0,12,100.93330821674317

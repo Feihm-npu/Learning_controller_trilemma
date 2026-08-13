@@ -1,0 +1,6 @@
+mechanism,deployment_rollouts,violating_rollouts,deployment_violation_rate,immediate_violating_rollouts,delayed_violating_rollouts,median_first_violation_step,filter_interventions,filter_rejections,mean_deployment_reward,pending_update_norm,committed_update_norm,commit_fraction,certificate_candidates,certificate_admitted
+trusted_clipped_lqr,12,0,0.0,0,0,,0,0,-0.03503136986118375,0.05768882040742383,0.0,0.0,0,0
+harmful_raw_snapshot,12,12,1.0,0,12,18.0,0,0,-0.21363683066947722,0.05768882040742383,0.05768882040742383,1.0,0,0
+harmful_permanent_filter,12,0,0.0,0,0,,496,0,-0.23381245727283373,0.05768882040742383,0.05768882040742383,1.0,0,0
+poisoned_always_freeze_snapshot,12,0,0.0,0,0,,0,0,-0.03503136986118375,0.05768882040742383,0.0,0.0,0,0
+poisoned_commit_gate_snapshot,12,0,0.0,0,0,,0,0,-0.07551604129388836,0.05768882040742383,0.020191087142598343,0.35000000000000003,16,16

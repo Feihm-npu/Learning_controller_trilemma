@@ -1,0 +1,2 @@
+learner_seed,evaluation_seed,selected_states,poison_initially_accepted,adaptation_constraint_violations,max_reward_poison,nonzero_support_batches,solver_failure_batches,gradient_clipped_batches,parameter_clipped_batches,clean_release_violations,poisoned_release_violations,resident_predictive_violations,paired_release_failures_with_timely_switch,paired_release_failures,budget_integrity,development_smoke_pass
+2060,9060,24,24,0,2.0,1,11,0,0,0,0,0,0,0,True,False

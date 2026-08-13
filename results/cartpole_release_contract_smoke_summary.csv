@@ -1,0 +1,3 @@
+contract,candidate_states,reverse_switch_accepted,accepted_later_casadi_violations,accepted_physical_violations,resident_interventions,empty_kernel_fallbacks,median_physical_first_violation_step,mean_reward
+permanent_release,42,42,13,13,0,0,10.0,-1.3902809190015633
+resident_authority,42,42,13,10,53,27,10.0,-1.3702509040263142

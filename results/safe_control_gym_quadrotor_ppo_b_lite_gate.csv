@@ -1,0 +1,3 @@
+batches,deployment_rollouts,poison_only_failures,clean_only_failures,median_paired_margin_delta,fraction_poison_margin_worse,poison_to_clean_target_mse_ratio,clean_violations,poison_violations,adaptation_violations,mpsc_infeasible_steps,max_proposal_logp_error,data_semantics_pass,clean_stable,physical_signal,margin_signal_at_checkpoint,formal_sweep_go
+16,24,1,0,0.002573292626530138,0.5416666666666666,0.756176574889237,0,1,0,0,1.430511474609375e-06,False,True,False,False,False
+24,24,0,0,0.06489928837867343,0.75,0.967111873215895,0,0,0,0,1.430511474609375e-06,False,True,False,False,False

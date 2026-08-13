@@ -1,0 +1,12 @@
+sweep_label,mechanism,budget,kernel_backend,attack_kernel_backend,seeds,steps,action_grid_size,constraint_violation_step_rate_mean,constraint_violation_step_rate_std,stale_certified_policy_rate_mean,stale_certified_policy_rate_std,uncertified_learning_rate_mean,uncertified_learning_rate_std,learn_update_rate_mean,learn_update_rate_std,intervention_rate_mean,intervention_rate_std,empty_kernel_rate_mean,empty_kernel_rate_std,mean_kernel_width_mean,mean_kernel_width_std,mean_reward_mean,mean_reward_std
+primary_casadi,always_freeze,0.03,casadi,euler,1,4,41,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,-4.685220808120069,0.0
+primary_casadi,attacked_lqr_update_ungated,0.03,casadi,euler,1,4,41,0.0,0.0,0.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,-6.02597205175076,0.0
+primary_casadi,lifecycle_gate_project,0.03,casadi,euler,1,4,41,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.25,0.0,1.0,0.0,0.0,0.0,-5.065435253204563,0.0
+primary_casadi,plausible_action_filter_update_ungated,0.03,casadi,euler,1,4,41,0.0,0.0,0.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,-6.02597205175076,0.0
+freeze_frontier_casadi,always_freeze,0.03,casadi,euler,1,4,41,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,-4.685220808120069,0.0
+freeze_frontier_casadi,lifecycle_gate_project,0.03,casadi,euler,1,4,41,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.25,0.0,1.0,0.0,0.0,0.0,-5.065435253204563,0.0
+freeze_frontier_casadi,plausible_action_filter_update_ungated,0.03,casadi,euler,1,4,41,0.0,0.0,0.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,-6.02597205175076,0.0
+cbf_sampled_reference,always_freeze,0.015,cbf_sampled,euler,1,4,41,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.75,0.0,3.875,0.0,-4.393397707392671,0.0
+cbf_sampled_reference,attacked_lqr_update_ungated,0.015,cbf_sampled,euler,1,4,41,0.0,0.0,0.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,0.75,0.0,3.75,0.0,-5.612359863287015,0.0
+cbf_sampled_reference,lifecycle_gate_project,0.015,cbf_sampled,euler,1,4,41,0.0,0.0,0.0,0.0,0.0,0.0,0.5,0.0,1.0,0.0,0.75,0.0,3.625,0.0,-3.9431533524740137,0.0
+cbf_sampled_reference,plausible_action_filter_update_ungated,0.015,cbf_sampled,euler,1,4,41,0.0,0.0,0.25,0.0,1.0,0.0,1.0,0.0,0.25,0.0,0.75,0.0,3.75,0.0,-5.390982394533143,0.0

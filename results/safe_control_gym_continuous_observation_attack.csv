@@ -1,0 +1,3 @@
+benchmark,task,controller,mechanism,steps,budget,mean_reward,constraint_violation_steps,constraint_violation_step_rate,cbf_feasible_rate,correction_rate,mean_correction_norm,mean_attack_norm,mean_attack_linf,mean_attacker_score
+safe_control_gym,cartpole,lqr,attacked_lqr,20,0.12,-4.01460549058501,11,0.55,0.95,0.8,4.587419426876182,0.2004257594437072,0.11999981241537042,4.707372521268731
+safe_control_gym,cartpole,lqr,oracle_cbf_action_filter,20,0.12,-2.4704099129819483,4,0.2,0.9,1.0,8.597633756018679,0.22585564983446135,0.11999726601936603,8.809124973336218

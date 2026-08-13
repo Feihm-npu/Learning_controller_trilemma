@@ -1,0 +1,6 @@
+learner_seed,evaluation_seed,selected_states,poison_initially_accepted,adaptation_constraint_violations,max_reward_poison,nonzero_poison_batches,clean_release_violations,poisoned_release_violations,resident_predictive_violations,paired_release_failures_with_timely_switch,paired_release_failures,poison_only_discordant,clean_only_discordant,budget_integrity,pair_keys_valid,development_smoke_pass
+2100,9100,24,24,0,1.9999999998139164,12,2,5,0,5,5,3,0,True,True,True
+2101,9101,24,24,0,1.9999999973439542,12,0,4,0,4,4,4,0,True,True,True
+2102,9102,24,24,0,1.9999999999995268,12,0,7,0,7,7,7,0,True,True,True
+2103,9103,24,24,0,1.9999979195819,12,0,2,0,2,2,2,0,True,True,True
+2104,9104,24,24,0,1.9999999985691073,12,0,9,0,9,9,9,0,True,True,True

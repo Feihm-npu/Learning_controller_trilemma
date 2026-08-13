@@ -1,0 +1,42 @@
+\section*{Ethics Considerations}
+
+This work studies an attack on safety-critical learning-enabled control, so we
+state its scope and safeguards explicitly.  All experiments run in simulation
+(Safe-Control-Gym with PyBullet dynamics); no physical plant, vehicle, or
+deployed industrial system was involved, and no human subjects or personal data
+were used.  The reported ``failures'' are simulated constraint violations used
+to compare deployment contracts, not incidents on any real system.
+
+The evaluated threat begins \emph{after} a reward-ingestion principal in the
+asynchronous learning-data plane has been compromised, and grants the attacker
+only bounded scalar writes to reward records.  We deliberately do not
+demonstrate, and do not provide, any capability to obtain that foothold: we
+present no exploit against a historian, broker, replay service, or reward
+producer, and no technique to evade log-integrity controls.  The contribution
+is thus not a new intrusion capability but a characterization of what a
+\emph{known} least-privilege data-integrity gap implies for certificate
+inheritance at raw-policy release.
+
+We judge the disclosure to be net beneficial.  The same study that exposes the
+assurance-contract gap also identifies concrete, deployable countermeasures and
+measures their cost: origin-bound append-only reward records and trusted
+recomputation remove the upstream precondition entirely (recomputation blocks
+every evaluated edit), while resident predictive authority, commit admission,
+and permanent runtime filtering contain the downstream physical consequence.
+The effective attack is also readily detectable by simple task-aware reward
+checks.  Surfacing this contract distinction, together with its defenses, before
+learning-enabled controllers are widely promoted from protected adaptation to
+unmonitored release reduces rather than increases real-world risk.  We are not
+aware of a specific fielded system exhibiting this exact pipeline, so no vendor
+disclosure was applicable; operators adopting protected-adaptation-then-release
+workflows are the intended audience for the mitigations.
+
+\section*{Open Science}
+
+We support the NDSS open-science policy.  The artifact includes row-level result
+CSVs, the exact commands and seed namespaces to reproduce every table and
+figure, upstream revisions and model files, dependency versions, source-linked
+generated tables, and SHA-256 checksums for all locked files, together with an
+automated audit that checks table provenance, claim locks, and format.  We
+intend to release the code and data required to reproduce the paper's results
+under an open license upon publication.

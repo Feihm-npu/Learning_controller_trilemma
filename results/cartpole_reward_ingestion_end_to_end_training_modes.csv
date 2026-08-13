@@ -1,0 +1,6 @@
+learner_seed,evaluation_seed,mode,implementation_path,reward_records,nonzero_malicious_edits,accepted_records,rejected_records,repaired_records,accepted_batches,rejected_batches,update_availability,actor_updates,adaptation_constraint_violations,max_reward_edit,final_gain,final_bias,locked_parameter_error
+2070,9070,clean_reference,clean_training,96,0,96,0,0,12,0,1.0,12,0,0.0,-3.0720874228918076,0.34863980081304413,0.0
+2070,9070,unsigned_postproducer_mutation,poisoned_training,96,96,96,0,0,12,0,1.0,12,0,1.9999999921938214,-8.94978632910513,-5.0,0.0
+2070,9070,origin_bound_fail_closed,poisoned_training_with_global_freeze,96,96,0,96,0,0,12,0.0,0,0,1.9999999921938214,0.0,0.0,
+2070,9070,compromised_producer_valid,identity_alias_of_authenticated_poisoned_training,96,96,96,0,0,12,0,1.0,12,0,1.9999999921938214,-8.94978632910513,-5.0,0.0
+2070,9070,trusted_reference_repair,identity_alias_of_clean_training_after_repair,96,96,96,0,96,12,0,1.0,12,0,1.9999999921938214,-3.0720874228918076,0.34863980081304413,0.0

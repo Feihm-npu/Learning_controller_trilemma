@@ -1,0 +1,9 @@
+system,mechanism,learner_seeds,rollouts,violations,mean_reward,source_file
+Cartpole,Clean REINFORCE,3,188,1,-0.19680304313875654,results/safe_control_gym_reinforce_reward_poisoning_aggregate.csv
+Cartpole,Poisoned action-only,3,188,38,-1.2692987805252411,results/safe_control_gym_reinforce_reward_poisoning_aggregate.csv
+Cartpole,Poisoned commit,3,188,0,-0.10219169471440794,results/safe_control_gym_reinforce_reward_poisoning_aggregate.csv
+Cartpole,Always-freeze,3,188,0,-0.11736183269615907,results/safe_control_gym_reinforce_reward_poisoning_aggregate.csv
+Quadrotor,Clean REINFORCE,3,72,0,-0.02960072897234298,results/safe_control_gym_quadrotor_reinforce_reward_poisoning_aggregate.csv
+Quadrotor,Poisoned action-only,3,72,68,-0.17039931794502364,results/safe_control_gym_quadrotor_reinforce_reward_poisoning_aggregate.csv
+Quadrotor,Poisoned commit,3,72,0,-0.06041052074743468,results/safe_control_gym_quadrotor_reinforce_reward_poisoning_aggregate.csv
+Quadrotor,Always-freeze,3,72,0,-0.028709726651156182,results/safe_control_gym_quadrotor_reinforce_reward_poisoning_aggregate.csv

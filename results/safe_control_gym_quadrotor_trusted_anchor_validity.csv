@@ -1,0 +1,2 @@
+learner_seeds,anchor_conditions,mechanisms,paired_rollouts_per_mechanism,reference_reproduction_pass,deployment_state_count_pass,paired_keys_match,monotonicity_pass,informative_sensitivity,max_action_interface_error,interface_tolerance,interface_audit_pass,complete_summaries,audit_valid
+3,8,10,24,True,True,True,True,True,0.0,1e-08,True,True,True

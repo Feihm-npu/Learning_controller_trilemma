@@ -1,0 +1,2 @@
+learner_seed,condition,quality,anchor_period,anchor_calls,anchor_call_fraction,final_anchor_age,z_radius,theta_radius,sampled_states_per_center,certificate_centers,certificate_centers_admitted,certificate_center_coverage,retained_update_fraction,pending_snapshot_norm,committed_snapshot_norm,full_freeze,condition_trajectory_steps,shared_certificate_latency_seconds
+2040,high_p1,high,1,12,1.0,0,0.001,0.0005,5,16,16,1.0,1.0,0.04278238403979874,0.04278238403979874,False,8400,2.2992890095338225
