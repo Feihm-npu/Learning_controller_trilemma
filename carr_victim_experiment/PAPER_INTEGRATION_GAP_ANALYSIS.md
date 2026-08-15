@@ -1,10 +1,59 @@
 # Carr 第三方 victim 实验 → 论文整合 gap 分析
 
 **日期**：2026-08-16
-**目的**：回答"下一 cycle 如何把 Carr 第三方实验写进论文"，列出当前论文的结构弱点、
-Carr 的落点与页数预算、对 mock-review R3 的回应映射、以及本轮核查发现的页数超限与
-s3 数据旗标两个必须处理的现实问题。
-**状态**：分析文档（决策建议），不修改任何已锁协议，不修改本轮 NDSS 2027 Fall 投稿正文。
+**目的（2026-08-16 质量优先转向后）**：本文档原以"下一 cycle 再整合 Carr"为框架；
+2026-08-16 起项目转为**质量优先**（不受 13pp 篇幅约束），Carr 第三方 lifecycle + PPO
+full-phase 结果已直接整合进 working paper（23pp build）的 Section IV（Third-Party
+Shield-Retirement Case Study）、Intro、Abstract 与 Conclusion。本文档保留原始分析作为
+历史依据，并以"状态更新"小节标注已落地/已过时的部分。
+**状态**：历史分析文档 + 状态更新（见 §0 状态更新）。§4 的 13pp/Fall-freeze 压缩预案
+已被质量优先转向取代；§5 的 s3 provenance flag 已按本档建议在论文表格加脚注处理。
+
+---
+
+## 0. 状态更新（2026-08-16，质量优先转向后，取代旧框架）
+
+> 本节是新写入的现状记录。下文 §0–§6 是转向前的原始分析；凡与本节冲突处，以本节为准。
+
+### 已落地（不再是计划）
+
+1. **Carr 已整合进论文**（2026-08-16 修订，`paper_latex/bare_conf_NDSS2027.pdf` 23pp
+   working build）：
+   - 标题改为 "When Assurance Authority Changes: Reward Poisoning Across
+     Learning-to-Deployment Transitions"（L349），以 authority-transition 为核心。
+   - Section IV = Third-Party Shield-Retirement Case Study（`sec6_third_party_case_study.tex`）：
+     fidelity gate、**REINFORCE 退休边界因果隔离**（3/3 seeds，shield-on-only 污染 +
+     evaluate/freeze-at-retirement，Table `tab:carr-isolation` + Fig `fig:carr-isolation`）、
+     disagreement 机制信号（Fig `fig:carr-disagreement`）、
+     **PPO full-phase learner boundary**（1/3 seeds：s2 1178→2439，p=2.6e-149，
+     first-violation 6→0；s1 p=1.00、s3 p=0.96，见 "Learner boundary" 段）。
+   - Intro（`sec1_introduction.tex` L104-111）与 Abstract（L436-437）与 Conclusion
+     （`sec6_conclusion.tex`）均引用了该 PPO full-phase 结果。
+2. **PPO full-phase 结果确认在论文中**：项目目录
+   `carr_victim_experiment/results/obstacle_sudden_PPO_{none,v3}_d2_s{1,2,3}` 的 6 个
+   run 与 `PPO_stage_report.md` 即论文所引数字的来源；论文数字与项目数据逐项一致。
+3. **s3 clean at-ret 数据旗标**：论文 Table `tab:carr-isolation` 已按 §5 建议加
+   `$^a$` 脚注（provenance-flagged、报告保守区间 ≈0.21–0.24），不静默使用 23.9% 单点。
+
+### 已过时 / 已取代
+
+- **§4 页数风险与 13pp 压缩预案**：deadline 2026-08-19 的 13pp Fall 投稿约束已不再是
+  驱动力；项目以论文质量优先，正文维持长格式（23pp）。§4 保留作历史记录，**不再执行
+  其压缩步骤**。
+- **§2.1 "融合形态（minimal）"**：Carr 的实际落点不是"Cross-System Reward-Log
+  Poisoning 末尾小表"，而是独立的 Section IV 第三方 case study（§2.2 落点 A 的
+  升级版），内容更完整（隔离表 + 2 图 + learner boundary + budget/susceptibility 段）。
+- **§6.2 "整合 Carr 进论文（Summer 2028 / camera-ready）"**：已提前完成。
+
+### 当前 open 项（服务器实验中，落地后再改论文）
+
+| 实验 | 状态（2026-08-16 上午） | 落地后论文动作 |
+|---|---|---|
+| B0 determinism gate（PPO s101 clean ×2） | 运行中 | 决定 B1 是否可判读 |
+| fullvC（REINFORCE full-phase 18 runs，当前代码 v1.4 复跑） | 运行中 | 论文 full-phase 数字换成当前代码版本口径 |
+| v16（REINFORCE 隔离 10 seeds s201-210，v1.6） | 运行中 | 可能把 REINFORCE 3/3 升级为 10-seed 统计 |
+| B1（PPO 隔离 10 seeds s101-110，v1.5，等 gate） | 排队中 | ≥5/10 positive → learner-generality 措辞升级；3–4 → PARTIAL；<3 → 保持当前 1/3 边界 |
+| 论文措辞纪律（§2.3） | 依然有效 | "demonstrates off-policy generality" 仍禁止；PPO 隔离正例只作 on-policy 证据 |
 
 ---
 

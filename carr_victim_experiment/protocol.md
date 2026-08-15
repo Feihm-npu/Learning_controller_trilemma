@@ -242,3 +242,49 @@ expansion.
   produced; the v1.5.5 draft named it `fig6_ppo_retirement_isolation`); plus a
   combined
   REINFORCE+PPO isolation panel if REINFORCE multi-seed isolation (v1.6) runs.
+
+## Amendment v1.6 (2026-08-16, REINFORCE retirement-boundary causal isolation at scale — R0')
+
+Motivation: amendment v1.3's isolation result is 3/3 paired seeds on REINFORCE.
+A reviewer rehearsal (mock review, item 13.6) asks for "REINFORCE 多个
+independent seeds" rather than a 3-seed anecdote. This amendment scales the
+exact v1.3 protocol to 10 paired seeds with the same locked decision rule as
+v1.5, pre-registered before execution. No ad hoc expansion after results.
+
+### v1.6.1 Configuration (all locked)
+- Env/domain: `obstacle (N=6)`; learner: REINFORCE (vendored upstream);
+  switch: sudden (HARD) at episode 1000; attack: **V3 contrast, δ=2**;
+  poison scope: **shield-on** (mutation active only while the shield enforces
+  the action mask; stops exactly at retirement; all later training clean).
+- Training: 5000 episodes (≤100 steps). At-retirement eval: 1000 episodes on
+  the raw-policy snapshot at the switch instant (evaluate-/freeze-at-retirement
+  are the same snapshot). Final eval: 5000 episodes. Code version vC (independent
+  belief tracker, amendment v1.4).
+
+### v1.6.2 Seeds & namespace (locked before execution)
+- **10 paired seeds: 201–210** (REINFORCE). Clean and poisoned runs share the
+  seed → paired comparison. Disjoint from all prior namespaces (REINFORCE 1–3,
+  PPO 1–3, PPO 101–110).
+- Run dirs MUST be new:
+  `obstacle_sudden_REINFORCE_none_d2_s{201..210}` /
+  `obstacle_sudden_REINFORCE_v3_d2_s{201..210}`. No overwriting existing dirs.
+
+### v1.6.3 Statistical analysis & pre-specified decision rule
+- Primary outcome: at-retirement violation fraction (1000 episodes), paired
+  clean vs poisoned per seed (McNemar exact on paired eval episodes).
+- Secondary: final (5000-episode) violation fraction; at-retirement disagreement;
+  first-violation episode.
+- **Positive-seed definition (locked)**: poisoned at-ret fraction ≥ clean at-ret
+  fraction + 0.15 (15 pp) AND paired McNemar exact p < 0.01 (identical to v1.5).
+- **Decision rule (locked)**: REINFORCE isolation at scale "reproduces" if
+  ≥ 5/10 seeds are positive; "partial" if 3–4/10; "not reproduced" if < 3/10.
+  Report all 10 seeds either way.
+
+### v1.6.4 Outputs & files
+- Per-run dirs with `*_summary.json` (incl. `poison_scope=shield-on`,
+  `at_retirement_stats`, `disagreement_curve`, `poison_stats`), eval traces.
+- Append v1.6 runs to `results/aggregate_table_v2.csv` (new rows,
+  `version=vC`, `scope=shield-on`); do not overwrite existing rows.
+- Figure: combined REINFORCE+PPO at-retirement isolation panel
+  (`fig6_retirement_isolation_combined`) once both v1.6 (REINFORCE) and v1.5
+  (PPO) batteries are complete, plus per-learner panels.

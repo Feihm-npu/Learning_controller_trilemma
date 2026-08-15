@@ -8,6 +8,16 @@
 
 ---
 
+> **2026-08-16 质量优先转向后状态更新**：本文档成文时（同日上午）仍按"主论文科学冻结、
+> body 13pp、Carr 不进本轮 review submission"的框架书写。此后项目转为**质量优先**（不受
+> 13pp 约束），Carr 第三方 lifecycle + PPO full-phase 结果已直接整合进 working paper
+> （23pp build）的 Section IV / Intro / Abstract / Conclusion（详见
+> `PAPER_INTEGRATION_GAP_ANALYSIS.md` §0 状态更新）。因此本文档 §4 "Carr 实验不进本轮
+> review submission" 一节已过时，以本文档 §0–§6 的**实验结果与统计口径**为准、以其
+> **战略定位**部分（"Carr = next-cycle 头条"）过时。当前 open 实验 = 服务器上的
+> B0 determinism gate / fullvC（v1.4 full-phase 复跑）/ v16（REINFORCE 10-seed 隔离）/
+> B1（PPO 10-seed 隔离），落地后再更新论文数字与 learner-generality 措辞。
+
 ## 0. 一句话综合
 
 Go/no-go = **GO（有条件）**。论文核心 security claim（仅污染 update-data/reward plane、
