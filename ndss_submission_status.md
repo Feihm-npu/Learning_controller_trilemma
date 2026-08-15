@@ -211,12 +211,16 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   self-heal after 4000 clean post-retirement episodes. Mechanism signal: shield-on
   raw-policy/shield disagreement 2.3–8.6× higher under poisoning while physical
   violations remain 0.
-- **Not in this cycle**: NDSS 2027 Fall review submission is frozen, body at
-  13 pp, deadline 2026-08-19. The Carr result is **not** added to it.
-- **Designated next-cycle position**: headline generality uplift for the Summer
-  2028-equivalent cycle (or a camera-ready addition if page budget opens):
-  "demonstrated on a third-party published shield-retirement lifecycle (official
-  code)" directly answers mock-review R3's self-benchmark generality soft spot.
+- **Integrated into the working paper (2026-08-16)**: the Carr third-party
+  result is now Section IV of the main body ("Third-Party Shield-Retirement
+  Case Study", 23-pp working build): fidelity gate (reproduces Carr Table 1
+  ordering), retirement-boundary causal isolation (REINFORCE 3/3 seeds),
+  full-phase PPO learner boundary (1/3 seeds, paired significant), and the
+  REINFORCE δ=2/δ=10 attack-budget/susceptibility boundary. Earlier notes
+  saying "Carr is not added to it" refer to the frozen 13-pp Fall submission
+  and are obsolete under the quality-first rewrite.
+- **Open boundary**: PPO retirement-boundary isolation (P0') is still running;
+  if ≥5/10 paired seeds reproduce, learner-generality wording can be upgraded.
 - Evidence: `carr_victim_experiment/` (protocol.md + amendments v1.1–v1.5,
   patches.md, results/, `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`,
   `results/aggregate_table_v2.csv`).

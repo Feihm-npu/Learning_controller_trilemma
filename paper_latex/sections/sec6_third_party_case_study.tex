@@ -98,14 +98,30 @@ The same contrast attack ($\delta{=}2$) on the third-party PPO pipeline
 retirement) raises post-removal violations on one of three seeds
 (1178 $\rightarrow$ 2439; McNemar exact $p=2.6\times10^{-149}$;
 first-violation episode $6\rightarrow0$), while the other two seeds show no
-change ($p=1.00$ and $0.96$).  Negative controls complete the boundary:
-the bias and risk reward variants do not raise post-removal violations
-(the risk variant is even slightly protective, absorbed by the value
-baseline and return normalization), and seeds whose clean released policy is
-already unsafe (REINFORCE seed~1 at 75.7\%) show no additional effect.
-The vulnerability is therefore real and paired-significant but
-transfer-sensitive: it is not a trivial ``corrupt every reward'' effect and
-not a universal learner property.
+change ($p=1.00$ and $0.96$).  The vulnerability is therefore real and
+paired-significant but transfer-sensitive: it is not a universal learner
+property, and the effect concentrates on seeds whose clean learning would
+otherwise transfer safety to the released policy.
+
+\paragraph{Attack budget and susceptibility.}
+On the full-phase REINFORCE protocol the effect is budget- and
+state-dependent (paired seeds within the same locked code version).  On the
+transfer-sensitive seed~2, $\delta{=}2$ already saturates the effect:
+post-removal violations rise 1127 $\rightarrow$ 3762 ($3.3\times$; McNemar
+exact $p\approx0$), and $\delta{=}10$ gives 3766 (no further change).  On
+seed~3 the effect requires a larger budget: $\delta{=}2$ leaves violations
+unchanged (2482 vs.\ clean 2471; $p=0.84$) while $\delta{=}10$ raises them
+to 3700 ($p=8.4\times10^{-138}$).  The seed whose clean released policy is
+already in the unsafe regime (seed~1 at 75.7\%) shows no additional damage
+at either budget; the bounded additive distortion is absorbed by the value
+baseline and return normalization.  Negative controls delimit the attack
+shape: the bias variant is protective on the ceiling seed, and the risk
+variant is protective on seeds~1 and~3 but raises violations on the
+transfer-sensitive seed~2 (1127 $\rightarrow$ 2457, $2.2\times$,
+$p=2.0\times10^{-162}$), strictly weaker than the contrast attack on the
+same seed.  The attack is thus not a monotone ``more corruption $\Rightarrow$
+more damage'' effect; it is a shape-, budget-, and transfer-state-dependent
+steering of the released policy.
 
 \paragraph{Reading.}
 The third-party workflow is not a synthetic victim: its shield bootstrap and
