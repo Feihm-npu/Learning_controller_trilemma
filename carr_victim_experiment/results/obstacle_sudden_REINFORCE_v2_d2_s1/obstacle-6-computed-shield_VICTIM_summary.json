@@ -1,0 +1,31 @@
+{
+ "cfg": {
+  "grid_model": "obstacle",
+  "constants": "N=6",
+  "learning_method": "REINFORCE",
+  "max_runs": 5000,
+  "maxsteps": 100,
+  "obs_level": "BELIEF_SUPPORT",
+  "goal_value": 1000,
+  "seed": 1,
+  "noshield": false,
+  "switch_shield": "HARD",
+  "shield_episode": 1000,
+  "poison": {
+   "name": "risk",
+   "delta": 2.0
+  },
+  "eval_interval": 100,
+  "eval_episodes": 10,
+  "fname": "_VICTIM"
+ },
+ "videoname": "obstacle-6-computed-shield",
+ "during_violations": 965,
+ "eval_stats": {
+  "num_violations": 1181,
+  "violation_fraction": 0.2362,
+  "first_violation_episode": 4,
+  "first_violation_step": 3,
+  "disagreement_fraction": 0.025300207039337472
+ }
+}

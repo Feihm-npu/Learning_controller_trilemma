@@ -41,3 +41,8 @@ paper_latex/*.out
 paper_latex/*.toc
 paper_latex/*.lof
 paper_latex/*.lot
+
+# ===== 实验 wheel 缓存（不上传） =====
+wheels_cache/
+# ===== 实验中间产物 =====
+carr_victim_experiment/venv/
