@@ -69,12 +69,23 @@ K.~Stouffer, M.~Pease, C.~Tang, T.~Zimmerman, V.~Pillitteri, S.~Lightman,
 {MITRE ATT\&CK}, ``Data historian, asset a0006,''
   \url{https://attack.mitre.org/assets/A0006/}, 2023, accessed 2026-08-05.
 
+\bibitem{carr_partial_shielding_2023}
+S.~Carr, N.~Jansen, S.~Junges, and U.~Topcu, ``Safe reinforcement learning via
+  shielding under partial observability,'' in \emph{Proceedings of the AAAI
+  Conference on Artificial Intelligence}, vol.~37, no.~12, 2023, pp.
+  14\,748--14\,756.
+
 \bibitem{tan_safety_2024}
 \BIBentryALTinterwordspacing
 X.~Tan, P.~Ong, P.~Tabuada, and A.~D. Ames, ``Safety of linear systems under
   severe sensor attacks,'' 2024. [Online]. Available:
   \url{https://arxiv.org/abs/2409.08413}
 \BIBentrySTDinterwordspacing
+
+\bibitem{hsu_sim_lab_real_2023}
+K.-C. Hsu, A.~Z. Ren, D.~P. Nguyen, A.~Majumdar, and J.~F. Fisac,
+  ``Sim-to-lab-to-real: Safe reinforcement learning with shielding and
+  generalization guarantees,'' \emph{Artificial Intelligence}, p. 103811, 2023.
 
 \bibitem{fawzi_secure_2014}
 H.~Fawzi, P.~Tabuada, and S.~Diggavi, ``Secure estimation and control for
@@ -143,17 +154,6 @@ A.~Didier, K.~P. Wabersich, and M.~N. Zeilinger, ``Adaptive model predictive
 M.~Alshiekh, R.~Bloem, R.~Ehlers, B.~K{\"o}nighofer, S.~Niekum, and U.~Topcu,
   ``Safe reinforcement learning via shielding,'' in \emph{Proceedings of the
   AAAI Conference on Artificial Intelligence}, vol.~32, no.~1, 2018.
-
-\bibitem{hsu_sim_lab_real_2023}
-K.-C. Hsu, A.~Z. Ren, D.~P. Nguyen, A.~Majumdar, and J.~F. Fisac,
-  ``Sim-to-lab-to-real: Safe reinforcement learning with shielding and
-  generalization guarantees,'' \emph{Artificial Intelligence}, p. 103811, 2023.
-
-\bibitem{carr_partial_shielding_2023}
-S.~Carr, N.~Jansen, S.~Junges, and U.~Topcu, ``Safe reinforcement learning via
-  shielding under partial observability,'' in \emph{Proceedings of the AAAI
-  Conference on Artificial Intelligence}, vol.~37, no.~12, 2023, pp.
-  14\,748--14\,756.
 
 \bibitem{brunke_barrier_learning_2022}
 \BIBentryALTinterwordspacing

@@ -346,7 +346,7 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Protected While Learning, Unsafe When Released: Reward Poisoning Across Runtime-Assurance Contracts}
+\title{When Assurance Authority Changes: Reward Poisoning Across Learning-to-Deployment Transitions}
 
 
 % author names and affiliations
@@ -419,28 +419,21 @@
 % in the abstract
 \begin{abstract}
 Runtime assurance can mask an unsafe raw policy during protected adaptation.
-We study a split-trust deployment: an attacker can alter bounded reward
-records consumed by an updater, while runtime state/actions, code, parameters,
-and certification remain trusted.  Reusing evidence
-collected under resident predictive authority to authorize permanent release
-then creates a security boundary.
+We study update-data integrity across runtime-authority transitions: an
+attacker alters bounded reward records consumed by an updater, while runtime
+states, actions, code, parameters, and certification remain trusted.
+Evidence collected under resident predictive authority is then reused to
+authorize permanent raw release.
 
-We derive the normalized reward-influence set for standardized-advantage
-policy gradients.  Conic homogenization gives exact positive support under
-global gradient-norm clipping; coordinatewise parameter clipping is excluded.
-After fixing the target, attacker, and detector in development, five untouched
-cartpole seeds yield 120 initially accepted pairs.  Poisoned raw release fails
-on 27/120 versus 2/120 paired clean; resident predictive authority switches
-before all 27 and fails on 0/120.  All five seeds reproduce failure, and
-horizons 3, 5, and 10 separate the contracts.  An independent one-step
-resident kernel fails on 14/71 pairs.
-
-Paired audits compare commit, freeze, shielding, and model-predictive safety
-certification.  The result is contract-specific: finite reverse-switch
-evidence can support resident predictive authority but cannot itself certify raw
-release.  The effective attack is detected by task-aware reward
-checks, does not stably transfer to an official proximal policy optimization
-learner, and does not establish benign utility over freeze.
+On a third-party published shield-retirement lifecycle, bounded reward-log
+poisoning confined to the shielded bootstrap phase already makes the raw
+policy 1.6 to 3.6 times more dangerous at retirement on all three seeds, and
+clean post-retirement learning repairs the damage on only one.  A controlled
+Safe-Control-Gym study with five untouched seeds yields 27/120 poisoned
+raw-release failures versus 2/120 clean and 0/120 under resident predictive
+authority.  The attack is contract-specific and detectable by task-aware
+reward checks, does not stably reproduce in the official Safe-Control-Gym
+PPO learner, and does not establish benign utility over freeze.
 \end{abstract}
 
 % NDSS submissions do not include a keyword block.
@@ -461,6 +454,7 @@ learner, and does not establish benign utility over freeze.
 \input{sections/sec1_introduction}
 \input{sections/sec2_preliminary}
 \input{sections/sec3_threat_model}
+\input{sections/sec6_third_party_case_study}
 \input{sections/sec4_lifecycle_attacks}
 \input{sections/sec3_methodology}
 \input{sections/sec5_lifecycle_gate_design}

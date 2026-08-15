@@ -3,13 +3,19 @@
 
 Conditional on bounded write access at an otherwise isolated reward-ingestion
 interface, protected adaptation and raw release are different security
-contracts.  After a development block locks the target, attacker, and
-detector, five untouched seeds yield 27/120 poisoned permanent-release
-failures versus 2/120 paired clean.  Resident predictive authority switches
-before every corresponding poisoned failure and incurs 0/120 failures;
-horizons 3, 5, and 10 all separate the contracts.  An independent audit
-finds that a one-step resident kernel still fails on 14/71, so the result
-depends on recoverability, not residence alone.
+contracts.  The distinction is not an artifact of a self-defined benchmark.
+On the published shield-retirement lifecycle of Carr et al., bounded
+reward-log poisoning confined to the shielded bootstrap phase already makes
+the raw policy $1.6$--$3.6\times$ more dangerous at retirement on 3/3 paired
+seeds, and the damage persists after fully clean post-retirement learning on
+2/3.  A controlled Safe-Control-Gym study then isolates the mechanism: after
+a development block locks the target, attacker, and detector, five untouched
+seeds yield 27/120 poisoned permanent-release failures versus 2/120 paired
+clean.  Resident predictive authority switches before every corresponding
+poisoned failure and incurs 0/120 failures; horizons 3, 5, and 10 all separate
+the contracts.  An independent audit finds that a one-step resident kernel
+still fails on 14/71, so the result depends on recoverability, not residence
+alone.
 
 The normalized reward-influence analysis characterizes the batch-local update
 authority available through reward corruption.  Conic homogenization makes
@@ -33,5 +39,11 @@ optimizer, and even the extended exact-support diagnostic produces no raw
 release failure.  The physical attack is established for low-dimensional
 Monte-Carlo policy-gradient learners (REINFORCE and a learned-baseline
 variant), does not stably transfer to official PPO, and admitted updates do
-not beat freeze in the benign-adaptation smoke.  Thus resident predictive
-evidence is contract-bound; raw release needs independent future coverage.
+not beat freeze in the benign-adaptation smoke.  On the third-party lifecycle
+the REINFORCE retirement-boundary isolation reproduces on 3/3 seeds, whereas
+the third-party PPO full-phase result is positive on 1/3 seeds, leaving PPO
+retirement-boundary isolation as the open learner-generality boundary.  Formally, an evidence tuple $(s,a,p,i,\tau)$ collected under the training
+contract must re-establish each component the deployment contract changes
+(Proposition~\ref{prop:transfer}).  Thus
+resident predictive evidence is contract-bound; raw release needs independent
+future coverage.

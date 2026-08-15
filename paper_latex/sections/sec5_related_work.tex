@@ -23,11 +23,24 @@ certifies no safety envelope for an adversarially updated policy at release.
 \textbf{Safety filters and shielded learning.}
 Linear/adaptive MPSC and shields preserve recoverability or forbid unsafe
 actions~\cite{wabersich_linear_mpsc_2018,didier_adaptive_mpsc_2021,
-alshiekh_shielding_2018}; shielded transfer uses separate generalization
-evidence before removal~\cite{hsu_sim_lab_real_2023,carr_partial_shielding_2023}.
-A permanent filter certifies $F\circ\pi$, while raw release requires evidence
-for $\pi$; our question is whether a bounded reward-record adversary can
-invalidate a short release predictor that remains effective while resident.
+alshiekh_shielding_2018}.  Shielded transfer uses separate generalization
+evidence before removal~\cite{hsu_sim_lab_real_2023}.  We distinguish two
+roles that the prior literature has not separated.  Hsu et al.~\cite{hsu_sim_lab_real_2023}
+provide a correct negative control: authority transition preceded by
+independent transfer evidence.  Carr et al.~\cite{carr_partial_shielding_2023}
+define the opposite design, a shield bootstrap-to-retirement workflow under
+partial observability that compares sudden and smooth shield removal; their
+learning signals are trusted, and they do not consider an adversarial update
+log.  We use that published lifecycle as a third-party case study in
+Section~\ref{sec:third-party} and add the update-data integrity dimension:
+a bounded reward-record adversary can invalidate a short release predictor
+that remains effective while resident.
+Proposition~\ref{prop:transfer} states the formal obligation that separates
+these roles: each evidence-tuple component changed by the transition must be
+re-established under the deployment contract.  A permanent filter certifies
+$F\circ\pi$, while raw release requires evidence for $\pi$; our question
+is whether a bounded reward-record adversary can invalidate a short release
+predictor that remains effective while resident.
 Adjacent lines learn or certify safety online through barrier
 learning~\cite{brunke_barrier_learning_2022}, bandit safe
 control~\cite{capone_bandit_safe_control_2025}, certified
@@ -89,6 +102,9 @@ removes the singular feasible point.
 A permanent sound filter can protect the composition $F\circ\pi$, and our
 resident predictive authority and MPSC results confirm this escape condition;
 it does not certify a raw updated snapshot after the filter is removed.
+The third-party case study in Section~\ref{sec:third-party} shows the same
+authority-transition boundary on a published shield-retirement lifecycle, so
+the contract distinction is not an artifact of our benchmark.
 Conversely, the failed one-step resident kernel shows that residence alone does not
 suffice: the decision rule must preserve recoverability.  Snapshot admission,
 resident predictive authority, action filtering, always-freeze, and trusted
@@ -118,7 +134,10 @@ end-to-end physical attack is established for low-dimensional Monte-Carlo
 policy-gradient learners (REINFORCE and a learned-baseline variant sharing the
 same attack channel), not a genuinely distinct family; the official-PPO audit
 does not show a stable physical failure, and the benign-shift smoke shows no
-utility over always-freeze.  Eighth, the anchor audit models bounded error on
+utility over always-freeze.  On the third-party lifecycle the REINFORCE
+retirement-boundary isolation reproduces on 3/3 seeds, whereas the third-party
+PPO full-phase result is positive on 1/3 seeds; PPO retirement-boundary
+isolation remains the open learner-generality boundary.  Eighth, the anchor audit models bounded error on
 only altitude and pitch and reports calls rather than platform-specific
 sensing latency, energy, or authentication cost.  These are result boundaries,
 not omitted positive evidence.

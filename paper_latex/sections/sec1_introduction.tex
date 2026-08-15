@@ -6,11 +6,22 @@ a trusted baseline controller, every adaptation rollout may remain physically
 safe even while corrupted update data move the raw policy toward failure.
 This masking is benign while the decision module remains resident: the
 deployed object is the assured composition.  It becomes a security problem
-when evidence collected under that composition is reused to authorize
-\emph{permanent raw release}, after which the learned policy acts without the
-runtime authority that made the evidence safe.
+when the runtime authority is \emph{retired}, after which the learned policy
+acts without the decision module that made the adaptation evidence safe.
 
-This deployment distinction is easy to blur because runtime-assurance systems
+We study the same authority transition in two deployment patterns.  In the
+first, a learning controller is \emph{protected while commissioned} and then
+released as a permanent raw snapshot under an explicit split-trust
+precondition: an attacker can alter only bounded reward records consumed by
+an updater, while runtime states, actions, code, parameters, and certification
+remain trusted.  In the second, an independently published workflow
+\emph{bootstraps} a policy-gradient learner behind a runtime shield and later
+retires the shield's authority, comparing sudden and smooth removal.  These
+patterns differ in origin but share one assumption that we question: that the
+update-data provenance used during protected adaptation remains valid for the
+authority transition.
+
+The distinction is easy to blur because runtime-assurance systems
 already support online upgrades, forward switching, reverse switching, and
 policy repair.  Simplex retains a decision module and assured baseline
 controller~\cite{seto_simplex_1998}; Neural Simplex adds reverse switching and
@@ -62,7 +73,9 @@ resident after check: timely switch;\quad removed: delayed failure
 \caption{Evaluated trust boundary.  The benchmark begins after bounded
 reward-record access is obtained; it does not model the initial service
 compromise.  Upstream provenance or recomputation removes this attack path,
-whereas resident predictive authority contains its downstream physical consequence.}
+whereas resident predictive authority contains its downstream physical
+consequence.  The same boundary is evaluated on a third-party
+shield-retirement workflow in Section~\ref{sec:third-party}.}
 \label{fig:lifecycle-placeholder}
 \end{figure}
 
@@ -76,24 +89,46 @@ degeneracy.  Positive support against a linear certificate halfspace remains a
 second-order-cone feasibility problem under global gradient-norm clipping.
 Coordinatewise parameter clipping remains an explicit boundary.  This gives
 an exact batch-audit bridge from reward corruption to release-gate margin, not
-a multi-batch attack optimizer.
+a multi-batch attack optimizer.  The analysis is supporting: it explains why
+a batch-local reward change can cross a release margin, but it neither
+constructs nor explains the multi-batch exploit, which remains the locked
+target-shaping rule.
 
-The main experiment compares deployment contracts after a sequential
-development block freezes the five-step check, target, bounded reward rule,
-detector, and stop rule.  We then run five untouched learner/evaluation seed
-pairs once.  All 120 poisoned snapshot--state pairs pass the initial check.
-Poisoned permanent raw release fails physically on 27/120, versus 2/120 paired
-clean failures; 25 poison-only versus zero clean-only discordances give
-two-sided exact $p=5.960\times10^{-8}$.  Pairs within a learner seed are
-not independent replicates, so five-seed reproduction, not the count,
-conveys generality.  Every seed reproduces poisoned failure.  Resident predictive authority switches before all 27 corresponding
-failures and incurs 0/120 failures.  A locked sweep shows the separation at
-horizons 3, 5, and 10 rather than only the development-fixed horizon 5.  An
-independent three-seed audit retains a one-step resident kernel
-as a negative control: it fails on 14/71 pairs and encounters 41 empty-kernel
-fallbacks, whereas resident predictive authority again incurs no failure.
-Thus recoverability and continued authority matter; residence alone is
-insufficient.
+\subsection{Evidence Stack and Contributions}
+
+Section~\ref{sec:evidence-transfer} formalizes the transfer boundary common
+to both studies: an evidence tuple
+$E=(s,a,p,i,\tau)$ (subject, authority, provenance, information, horizon)
+collected under the training contract must re-establish every component the
+deployment contract changes (Proposition~\ref{prop:transfer}).  Our evidence
+combines a third-party case study with a controlled mechanism
+study.  On the published shield-retirement workflow of Carr et
+al.~\cite{carr_partial_shielding_2023}, we run the official implementation
+unmodified except for a locked reward-record poisoning hook and metric
+instrumentation, and confine poisoning to the shielded bootstrap phase.  The
+released raw policy is already $1.6$--$3.6\times$ more dangerous at retirement
+on all three seeds, and clean post-retirement learning repairs the damage on
+only one.  This shows the authority-transition failure is not an artifact of a
+self-defined benchmark: an independently designed lifecycle that retires
+runtime authority inherits the update-data integrity assumption.
+
+The controlled study then answers mechanistic questions on Safe-Control-Gym.
+After a sequential development block freezes the five-step check, target,
+bounded reward rule, detector, and stop rule, five untouched learner/
+evaluation seed pairs are run once.  All 120 poisoned snapshot--state pairs
+pass the initial check.  Poisoned permanent raw release fails physically on
+27/120, versus 2/120 paired clean failures; 25 poison-only versus zero
+clean-only discordances give two-sided exact $p=5.960\times10^{-8}$.  Pairs
+within a learner seed are not independent replicates, so five-seed
+reproduction, not the count, conveys generality.  Every seed reproduces
+poisoned failure.  Resident predictive authority switches before all 27
+corresponding failures and incurs 0/120 failures.  A locked sweep shows the
+separation at horizons 3, 5, and 10 rather than only the development-fixed
+horizon 5.  An independent three-seed audit retains a one-step resident
+kernel as a negative control: it fails on 14/71 pairs and encounters 41 empty-kernel
+fallbacks, whereas resident predictive authority again incurs no
+failure.  Thus recoverability and continued authority matter; residence alone
+is insufficient.
 
 Broader Safe-Control-Gym evidence characterizes the conditional attack and
 its costs.
@@ -119,10 +154,18 @@ Our contributions are:
     transfer automatically to permanent raw release under adversarial online
     updates.  We distinguish this claim explicitly from prior resident
     Simplex, shielded learning, policy repair, and safe-update work.
-    \item We derive the normalized reward-influence geometry of a
-    standardized-advantage policy-gradient batch and an exact positive-support
-    computation for linear release-gate halfspaces under global gradient-norm
-    clipping, while excluding coordinatewise parameter clipping.
+    \item We demonstrate the same authority-transition failure on a
+    third-party published shield-retirement lifecycle (Carr et al. AAAI'23
+    official code): bounded reward-record poisoning confined to the shielded
+    bootstrap phase already degrades the raw policy at retirement on 3/3
+    seeds, and the damage persists after clean post-retirement learning on
+    2/3.
+    \item As supporting analysis, we derive the normalized reward-influence
+    geometry of a standardized-advantage policy-gradient batch and an exact
+    positive-support computation for linear release-gate halfspaces under
+    global gradient-norm clipping, while excluding coordinatewise parameter
+    clipping; this analysis explains batch-local influence and does not
+    construct the multi-batch exploit.
     \item After locking a fixed-target reward attacker and detector, we run five
     untouched confirmation seeds.  Poisoned raw release yields 27/120 failures
     versus 2/120 clean and 0/120 under resident predictive authority; all five

@@ -1,17 +1,21 @@
-\section{Evaluation}
+\section{Controlled Mechanism Study}
 \label{sec:study}
 
-We ask five questions on Safe-Control-Gym~\cite{yuan_safe_control_gym_2022}:
-(Q1) does the same finite reverse-switch evidence support permanent raw release
-and resident predictive authority; (Q2) how does a bounded reward box influence
-release-gate halfspaces; (Q3) can corruption limited to reward records cause
-delayed physical failure across systems; (Q4) which reward-integrity
-assumptions remove that attack; and (Q5) which escape contracts prevent
-failure, at what cost, and with which generality limits?
+Section~\ref{sec:third-party} established the authority-transition failure on
+an independently published lifecycle.  The studies in this section are a
+controlled mechanism study on Safe-Control-Gym~\cite{yuan_safe_control_gym_2022}:
+fully controlled contracts, paired comparisons, and mechanism audits answer
+five questions.  (Q1) Does the same finite reverse-switch evidence support
+permanent raw release and resident predictive authority?  (Q2) How does a
+bounded reward box influence release-gate halfspaces?  (Q3) Can corruption
+limited to reward records cause delayed physical failure across systems?
+(Q4) Which reward-integrity assumptions remove that attack?  (Q5) Which escape
+contracts prevent failure, at what cost, and with which generality limits?
+The first question is the direct mechanism behind the case study: the third
+party retires authority over a raw snapshot; here the same transfer is
+isolated with matched clean and poisoned runs, horizon sweeps, and an
+independent one-step negative control.
 
-% The full expository studies are retained below as source for the artifact
-% supplement but excluded from the NDSS main-paper page count.
-\iffalse
 \subsection{Setup}
 
 We instantiate the system in Section~\ref{sec:gate} with $\lambda=1.2$, $u_{\max}=0.2$, and $S=[-1,1]$. The FDI-induced ambiguity set is $X_{\mathcal A}(h)=[-\rho,\rho]$. The common certified kernel for the invariant certificate $I=S$ is
@@ -138,7 +142,7 @@ the halfspace constraints used by LifecycleGate.
 \end{figure*}
 
 Figure~\ref{fig:safe-control-gym} separates three effects that are conflated by ordinary controller performance metrics. First, action filtering can remove current constraint violations without certifying the updated residual policy. Second, always-freeze avoids stale certification but has zero learning availability. Third, LifecycleGate projects the poisoned update into the future-history halfspace set when feasible, so stale and uncertified learning remain zero while updates continue before the freeze frontier. This run should be read as benchmark evidence that the lifecycle failure appears beyond the toy systems, not as a final high-fidelity industrial deployment. At larger ambiguity radii, the frontier panels show that the kernel becomes empty for action-only filtering; LifecycleGate then reduces or freezes learning instead of treating the previous certificate as valid for the updated policy.
-\fi
+
 
 \subsection{Prospective Contract-Separation Audit}
 \label{sec:release-contract-audit}

@@ -1,0 +1,119 @@
+\section{Third-Party Shield-Retirement Case Study}
+\label{sec:third-party}
+
+The controlled contract in Section~\ref{sec:study} is defined by this paper.
+To test whether the authority-transition failure is an artifact of a
+self-defined benchmark, we repeat the same security question on an
+independently published lifecycle that retires runtime authority.
+Carr et al.~\cite{carr_partial_shielding_2023} (AAAI 2023) train a
+policy-gradient agent for 1000 episodes behind a belief-support shield
+computed by Storm on a partially observable gridworld, then either suddenly
+or smoothly switch the shield off, and compare the released policy against
+retained-shield and no-shield controls.  We use their official public
+implementation and change only the learner-visible reward records: the
+attacker writes $r'=r+\xi$ with $|\xi|\le\delta$ per record into the update
+log, and touches no other plane.  States, observations, shield semantics,
+environment dynamics, learner code, hyperparameters, and evaluation are the
+upstream originals; every patch is itemized in the artifact.  Training is
+5000 episodes for REINFORCE and $10^5$ environment steps for PPO, and
+retirement is sudden at episode 1000 (REINFORCE) or env-step $10^5$ (PPO),
+following the upstream protocol.
+
+\paragraph{Fidelity gate.}
+On the obstacle domain ($N{=}6$), the clean condition reproduces the
+qualitative ordering of Carr et al.'s Table~1 for REINFORCE: shield retained
+0/0 violations during/after training, smooth 326/675, sudden 3277/3784, and
+no-shield 3798/3784.  Shield $<$ smooth $\ll$ sudden $\le$ no-shield is the
+ordering the authors report, so the victim workflow is not distorted by our
+patch.
+
+\paragraph{Causal isolation at the retirement boundary.}
+Under a locked protocol (artifact amendment v1.3), poisoning is confined to
+the shielded bootstrap phase: the reward-record mutation is active only while
+the shield enforces the action mask and stops exactly at the retirement
+instant, so all subsequent learning is clean.  We evaluate the raw policy at
+the switch instant before any unshielded learning (1000 episodes) and again
+after the full training budget (5000 episodes), on paired seeds.  Table~\ref{tab:carr-isolation}
+and Fig.~\ref{fig:carr-isolation} show the result.
+
+\begin{table}[t]
+\centering
+\caption{Retirement-boundary causal isolation on the third-party lifecycle
+(obstacle, REINFORCE, sudden).  Poisoning is confined to the shielded
+bootstrap phase and stops at retirement; all later training is clean.
+At-retirement is the raw policy evaluated at the switch instant (1000
+episodes); final is 5000 episodes.  Rates are violation fractions.}
+\label{tab:carr-isolation}
+\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{at retirement} & \multicolumn{2}{c}{final}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+seed & clean & poisoned & clean & poisoned\\
+\midrule
+1 & 0.216 & 0.777 & 0.236 & 0.235\\
+2 & 0.484 & 0.763 & 0.234 & 0.751\\
+3 & $\approx$0.24 & 0.748 & 0.233 & 0.741\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On all three seeds the poisoned raw policy is already $1.6$--$3.6\times$
+more dangerous at the retirement instant than its clean paired control, while
+physical violations during the protected phase remain zero in every run.
+The damage is latent in the policy \emph{before} any unshielded learning, and
+it is created entirely inside the shielded bootstrap phase.  After 4000
+episodes of fully clean post-retirement training the damage persists on two
+of three seeds (0.751 and 0.741 vs clean 0.234 and 0.233); one seed
+self-heals (0.235).  The mechanism signal is the unmasked
+raw-policy/shield disagreement during the protected phase, which stays near
+$0.01$--$0.05$ for clean runs but rises to $0.11$--$0.15$ (peak 0.71) under
+poisoning while masked violations remain zero: the shield masks unsafe
+proposals whose physical consequence appears only after authority removal
+(Fig.~\ref{fig:carr-disagreement}).
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig6_retirement_isolation_summary.pdf}
+\caption{Causal isolation on the third-party lifecycle (REINFORCE, obstacle,
+sudden, paired seeds).  (a) At-retirement violation fraction of the raw
+policy; (b) at-retirement raw-policy/shield disagreement; (c) final
+violation fraction after clean post-retirement learning.  Poisoning is
+confined to the shielded bootstrap phase.}
+\label{fig:carr-isolation}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig5_disagreement_curves.pdf}
+\caption{Latent-damage signal during protected adaptation: unmasked
+raw-policy/shield disagreement rises under poisoning while physical
+violations remain zero, so the damage is masked until authority removal.}
+\label{fig:carr-disagreement}
+\end{figure*}
+
+\paragraph{Learner boundary.}
+The same contrast attack ($\delta{=}2$) on the third-party PPO pipeline
+(vendored tf-agents PPO with action masking, $10^5$ env steps, sudden
+retirement) raises post-removal violations on one of three seeds
+(1178 $\rightarrow$ 2439; McNemar exact $p=2.6\times10^{-149}$;
+first-violation episode $6\rightarrow0$), while the other two seeds show no
+change ($p=1.00$ and $0.96$).  Negative controls complete the boundary:
+the bias and risk reward variants do not raise post-removal violations
+(the risk variant is even slightly protective, absorbed by the value
+baseline and return normalization), and seeds whose clean released policy is
+already unsafe (REINFORCE seed~1 at 75.7\%) show no additional effect.
+The vulnerability is therefore real and paired-significant but
+transfer-sensitive: it is not a trivial ``corrupt every reward'' effect and
+not a universal learner property.
+
+\paragraph{Reading.}
+The third-party workflow is not a synthetic victim: its shield bootstrap and
+retirement schedule are the authors' design, and the release-time raw policy
+inherits exactly the update-data provenance assumption the paper
+challenges.  The security contribution of this paper is the integrity
+dimension on top of that published lifecycle, not the lifecycle itself.
+Absolute rates differ across instrumented and non-instrumented code versions
+because the unmasked-disagreement probe requires an independent belief
+tracker; all clean-vs-poisoned comparisons above are paired within a locked
+code version and are unaffected by that version change.
