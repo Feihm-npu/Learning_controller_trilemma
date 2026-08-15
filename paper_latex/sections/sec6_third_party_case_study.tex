@@ -119,9 +119,25 @@ shape: the bias variant is protective on the ceiling seed, and the risk
 variant is protective on seeds~1 and~3 but raises violations on the
 transfer-sensitive seed~2 (1127 $\rightarrow$ 2457, $2.2\times$,
 $p=2.0\times10^{-162}$), strictly weaker than the contrast attack on the
-same seed.  The attack is thus not a monotone ``more corruption $\Rightarrow$
+same seed.  Figure~\ref{fig:dose-response} shows both boundaries on the
+same scale: on the transfer-sensitive seed~2 the effect saturates at
+$\delta{=}2$, on seed~3 it requires $\delta{=}10$, and on the ceiling seed
+neither budget adds damage while the shape controls are protective.  The
+attack is thus not a monotone ``more corruption $\Rightarrow$
 more damage'' effect; it is a shape-, budget-, and transfer-state-dependent
 steering of the released policy.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig7_dose_response.pdf}
+\caption{Budget- and state-dependent susceptibility on the full-phase
+REINFORCE protocol (paired within one locked code version).  (a) Contrast
+attack dose response; (b) attack-shape negative controls at $\delta{=}2$.
+The transfer-sensitive seed~2 saturates at $\delta{=}2$; seed~3 requires
+$\delta{=}10$; the ceiling seed shows no additional damage at either budget,
+and bias/risk controls are protective or strictly weaker.}
+\label{fig:dose-response}
+\end{figure*}
 
 \paragraph{Reading.}
 The third-party workflow is not a synthetic victim: its shield bootstrap and
