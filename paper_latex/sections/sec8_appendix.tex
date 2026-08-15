@@ -50,32 +50,3 @@ therefore not a utility comparison.}
 \label{tab:unified-frontier}
 \input{generated/tdsc_frontier_results}
 \end{table*}
-
-
-\section{Closest-Work Comparison}
-\label{sec:appendix-delta}
-
-\begin{table}[t]
-\centering
-\caption{Closest work along the three axes this paper combines: an adversarial
-\emph{online update-data} channel, a raw policy that \emph{leaves} the
-runtime-assurance authority whose evidence certified it, and independent
-evidence for the raw policy.}
-\label{tab:delta}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}p{0.32\columnwidth}p{0.19\columnwidth}p{0.18\columnwidth}p{0.18\columnwidth}@{}}
-\toprule
-Work & Adversarial update log & Authority removed & Independent raw-policy evidence\\
-\midrule
-Simplex / Neural Simplex~\cite{seto_simplex_1998,phan_neural_simplex_2020} & no & no (monitor resident) & n/a (composition certified)\\
-Bb-Simplex~\cite{damare_bb_simplex_2025} & no (trusted retraining) & no & n/a\\
-Policy repair / MPSC~\cite{zhou_runtime_policy_repair_2020,wabersich_linear_mpsc_2018} & no (trusted evidence) & repaired, verified & repaired\\
-Hsu et al.~\cite{hsu_sim_lab_real_2023} & no & yes & yes (independent transfer evidence)\\
-Carr et al.~\cite{carr_partial_shielding_2023} & no & yes (sudden/smooth retirement) & empirical retirement; no formal claim\\
-BADControl~\cite{burbano_badcontrol_2026} & operational data, physical trigger & n/a (no RTA contract) & n/a\\
-\textbf{This paper, controlled study} & \textbf{yes (reward log)} & \textbf{yes (permanent release)} & \textbf{attack tests transition evidence}\\
-\textbf{This paper, third-party case study} & \textbf{yes (reward log)} & \textbf{yes (Carr retirement)} & \textbf{attack tests transition evidence}\\
-\bottomrule
-\end{tabular}
-\end{table}

@@ -1,6 +1,15 @@
 \section{Contract-Aware Update Analysis}
 \label{sec:gate}
 
+This analysis is supporting rather than load-bearing for the empirical
+results.  The controlled study in Section~\ref{sec:study} establishes the
+authority-transition failure and its paired clean/poison separation; the
+machinery below characterizes the batch-local mechanism by which bounded
+reward-record changes can cross a release-gate margin, and states the
+premises under which the release-gate computations in that study are exact.
+It does not construct the multi-batch exploit, which remains the locked
+target-shaping rule evaluated in Section~\ref{sec:study}.
+
 \subsection{Current- and Future-History Gates}
 
 The central condition has two levels. The first is a current-history condition: after an update, the action selected at the history used for the update must still be certified. The second is a lifecycle condition: the updated action map must remain certified over the future attacked histories that can be reached after accepting the update.

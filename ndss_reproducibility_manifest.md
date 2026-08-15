@@ -7,21 +7,21 @@
 | Component | Version | Source |
 |---|---|---|
 | manifest_lock_date | `2026-08-03` | `reviewer_uplift_experiment_protocol.md` |
-| python | `3.10.12 (main, Nov 20 2023, 15:14:05) [GCC 11.4.0]` | `/home/feihm/llm-fei/.llm/bin/python` |
+| python | `3.10.12 (main, Nov 20 2023, 15:14:05) [GCC 11.4.0]` | `/home/feihm/llm-fei/research_brainstorm/directions/07_foundational_ai_security/learning_controller_trilemma/.venv-safe-control/bin/python` |
 | platform | `Linux-5.15.0-1091-nvidia-x86_64-with-glibc2.35` | `platform.platform()` |
 | safe-control-gym_git | `6b5391d014f36fdfa0f9d22d92c77387e5274308` | `external/safe-control-gym` |
 | latexmk | `Latexmk, John Collins, 20 November 2021. Version 4.76` | `PATH` |
 | pdfTeX | `pdfTeX 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian)` | `PATH` |
 | safe-control-gym | `2.0.0` | `importlib.metadata` |
-| numpy | `1.26.4` | `importlib.metadata` |
+| numpy | `2.2.6` | `importlib.metadata` |
 | scipy | `1.15.3` | `importlib.metadata` |
 | casadi | `3.7.2` | `importlib.metadata` |
-| torch | `2.9.1` | `importlib.metadata` |
+| torch | `unavailable` | `importlib.metadata` |
 | gymnasium | `1.3.0` | `importlib.metadata` |
 | pybullet | `3.2.7` | `importlib.metadata` |
-| matplotlib | `3.10.1` | `importlib.metadata` |
-| pandas | `2.3.3` | `importlib.metadata` |
-| pytest | `8.3.4` | `importlib.metadata` |
+| matplotlib | `3.10.9` | `importlib.metadata` |
+| pandas | `unavailable` | `importlib.metadata` |
+| pytest | `9.1.1` | `importlib.metadata` |
 
 The online latency values in the paper are single-process host wall-clock measurements, not worst-case execution-time guarantees.
 

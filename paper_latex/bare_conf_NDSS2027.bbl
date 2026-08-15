@@ -99,6 +99,12 @@ H.~Zhang, Z.~Li, and A.~Clark, ``Safe control for nonlinear systems under
   Available: \url{https://arxiv.org/abs/2207.05146}
 \BIBentrySTDinterwordspacing
 
+\bibitem{yuan_safe_control_gym_2022}
+Z.~Yuan, A.~W. Hall, S.~Zhou, L.~Brunke, M.~Greeff, J.~Panerati, and A.~P.
+  Schoellig, ``Safe-control-gym: A unified benchmark suite for safe
+  learning-based control and reinforcement learning in robotics,'' \emph{IEEE
+  Robotics and Automation Letters}, vol.~7, no.~4, pp. 11\,142--11\,149, 2022.
+
 \bibitem{schaible_fractional_duality_1976}
 S.~Schaible, ``Duality in fractional programming: A unified approach,''
   \emph{Operations Research}, vol.~24, no.~3, pp. 452--461, 1976.
@@ -116,12 +122,6 @@ A.~Belloni and R.~M. Freund, ``On the second-order feasibility cone:
 \bibitem{agrawal_dqcp_2020}
 A.~Agrawal and S.~Boyd, ``Disciplined quasiconvex programming,''
   \emph{Optimization Letters}, vol.~14, no.~7, pp. 1643--1657, 2020.
-
-\bibitem{yuan_safe_control_gym_2022}
-Z.~Yuan, A.~W. Hall, S.~Zhou, L.~Brunke, M.~Greeff, J.~Panerati, and A.~P.
-  Schoellig, ``Safe-control-gym: A unified benchmark suite for safe
-  learning-based control and reinforcement learning in robotics,'' \emph{IEEE
-  Robotics and Automation Letters}, vol.~7, no.~4, pp. 11\,142--11\,149, 2022.
 
 \bibitem{pasqualetti_attack_2013}
 F.~Pasqualetti, F.~D{\"o}rfler, and F.~Bullo, ``Attack detection and
@@ -207,6 +207,15 @@ D.~P. Nguyen, K.-C. Hsu, W.~Yu, J.~Tan, and J.~F. Fisac, ``Gameplay filters:
   Available: \url{https://arxiv.org/abs/2405.00846}
 \BIBentrySTDinterwordspacing
 
+\bibitem{burbano_badcontrol_2026}
+\BIBentryALTinterwordspacing
+L.~Burbano, H.~Sasahara, R.~Song, Z.~B. Celik, and A.~A. C{\'a}rdenas,
+  ``{BADControl}: Backdoor attacks against control systems,'' in
+  \emph{Proceedings of the 35th USENIX Security Symposium}, 2026. [Online].
+  Available:
+  \url{https://www.usenix.org/conference/usenixsecurity26/presentation/burbano}
+\BIBentrySTDinterwordspacing
+
 \bibitem{yu_certificate_repair_2025}
 E.~Yu, D.~{\v Z}ikeli{\'c}, and T.~A. Henzinger, ``Neural control and
   certificate repair via runtime monitoring,'' in \emph{Proceedings of the AAAI
@@ -270,15 +279,6 @@ A.~Rakhsha, G.~Radanovic, R.~Devidze, X.~Zhu, and A.~Singla, ``Policy teaching
 T.~Everitt, V.~Krakovna, L.~Orseau, and S.~Legg, ``Reinforcement learning with
   a corrupted reward channel,'' in \emph{Proceedings of the 26th International
   Joint Conference on Artificial Intelligence ({IJCAI})}, 2017, pp. 4705--4713.
-
-\bibitem{burbano_badcontrol_2026}
-\BIBentryALTinterwordspacing
-L.~Burbano, H.~Sasahara, R.~Song, Z.~B. Celik, and A.~A. C{\'a}rdenas,
-  ``{BADControl}: Backdoor attacks against control systems,'' in
-  \emph{Proceedings of the 35th USENIX Security Symposium}, 2026. [Online].
-  Available:
-  \url{https://www.usenix.org/conference/usenixsecurity26/presentation/burbano}
-\BIBentrySTDinterwordspacing
 
 \bibitem{nika_reward_defense_2023}
 \BIBentryALTinterwordspacing
