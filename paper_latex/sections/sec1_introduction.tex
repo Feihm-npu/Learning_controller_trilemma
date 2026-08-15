@@ -108,8 +108,12 @@ unmodified except for a locked reward-record poisoning hook and metric
 instrumentation, and confine poisoning to the shielded bootstrap phase.  The
 released raw policy is already $1.6$--$3.6\times$ more dangerous at retirement
 on all three seeds, and clean post-retirement learning repairs the damage on
-only one.  This shows the authority-transition failure is not an artifact of a
-self-defined benchmark: an independently designed lifecycle that retires
+only one.  The same attack on the vendored tf-agents PPO learner of that
+lifecycle is paired-significant on one of three seeds
+(1178 $\rightarrow$ 2439 post-removal violations; McNemar exact
+$p=2.6\times10^{-149}$), so the transfer-sensitive character is not specific
+to REINFORCE.  This shows the authority-transition failure is not an artifact
+of a self-defined benchmark: an independently designed lifecycle that retires
 runtime authority inherits the update-data integrity assumption.
 
 The controlled study then answers mechanistic questions on Safe-Control-Gym.
