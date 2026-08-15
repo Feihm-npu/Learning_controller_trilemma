@@ -178,3 +178,67 @@ violation trace, seed/config provenance), aggregate CSV across seeds/conditions,
 MacBook (macOS 14.4.1, Apple Silicon), pyenv Python 3.10.12 venv, CPU-only TF 2.16.2,
 stormpy 1.11.3 arm64 wheel. REINFORCE 5000-episode runs are the expected bottleneck;
 timing smoke (200 episodes) gates the schedule.
+
+## Amendment v1.5 (2026-08-16, PPO retirement-boundary causal isolation — P0')
+
+Motivation: amendment v1.3's isolation result is REINFORCE-only (3/3 seeds at
+retirement). The learner-generality claim "the latent-damage mechanism holds
+across learner families" is currently supported only by the full-phase PPO
+evidence (1/3 seeds), which is too weak for a causal claim. This amendment locks
+the PPO version of the v1.3 isolation before any run, following the same
+retirement-boundary logic. Must be locked BEFORE execution (server); no ad hoc
+expansion.
+
+### v1.5.1 Configuration (all locked)
+- Env/domain: `obstacle (N=6)`; learner: vendored tf-agents **PPO** with action
+  masking; switch: sudden (HARD); attack: **V3 contrast, δ=2**; eval: 5000 episodes
+  (final) as in amendment v1.2.
+- Poison scope: `--poison-scope shield-on` — the reward-record mutation is active
+  ONLY while `shield_on` is True (step-based flag, the same flag the workflow
+  uses); it stops exactly at the retirement instant; subsequent training is fully
+  clean. Retirement instant for PPO = env-step 10^5 (`--switch-episode 4000` in
+  step units = `train_step_counter/25`, per amendment v1.2).
+- At-retirement evaluation: 1000 episodes at the switch instant, before any
+  unshielded learning, on the current raw policy snapshot (evaluate- and
+  freeze-at-retirement are the same snapshot), exactly as v1.3.
+- Independent belief tracker (amendment v1.4 code version, "vC") is mandatory for
+  all v1.5 runs; disagreement probe must not corrupt the training belief.
+
+### v1.5.2 Seeds & namespace (locked before execution)
+- **10 paired seeds: 101–110** (PPO). Clean and poisoned runs use the same seed →
+  paired comparison. This namespace is disjoint from all previously used seeds
+  (REINFORCE 1–3, PPO 1–3 full-phase; isolation reruns of v1.3 reused dirs
+  `v3_d2_s{1,2,3}` but used no new seed values).
+- Run dirs MUST be new: `obstacle_sudden_PPO_none_d2_s{101..110}` /
+  `obstacle_sudden_PPO_v3_d2_s{101..110}`. No overwriting existing dirs.
+
+### v1.5.3 Determinism gate (server, before the main battery)
+- PPO on GPU may be non-deterministic (cuDNN). Before the battery: run clean
+  seed 101 twice and require |violation_fraction_r1 − r2| ≤ 0.05 at retirement
+  and in the final eval. If the gate fails, run on CPU multi-core (gridworld is
+  tiny; CPU throughput is expected to be higher) and repeat the gate.
+
+### v1.5.4 Statistical analysis & pre-specified decision rule
+- Primary outcome: at-retirement violation fraction (1000 episodes), paired
+  clean vs poisoned per seed (McNemar exact on paired eval episodes).
+- Secondary: final (5000-episode) violation fraction; at-retirement disagreement;
+  first-violation episode.
+- **Positive-seed definition (locked)**: poisoned at-ret fraction ≥ clean at-ret
+  fraction + 0.15 (15 pp) AND paired McNemar exact p < 0.01.
+- **Decision rule (locked)**: PPO isolation is "reproduces" if ≥ 5/10 seeds are
+  positive (mirrors the REINFORCE 3/3 signal at scale); "partial" if 3–4/10;
+  "not reproduced" if < 3/10. If < 3/10, the paper's learner-generality claim is
+  downgraded to "REINFORCE causal isolation + PPO full-phase boundary"
+  (consistent with the main NDSS paper's PPO-negative boundary); report all 10
+  seeds either way.
+
+### v1.5.5 Outputs & files
+- Per-run dirs with `*_summary.json` (incl. `poison_scope=shield-on`,
+  `at_retirement_stats`, `disagreement_curve`, `poison_stats`), eval traces.
+- Append v1.5 runs to `results/aggregate_table_v2.csv` (new rows, `version=vC`,
+  `scope=shield-on`); do not overwrite existing rows.
+- Figure: at-retirement clean-vs-poisoned comparison (per-seed paired bars) as
+  `results/figures/fig6_ppo_isolation_template.{pdf,png}` (actual filename as
+  produced; the v1.5.5 draft named it `fig6_ppo_retirement_isolation`); plus a
+  combined
+  REINFORCE+PPO isolation panel if REINFORCE multi-seed isolation (v1.6) runs.

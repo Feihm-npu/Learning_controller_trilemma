@@ -112,20 +112,6 @@ Z.~Yuan, A.~W. Hall, S.~Zhou, L.~Brunke, M.~Greeff, J.~Panerati, and A.~P.
   learning-based control and reinforcement learning in robotics,'' \emph{IEEE
   Robotics and Automation Letters}, vol.~7, no.~4, pp. 11\,142--11\,149, 2022.
 
-\bibitem{wabersich_linear_mpsc_2018}
-K.~P. Wabersich and M.~N. Zeilinger, ``Linear model predictive safety
-  certification for learning-based control,'' in \emph{2018 IEEE Conference on
-  Decision and Control}, 2018, pp. 7130--7135.
-
-\bibitem{burbano_badcontrol_2026}
-\BIBentryALTinterwordspacing
-L.~Burbano, H.~Sasahara, R.~Song, Z.~B. Celik, and A.~A. C{\'a}rdenas,
-  ``{BADControl}: Backdoor attacks against control systems,'' in
-  \emph{Proceedings of the 35th USENIX Security Symposium}, 2026. [Online].
-  Available:
-  \url{https://www.usenix.org/conference/usenixsecurity26/presentation/burbano}
-\BIBentrySTDinterwordspacing
-
 \bibitem{pasqualetti_attack_2013}
 F.~Pasqualetti, F.~D{\"o}rfler, and F.~Bullo, ``Attack detection and
   identification in cyber-physical systems,'' \emph{IEEE Transactions on
@@ -142,6 +128,11 @@ R.~Hou, L.~Jia, X.~Bu, and J.~Li, ``Event-triggered model-free adaptive
   predictive control for networked wind-power microgrids subject to aperiodic
   {DoS} attacks,'' \emph{IEEE Transactions on Information Forensics and
   Security}, vol.~21, pp. 1737--1750, 2026.
+
+\bibitem{wabersich_linear_mpsc_2018}
+K.~P. Wabersich and M.~N. Zeilinger, ``Linear model predictive safety
+  certification for learning-based control,'' in \emph{2018 IEEE Conference on
+  Decision and Control}, 2018, pp. 7130--7135.
 
 \bibitem{didier_adaptive_mpsc_2021}
 A.~Didier, K.~P. Wabersich, and M.~N. Zeilinger, ``Adaptive model predictive
@@ -279,6 +270,15 @@ A.~Rakhsha, G.~Radanovic, R.~Devidze, X.~Zhu, and A.~Singla, ``Policy teaching
 T.~Everitt, V.~Krakovna, L.~Orseau, and S.~Legg, ``Reinforcement learning with
   a corrupted reward channel,'' in \emph{Proceedings of the 26th International
   Joint Conference on Artificial Intelligence ({IJCAI})}, 2017, pp. 4705--4713.
+
+\bibitem{burbano_badcontrol_2026}
+\BIBentryALTinterwordspacing
+L.~Burbano, H.~Sasahara, R.~Song, Z.~B. Celik, and A.~A. C{\'a}rdenas,
+  ``{BADControl}: Backdoor attacks against control systems,'' in
+  \emph{Proceedings of the 35th USENIX Security Symposium}, 2026. [Online].
+  Available:
+  \url{https://www.usenix.org/conference/usenixsecurity26/presentation/burbano}
+\BIBentrySTDinterwordspacing
 
 \bibitem{nika_reward_defense_2023}
 \BIBentryALTinterwordspacing

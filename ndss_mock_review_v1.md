@@ -13,7 +13,7 @@
 
 - **Input scope:** full compiled manuscript (14→15 pp, body ends p.13; Ethics +
   references p.14–15), all nine section files, claim contract
-  `ndss_submission_status.md`, reproducibility manifest, audit suite (73/73).
+  `ndss_submission_status.md`, reproducibility manifest, audit suite (74/74).
 - **Assessment boundary:** simulation-only evidence (Safe-Control-Gym /
   PyBullet); no hardware, no real OT system. Reviewer cannot re-run experiments;
   numbers taken as reported and cross-checked against locked CSVs by the audit
@@ -114,7 +114,7 @@
 
 - **Overall assessment:** Among the most reproducible CPS-security submissions a
   reviewer will see (locked protocols, source-linked tables, SHA-256 manifest,
-  73/73 audit). The rigor bar is high; the generality of the *positive physical
+  74/74 audit). The rigor bar is high; the generality of the *positive physical
   attack* is the honest soft spot.
 - **Who would care & why:** artifact-evaluation-minded reviewers; anyone who has
   been burned by non-reproducible poisoning results.

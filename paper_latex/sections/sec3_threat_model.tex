@@ -115,8 +115,9 @@ reject suspicious batches but is distribution- and semantics-dependent.  A
 commit certificate does not sanitize the log; it limits which resulting
 snapshot can be released.  Resident predictive authority likewise does not
 detect corruption, but can contain its physical consequence.  Our frozen
-detection audit reports trusted recomputation at TPR/FPR $1/0$ and simple
-task-aware checks above 0.90 TPR at at most 0.036 FPR.  The supported attack is
+detection audit reports trusted recomputation at TPR/FPR $1.000/0$ and simple
+task-aware checks with TPR above 0.90 and FPR at most 0.036.  The supported
+attack is
 therefore effective under the exposed interface but not stealthy against the
 tested checks.
 

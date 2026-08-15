@@ -1,0 +1,76 @@
+\section{Certificate Coverage and Model Mismatch}
+\label{sec:coverage-appendix}
+
+Reporting zero violations only on certificate-admitted states can be
+vacuous.  We therefore lock a separate CasADi--PyBullet confusion audit before
+execution.  It reconstructs the 12 clean, poisoned, commit, and freeze
+snapshots from the original traces, draws 144 states from three disjoint
+source seeds, performs no certificate admission, and compares horizons
+20/50/100 and guard margins 0/0.001/0.003/0.005/0.01.  The primary
+configuration is the pre-existing 100-step, 0.003-guard commit configuration;
+the grid is characterization rather than a selector.
+
+\begin{table*}[t]
+\centering
+\caption{CasADi--PyBullet coverage at the pre-existing 100-step, 0.003-guard
+configuration.  Each row pools three learner snapshots over the same 144
+states.}
+\label{tab:coverage}
+\input{generated/tdsc_coverage_results}
+\end{table*}
+
+Table~\ref{tab:coverage} evaluates 1728 snapshot--state pairs.  CasADi
+certifies 1293; none violates the PyBullet state box within 100 steps.
+Clean, commit, and freeze coverage is 0.986, 0.944, and 1.000.  The raw
+poisoned snapshots physically violate 403/432 pairs and have certificate
+coverage 0.062, so their low coverage is informative rejection rather than
+vacuous evidence for a safe deployed snapshot.  Across all mechanisms the
+certificate conservatively rejects five physically safe pairs.  Maximum
+action-interface error and actuator saturation are zero.
+
+The grid exposes a model-mismatch boundary.  Without a guard, poisoned
+snapshots produce 1, 2, and 1 false acceptances at horizons 20, 50, and 100.
+Every locked positive guard removes observed false acceptance, with increasing
+false rejection as the guard grows.  Because 0.003 was declared as the
+primary pre-existing configuration before this audit, this is not post-hoc
+guard selection.  Zero observed false acceptance on this finite distribution
+still does not establish continuous-state invariance.
+
+
+\section{Unified Paired Security--Availability Frontier}
+\label{sec:appendix-frontier}
+
+\begin{table*}[t]
+\centering
+\caption{Unified paired security--availability frontier.  Wilson 95\%
+intervals are $[0,0.138]$ for every 0/24 violation count and
+$[0.798,0.993]$ for poisoned raw.  Intervention is a fraction of executed
+steps.  $\dagger$ denotes reward truncated at the first safety failure and
+therefore not a utility comparison.}
+\label{tab:unified-frontier}
+\input{generated/tdsc_frontier_results}
+\end{table*}
+
+
+\section{Closest-Work Comparison}
+\label{sec:appendix-delta}
+
+\begin{table}[t]
+\centering
+\caption{Closest work along the two axes this paper combines: an adversarial
+\emph{online update-data} channel, and a raw policy that \emph{leaves} the
+runtime-assurance authority whose evidence certified it.}
+\label{tab:delta}
+\footnotesize
+\begin{tabular}{@{}p{0.42\columnwidth}p{0.22\columnwidth}p{0.24\columnwidth}@{}}
+\toprule
+Work & Adversarial update log & Raw policy leaves RTA authority\\
+\midrule
+Simplex / Neural Simplex~\cite{seto_simplex_1998,phan_neural_simplex_2020} & no & no (monitor resident)\\
+Bb-Simplex~\cite{damare_bb_simplex_2025} & no (trusted retraining) & no\\
+Policy repair / MPSC~\cite{zhou_runtime_policy_repair_2020,wabersich_linear_mpsc_2018} & no (trusted evidence) & repaired, verified\\
+BADControl~\cite{burbano_badcontrol_2026} & operational data, physical trigger & n/a (no RTA contract)\\
+\textbf{This paper} & \textbf{yes (reward log)} & \textbf{yes (permanent release)}\\
+\bottomrule
+\end{tabular}
+\end{table}

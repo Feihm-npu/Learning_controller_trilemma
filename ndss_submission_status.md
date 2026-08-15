@@ -45,8 +45,10 @@ multi-batch attack optimizer.
 - Active PDF: `paper_latex/bare_conf_NDSS2027.pdf`.
 - Official IEEE conference mode, anonymous review marking, and no keyword
   block are locked by tests.
-- PDF is 14 pages total on US Letter; References begin on page 14, so the main
-  text remains within the 13-page limit.
+- PDF is 16 pages total on US Letter (final rebuild 2026-08-16). The main text
+  (Introduction through Conclusion) ends on page 13; the appendix, Ethics
+  Considerations/Open Science, and References (beginning on page 14) are all
+  excluded from the NDSS page limit, so the body is compliant at 13 pages.
 - The latest build has no overfull boxes, undefined citations, or undefined
   references.
 
@@ -191,3 +193,30 @@ multi-batch deployment harm, especially when coordinatewise parameter
 clipping can activate.  The burned-seed post-stop diagnostic did not close
 that bridge, so no new untouched seeds should be opened for this route without
 a materially new construction and a preregistered stop rule.
+
+## Post-submission / next cycle: Carr third-party workflow (registered uplift, 2026-08-16)
+
+Independent of this submission's review artifact, a third-party workflow
+demonstration was executed 2026-08-14/15 and returned **GO**:
+
+- On the *official* Carr et al. AAAI'23 pipeline (`stevencarrau/safe_RL_POMDPs` +
+  `shield_rl_gridworlds`, shield-retirement lifecycle), reward-record-only bounded
+  poisoning (V3 contrast, |ξ|≤δ) makes the released raw policy significantly more
+  dangerous at the shield-retirement authority transition, while the protected
+  phase stays violation-free.
+- Causal isolation (poison confined to the shielded bootstrap phase; fully clean
+  subsequent training; evaluate/freeze-at-retirement on the same snapshot),
+  obstacle/REINFORCE/sudden, paired seeds 1–3: poisoned raw policies already at
+  74–78% violations at retirement vs clean 22–48% (3/3 seeds); 2/3 seeds do not
+  self-heal after 4000 clean post-retirement episodes. Mechanism signal: shield-on
+  raw-policy/shield disagreement 2.3–8.6× higher under poisoning while physical
+  violations remain 0.
+- **Not in this cycle**: NDSS 2027 Fall review submission is frozen, body at
+  13 pp, deadline 2026-08-19. The Carr result is **not** added to it.
+- **Designated next-cycle position**: headline generality uplift for the Summer
+  2028-equivalent cycle (or a camera-ready addition if page budget opens):
+  "demonstrated on a third-party published shield-retirement lifecycle (official
+  code)" directly answers mock-review R3's self-benchmark generality soft spot.
+- Evidence: `carr_victim_experiment/` (protocol.md + amendments v1.1–v1.5,
+  patches.md, results/, `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`,
+  `results/aggregate_table_v2.csv`).

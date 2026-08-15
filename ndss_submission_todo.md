@@ -1,7 +1,7 @@
 # NDSS 2027 submission TODO (owner: authors / user decisions)
 
-> Created 2026-08-10. The science is frozen and audit-green (73/73 tests,
-> 234-file SHA-256 manifest, body ≤13 pp). What remains is submission-operational
+> Created 2026-08-10. The science is frozen and audit-green (74/74 tests,
+> 251-file SHA-256 manifest, body ≤13 pp). What remains is submission-operational
 > metadata and optional uplift decisions. See `ndss_mock_review_v1.md` for the
 > full referee rehearsal and `ndss_submission_status.md` for the claim contract.
 
@@ -135,3 +135,28 @@ submission), extend the two-role list accordingly before submitting.
 Use `24XXXX` for the Fall cycle DOI, `23XXXX` for Summer; the exact number and
 ISBN are assigned on acceptance. Do **not** apply E.2/E.3 to the review
 submission — it must stay anonymous.
+
+## F. Next-cycle uplift (post-submission) — Carr third-party workflow
+
+> Registered 2026-08-16. Deliberately **NOT** in the NDSS 2027 Fall review
+> submission (science frozen, body at 13 pp, deadline 2026-08-19). This is the
+> top post-submission uplift bet for the Summer 2028-equivalent cycle or a
+> camera-ready addition if page budget opens.
+
+- [x] **Carr victim experiment — executed (2026-08-14/15): GO.** Reward-record-only
+      bounded poisoning on the *official* Carr et al. AAAI'23 shield-retirement
+      lifecycle: protected phase stays violation-free, but the released raw
+      policy is already 1.6–3.6× more dangerous AT the authority transition
+      (3/3 seeds, 74–78% vs clean 22–48%); 2/3 seeds fail to self-heal after
+      4000 fully-clean post-retirement episodes. Negative controls (bias/risk
+      variants) and fidelity gate (paper Tab. 1 ordering) are in place.
+- [ ] **Positioning when added:** one paragraph + small table (~1/4–1/3 pp) as the
+      third-party generality evidence; answers mock-review R3's "self-benchmark"
+      soft spot. Evidence in `carr_victim_experiment/`
+      (`RESULTS_ANALYSIS_AND_NEXT_STEPS.md`, `results/aggregate_table_v2.csv`).
+- [ ] **If pursued as the next-cycle headline, server work first** (pre-registered
+      amendments required; see `carr_victim_experiment/RESULTS_ANALYSIS_AND_NEXT_STEPS.md`
+      §6): (1) PPO isolation experiment (shield-on + at-retirement, 10 seeds,
+      amendment v1.5) — closes the learner-generality gap on the causal claim;
+      (2) seed matrix (8–10 seeds × clean/full/shield-on × δ=2); (3) dose-response
+      δ∈{0.1,0.25,0.5,1,2}; (4) avoid domain; (5) SAC; (6) escape conditions.

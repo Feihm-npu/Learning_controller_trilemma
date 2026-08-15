@@ -110,7 +110,7 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 
 ## 6. 文件索引
 
-- `carr_victim_experiment/protocol.md` —— 锁定协议 + v1.1–v1.4 amendments
+- `carr_victim_experiment/protocol.md` —— 锁定协议 + v1.1–v1.5 amendments
 - `carr_victim_experiment/patches.md` —— 对上游的全部修改（可审计）
 - `carr_victim_experiment/results/SUMMARY.md` —— 总摘要
 - `carr_victim_experiment/results/ISOLATION_stage_report.md` —— P0 隔离实验报告

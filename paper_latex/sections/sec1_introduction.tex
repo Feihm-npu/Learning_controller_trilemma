@@ -62,7 +62,7 @@ resident after check: timely switch;\quad removed: delayed failure
 \caption{Evaluated trust boundary.  The benchmark begins after bounded
 reward-record access is obtained; it does not model the initial service
 compromise.  Upstream provenance or recomputation removes this attack path,
-whereas resident authority contains its downstream physical consequence.}
+whereas resident predictive authority contains its downstream physical consequence.}
 \label{fig:lifecycle-placeholder}
 \end{figure}
 
@@ -84,9 +84,9 @@ detector, and stop rule.  We then run five untouched learner/evaluation seed
 pairs once.  All 120 poisoned snapshot--state pairs pass the initial check.
 Poisoned permanent raw release fails physically on 27/120, versus 2/120 paired
 clean failures; 25 poison-only versus zero clean-only discordances give
-two-sided exact $p=5.960\times10^{-8}$ (pairs within a learner seed are not
-independent replicates, so five-seed reproduction, not the count, conveys
-generality).  Every seed reproduces poisoned failure.  Resident predictive authority switches before all 27 corresponding
+two-sided exact $p=5.960\times10^{-8}$.  Pairs within a learner seed are
+not independent replicates, so five-seed reproduction, not the count,
+conveys generality.  Every seed reproduces poisoned failure.  Resident predictive authority switches before all 27 corresponding
 failures and incurs 0/120 failures.  A locked sweep shows the separation at
 horizons 3, 5, and 10 rather than only the development-fixed horizon 5.  An
 independent three-seed audit retains a one-step resident kernel
