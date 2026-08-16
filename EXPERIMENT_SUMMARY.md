@@ -65,12 +65,21 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 |---|---|---|---|---|---|
 | 1 | 21.6% | **77.7%** (3.6×) | 23.6% | 23.5% | 是 |
 | 2 | 48.4% | **76.3%** (1.6×) | 23.4% | **75.1%** | 否 |
-| 3 | 23.9% | **74.8%** (3.1×) | 23.3% | **74.1%** | 否 |
+| 3 | 24.1% | **74.8%** (3.1×) | 23.3% | **74.1%** | 否 |
 
 三个隔离问题的回答：
 1. **Shield-on-only poisoning → YES（3/3 seeds）**：污染仅限盾内阶段、后续学习全 clean，released policy 仍显著更危险。
 2. **Evaluate-at-retirement → YES（3/3 seeds）**：authority transition 瞬间 raw policy 已 1.6–3.6× 更危险 → **latent damage 在 transition 前就藏在 policy 里**。
 3. **Freeze-at-retirement → YES**：冻结 release 直接暴露 74–78% vs 22–48%。
+
+> **2026-08-17 seed-3 clean provenance 修复**：本地 seed-3 clean 的
+> `at_retirement_stats` 记录被发现与 seed-1 fix-check 记录 byte-identical
+> （provenance 异常）。已在服务器 vC 代码上用全新 namespace
+> （`obstacle_sudden_REINFORCE_none_d2_s3_iso_rr`）重跑 clean 隔离，新值
+> **24.1%**（disagreement 0.013），落在此前 footnote 报告的 plausible range
+> （0.21–0.24）内，配对结论不变（poisoned 0.748，3.1×）。论文 Table II
+> 已改用新值并改写 footnote；paired poisoned 重跑仍在服务器后台运行
+> （可选 corroboration，若完成则并入 Reading 段）。
 
 ### 3.4 机制信号：盾内 disagreement 曲线 ✅
 

@@ -53,15 +53,19 @@ seed & clean & poisoned & clean & poisoned\\
 \midrule
 1 & 0.216 & 0.777 & 0.236 & 0.235\\
 2 & 0.484 & 0.763 & 0.234 & 0.751\\
-3 & $^a$$\approx$0.24 & 0.748 & 0.233 & 0.741\\
+3 & $^a$0.241 & 0.748 & 0.233 & 0.741\\
 \bottomrule
 \end{tabular}
 \vspace{1pt}\par\footnotesize $^a$Seed-3 clean at-retirement is
-provenance-flagged in the artifact: its stored summary record is
-byte-identical to the seed-1 fix-check record in a separate directory, so we
-report the conservative upper bound of the plausible range
-($\approx$0.21--0.24); the paired conclusion is unchanged at either bound
-(poisoned 0.748).
+regenerated from the artifact's fresh namespace
+(\texttt{obstacle\_sudden\_REINFORCE\_none\_d2\_s3\_iso\_rr} in the
+artifact, server host, current code version): the original local
+at-retirement record duplicated the seed-1
+fix-check record and was discarded.  The regenerated value (0.241) falls in
+the plausible range reported in the prior draft (0.21--0.24).  The poisoned
+control and the final evals retain their original provenance; the paired
+conclusion is unchanged at the regenerated bound (poisoned 0.748 vs clean
+0.241).
 \end{table}
 
 On all three seeds the poisoned raw policy is already $1.6$--$3.6\times$
@@ -136,16 +140,13 @@ is training-state-specific rather than a stable on-policy learner property.  A t
 shield-on-only battery on a second learner family from the same vendored
 suite (off-policy soft actor-critic, SAC) reproduces the retirement-boundary
 effect on three of ten seeds (seed~401: $0.207\rightarrow0.561$; seed~403:
-$0.218\rightarrow0.513$; seed~404: $0.479\rightarrow0.954$).  The paired
-McNemar exact p-values are $5.6\times10^{-57}$, $7.5\times10^{-41}$, and
-$3.5\times10^{-109}$.  None of the seven non-reproducing seeds is a
+$0.218\rightarrow0.513$; seed~404: $0.479\rightarrow0.954$; paired McNemar
+exact $p<10^{-40}$ on each).  None of the seven non-reproducing seeds is a
 high-clean-at-retirement ceiling seed ($0.73$--$0.77$).  Three are
 significantly protective in the reverse direction ($0.502\rightarrow0.236$,
-$p=3.6\times10^{-33}$; $0.497\rightarrow0.247$, $p=8.5\times10^{-30}$;
-$0.494\rightarrow0.235$, $p=3.6\times10^{-32}$).  Four show no effect (406:
-both at-retirement $0.218$, $p=1.00$; 407: $0.224\rightarrow0.216$, $p=0.71$;
-409: $0.220\rightarrow0.232$, $p=0.56$; 410: $0.487\rightarrow0.470$,
-$p=0.48$).  Four independently trained extension seeds (407--410) run on a
+$0.497\rightarrow0.247$, $0.494\rightarrow0.235$), and four show no effect
+(406: both at-retirement $0.218$; 407: $0.224\rightarrow0.216$; 409:
+$0.220\rightarrow0.232$; 410: $0.487\rightarrow0.470$).  Four independently trained extension seeds (407--410) run on a
 second host under the identical locked configuration reproduced none of the
 positive effect.  The pooled ten-seed verdict is therefore that the SAC
 learner-variety evidence weakens (3/10): the off-policy learner-variety claim
@@ -256,6 +257,11 @@ code version and are unaffected by that version change.
   (two were protective).  The correlation between clean at-retirement
   fraction and attack headroom is also negative on the server battery
   (Spearman $-0.685$, $p=0.029$), consistent with the local value above.
+  Training replicates are indexed by configured seed but are not bitwise
+  deterministic across hosts or backends (the same configured seed and code
+  can land in different trajectory modes); the replication unit throughout is
+  an independent paired training replicate under a locked configuration,
+  not a deterministic re-run of a fixed seed.
   Across both platforms, both domains, and all three learner families, the
   shield-on-only isolation batteries reproduced the effect on eight of sixteen
   paired seeds with clean at-retirement below 0.5 (8/16: three REINFORCE, one
@@ -291,14 +297,16 @@ code version and are unaffected by that version change.
   ($\ge0.09$) with clean at-retirement $0.73$--$0.77$, leaving no headroom
   to measure the attack, and the single low-disagreement PPO row (isolation
   seed~101, disagreement $0.013$) is exactly the one that reproduced.  PPO's
-  at-scale negatives are therefore a headroom artifact of the
-  training-state regime it samples rather than evidence against
-  transfer-sensitivity.  REINFORCE is mixed (13/20 high-disagreement, all
-  seven low-disagreement rows reproducing).  SAC is the cleanest check:
-  all ten SAC rows are low-disagreement ($0.013$--$0.048$), so SAC never
-  leaves the headroom-available regime, and the pooled verdict is genuinely
-  partial across seeds (3/10: seeds 401/403/404 positive, 402/405/408
-  protective, 406/407/409/410 no effect).  The divergence signal is consistent
+  at-scale negatives are therefore largely confounded by the
+  high-disagreement ceiling regime its runs sample and do not by themselves
+  isolate learner-family robustness.  REINFORCE is mixed (13/20
+  high-disagreement, all seven low-disagreement rows reproducing).  SAC is
+  the cleanest check: all ten SAC rows are low-disagreement
+  ($0.013$--$0.048$), so SAC never leaves the headroom-available regime, and
+  the pooled verdict is genuinely partial across seeds (3/10: seeds 401/403/404
+  positive, 402/405/408 protective, 406/407/409/410 no effect).  Headroom is
+  therefore a necessary-looking susceptibility factor, not a sufficient one:
+  SAC retains headroom on all ten seeds and still reproduces on only three.  The divergence signal is consistent
   across all three learner families on the obstacle domain.  The signal is
   obstacle-scoped: the avoid-domain seeds do not follow it (clean
   disagreement $0.476$ and $0.157$ on protective seeds below the $0.5$
@@ -314,8 +322,8 @@ reproduce the positive effect under the locked rule, hollow markers do not.
 Filled markers all have clean disagreement $\le0.047$; the dashed lines mark
 the locked low/high disagreement bands ($<0.06$ and $\ge0.09$).  PPO rows
 (red) concentrate in the high-disagreement regime with negative headroom, so
-their at-scale negatives reflect absent headroom rather than a stable
-on-policy negative.}
+their at-scale negatives are consistent with absent headroom rather than
+demonstrating a stable on-policy negative.}
 \label{fig:mechanism}
 \end{figure*}
 
@@ -336,17 +344,17 @@ seeds never reproduce, on any learner or platform.}
 \end{figure*}
 
 \paragraph{Environment boundary.}
-The lifecycle pattern is not obstacle-specific: on a second gridworld of
-the same third-party suite (surveillance, $N{=}6$, $R{=}3$), a clean
-reproduction again satisfies the authors' ordering, shield retained $0/0$,
-smooth $0.129$, sudden $0.246$, and no-shield $0.252$ (retained $<$
-smooth $\ll$ sudden $\le$ no-shield).  The fixed attack shape, however,
-does not transfer as a general property: shield-on contrast poisoning at
-$\delta{=}2$ on three independent avoid seeds raised post-removal
-violations on only one seed ($0.000 \rightarrow 0.272$, McNemar exact
-$p=2.6\times10^{-82}$) and was significantly protective on the other two
-($0.267 \rightarrow 0.000$, $p=8.4\times10^{-81}$; $0.135 \rightarrow
-0.038$, $p=1.3\times10^{-15}$).  The clean lifecycle pattern therefore
-generalizes across environments, while the corruption effect is
+We separate two claims.  \emph{Lifecycle generality holds.}  On a second
+gridworld of the same third-party suite (surveillance, $N{=}6$, $R{=}3$), a
+clean reproduction again satisfies the authors' ordering, shield retained
+$0/0$, smooth $0.129$, sudden $0.246$, and no-shield $0.252$ (retained $<$
+smooth $\ll$ sudden $\le$ no-shield).  \emph{Attack-shape generality is not
+claimed.}  The fixed contrast shape, shield-on poisoning at $\delta{=}2$ on
+three independent avoid seeds, raised post-removal violations on only one
+seed ($0.000 \rightarrow 0.272$, McNemar exact $p=2.6\times10^{-82}$) and
+was significantly protective on the other two ($0.267 \rightarrow 0.000$,
+$p=8.4\times10^{-81}$; $0.135 \rightarrow 0.038$,
+$p=1.3\times10^{-15}$).  The authority-retirement lifecycle therefore
+generalizes across environments, while this fixed attack shape is
 environment- and training-state-sensitive rather than a universal property
 of the workflow.

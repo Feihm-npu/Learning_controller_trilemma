@@ -418,26 +418,25 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}Runtime assurance can mask an unsafe raw policy during protected adaptation:
-an attacker alters bounded reward records consumed by an updater, while
+an attacker alters only bounded reward records consumed by an updater, while
 runtime states, actions, code, parameters, and certification remain trusted.
-Evidence collected under resident predictive authority is reused to
-authorize permanent raw release.
+When the assurance authority is later retired, evidence collected under that
+authority may be reused to authorize permanent raw release.
 
-On a third-party shield-retirement lifecycle, bounded reward-log poisoning
-confined to the shielded bootstrap phase makes the raw policy 1.6 to 3.6
-times more dangerous at retirement on all seeds, and clean post-retirement
-learning repairs it on only one.  A controlled Safe-Control-Gym study with
-five untouched seeds yields 27/120 poisoned raw-release failures versus
-2/120 clean and 0/120 under resident authority, and a residual-REINFORCE
-cross-system battery reproduces the pattern (68/72 quadrotor versus 0/72
-clean).  The attack is contract-specific and detectable by task-aware reward
-checks, and does not stably reproduce in official Safe-Control-Gym PPO; a
-third-party PPO is paired-significant on one of three seeds, but not across
-ten full-phase (0/10) or isolation (1/10) seeds, so the boundary is
-implementation- and training-state-sensitive; a ten-seed shield-on-only SAC
-battery reproduces it on three of ten seeds, so the off-policy
-learner-variety evidence weakens at scale.  The attack does not establish
-benign utility over freeze.
+On a third-party shield-retirement lifecycle, reward-log poisoning confined
+to the shielded bootstrap phase already makes the raw policy 1.6 to 3.6
+times more dangerous at the retirement instant, while physical violations
+during the protected phase remain zero; the damage persists after fully
+clean post-retirement learning on two of three seeds.  A controlled
+Safe-Control-Gym study isolates the mechanism: five untouched seeds yield
+27/120 poisoned raw-release failures versus 2/120 clean and 0/120 under
+resident authority, and a residual-REINFORCE cross-system battery reproduces
+the pattern.  The effect is not universal across learners or training
+states: larger PPO and SAC batteries reveal a susceptibility boundary tied to
+the raw-policy/shield divergence present at retirement, with headroom
+necessary but not sufficient.  Provenance binding and trusted recomputation
+remove the upstream attack; resident authority, commit admission, and simple
+task-aware checks contain or detect its consequence.
 \end{abstract}
 
 % NDSS submissions do not include a keyword block.

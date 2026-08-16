@@ -16,6 +16,18 @@ party retires authority over a raw snapshot; here the same transfer is
 isolated with matched clean and poisoned runs, horizon sweeps, and an
 independent one-step negative control.
 
+The first half of this section (up to and including the adaptive-attacker
+stress test) exercises the certificate semantics of the formal model on
+low-dimensional benchmarks: ambiguity-induced kernels, action-only versus
+update-level filtering, and LifecycleGate.  These studies separate the
+certificate objects the formal model quantifies and are supporting
+boundary analysis, not the security claim.  The security evidence is the
+prospective contract-separation audit
+(Section~\ref{sec:release-contract-audit}), the cross-system reward-log
+poisoning, and the detectability and escape-condition boundaries, which
+connect the authority-transition boundary of
+Section~\ref{sec:third-party} to deployable contracts.
+
 \subsection{Setup}
 
 We instantiate the system in Section~\ref{sec:gate} with $\lambda=1.2$, $u_{\max}=0.2$, and $S=[-1,1]$. The FDI-induced ambiguity set is $X_{\mathcal A}(h)=[-\rho,\rho]$. The common certified kernel for the invariant certificate $I=S$ is

@@ -210,6 +210,14 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   74–78% violations at retirement vs clean 22–48% (3/3 seeds); 2/3 seeds do not
   self-heal after 4000 clean post-retirement episodes. Mechanism signal: shield-on
   raw-policy/shield disagreement 2.3–8.6× higher under poisoning while physical
+- **Seed-3 clean provenance fix (2026-08-17)**: the local seed-3 clean
+  `at_retirement_stats` record was found byte-identical to the seed-1
+  fix-check record and was discarded; the clean run was regenerated under the
+  current code version on the server in a fresh namespace
+  (`obstacle_sudden_REINFORCE_none_d2_s3_iso_rr`) with new value **0.241**
+  (in the reported plausible range 0.21–0.24).  Paper Table II + figure now
+  use the regenerated value; paired conclusion unchanged (poisoned 0.748,
+  3.1×).
   violations remain 0.
 - **Integrated into the working paper (2026-08-16)**: the Carr third-party
   result is now Section IV of the main body ("Third-Party Shield-Retirement
