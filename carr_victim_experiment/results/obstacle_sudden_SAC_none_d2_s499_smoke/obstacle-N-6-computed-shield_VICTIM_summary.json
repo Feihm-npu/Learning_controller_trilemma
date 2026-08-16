@@ -1,0 +1,62 @@
+{
+ "cfg": {
+  "grid_model": "obstacle",
+  "constants": "N=6",
+  "learning_method": "SAC",
+  "max_runs": 2000,
+  "maxsteps": 100,
+  "obs_level": "BELIEF_SUPPORT",
+  "valuations": true,
+  "goal_value": 1000,
+  "seed": 499,
+  "noshield": false,
+  "switch_shield": "HARD",
+  "shield_episode": 2000,
+  "poison": null,
+  "eval_interval": 1000,
+  "eval_episodes": 10,
+  "at_retirement_eps": 1000,
+  "final_eval_eps": 5000,
+  "fname": "_VICTIM"
+ },
+ "videoname": "obstacle-N-6-computed-shield",
+ "during_violations": 0,
+ "during_violation_episodes": [],
+ "eval_stats": {
+  "num_violations": 1083,
+  "violation_fraction": 0.2166,
+  "first_violation_episode": 1,
+  "first_violation_step": 2,
+  "disagreement_fraction": 0.01269467280750306
+ },
+ "at_retirement_stats": {
+  "num_violations": 217,
+  "violation_fraction": 0.217,
+  "first_violation_episode": 3,
+  "first_violation_step": 2,
+  "disagreement_fraction": 0.012700993217669623
+ },
+ "disagreement_curve": [
+  [
+   1000,
+   0.012437810945273632
+  ],
+  [
+   2000,
+   0.014164305949008499
+  ]
+ ],
+ "poison_stats": {
+  "mutated_records": 0.0,
+  "total_delta": 0.0,
+  "raw_sum": -1981.0,
+  "raw_sq": 1981.0,
+  "raw_min": -1.0,
+  "raw_max": 0.0,
+  "n_records": 2002.0
+ },
+ "poison_scope": "shield-on",
+ "eval_trace_file": "obstacle-N-6-computed-shield_VICTIM_eval_trace.npy",
+ "at_retirement_trace_file": "obstacle-N-6-computed-shield_VICTIM_at_retirement_trace.npy",
+ "wall_time_sec": 5422.919549703598
+}

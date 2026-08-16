@@ -1,0 +1,66 @@
+{
+ "cfg": {
+  "grid_model": "obstacle",
+  "constants": "N=6",
+  "learning_method": "SAC",
+  "max_runs": 2000,
+  "maxsteps": 100,
+  "obs_level": "BELIEF_SUPPORT",
+  "valuations": true,
+  "goal_value": 1000,
+  "seed": 499,
+  "noshield": false,
+  "switch_shield": "HARD",
+  "shield_episode": 2000,
+  "poison": {
+   "name": "contrast",
+   "delta": 2.0,
+   "scope": "shield-on"
+  },
+  "eval_interval": 1000,
+  "eval_episodes": 10,
+  "at_retirement_eps": 1000,
+  "final_eval_eps": 5000,
+  "fname": "_VICTIM"
+ },
+ "videoname": "obstacle-N-6-computed-shield",
+ "during_violations": 0,
+ "during_violation_episodes": [],
+ "eval_stats": {
+  "num_violations": 1105,
+  "violation_fraction": 0.221,
+  "first_violation_episode": 5,
+  "first_violation_step": 4,
+  "disagreement_fraction": 0.02481400293124776
+ },
+ "at_retirement_stats": {
+  "num_violations": 228,
+  "violation_fraction": 0.228,
+  "first_violation_episode": 13,
+  "first_violation_step": 3,
+  "disagreement_fraction": 0.025092543966389567
+ },
+ "disagreement_curve": [
+  [
+   1000,
+   0.038461538461538464
+  ],
+  [
+   2000,
+   0.022123893805309734
+  ]
+ ],
+ "poison_stats": {
+  "mutated_records": 2002.0,
+  "total_delta": -768.0,
+  "raw_sum": -1981.0,
+  "raw_sq": 1981.0,
+  "raw_min": -1.0,
+  "raw_max": 0.0,
+  "n_records": 2002.0
+ },
+ "poison_scope": "shield-on",
+ "eval_trace_file": "obstacle-N-6-computed-shield_VICTIM_eval_trace.npy",
+ "at_retirement_trace_file": "obstacle-N-6-computed-shield_VICTIM_at_retirement_trace.npy",
+ "wall_time_sec": 5258.127905130386
+}
