@@ -159,8 +159,13 @@ submission — it must stay anonymous.
       §6): (1) ✅ PPO isolation (v1.5, 10 seeds) — **NOT REPRODUCED 1/10**; learner
       generality closed as negative, full-phase 1/3 is training-state-specific;
       (2) seed matrix (8–10 seeds × clean/full/shield-on × δ=2) — REINFORCE 10-seed
-      (v16) = 3/10 PARTIAL; PPO full-phase multi-seed 仍缺; (3) ⚠️ dose-response
+      full-phase (v1.9) = 4/10 PARTIAL; PPO 10-seed full-phase (v1.9) = 0/10
+      at-ret **NOT REPRODUCED** (secondary final 0.49–0.77 vs clean ≈0.22
+      blocked recovery); (3) ⚠️ dose-response
       (v1.7 dense grid) — **uninformative** (run-to-run trajectory variance; no δ_min
       claim; fig7 restored to within-batch fullvC); (4) ✅ avoid domain (v1.8) —
       fidelity PASS, isolation **1/3 NOT REPRODUCED** (environment-specific);
-      (5) SAC; (6) escape conditions.
+      (5) ✅ SAC (v1.10.1+v1.12, pooled 6-seed) — **POSITIVE 3/6** (partial
+      across-seed learner variety; s402/s405 reverse-protective, s406 no effect);
+      (6) escape conditions (retained-shield ✅ 2026-08-16; detectability
+      recomputation/raw-verification evidence pending).

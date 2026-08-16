@@ -422,27 +422,23 @@ Runtime assurance can mask an unsafe raw policy during protected adaptation.
 We study update-data integrity across runtime-authority transitions: an
 attacker alters bounded reward records consumed by an updater, while runtime
 states, actions, code, parameters, and certification remain trusted.
-Evidence collected under resident predictive authority is then reused to
+Evidence collected under resident predictive authority is reused to
 authorize permanent raw release.
 
 On a third-party published shield-retirement lifecycle, bounded reward-log
-poisoning confined to the shielded bootstrap phase already makes the raw
-policy 1.6 to 3.6 times more dangerous at retirement on all three seeds, and
-clean post-retirement learning repairs the damage on only one.  A controlled
+poisoning confined to the shielded bootstrap phase makes the raw policy
+1.6 to 3.6 times more dangerous at retirement on all seeds, and clean
+post-retirement learning repairs the damage on only one.  A controlled
 Safe-Control-Gym study with five untouched seeds yields 27/120 poisoned
-raw-release failures versus 2/120 clean and 0/120 under resident predictive
-authority.  The attack is contract-specific and detectable by task-aware
-reward checks, and does not stably reproduce in the official Safe-Control-Gym
-PPO learner; on the third-party pipeline a separate PPO implementation shows a
-paired-significant post-retirement effect on one of three seeds, and a
-ten-seed full-phase battery shows no effect on the primary at-retirement
-metric on any seed (0/10) while a ten-seed isolation battery reproduces the
-effect once, so the boundary is implementation- and training-state-sensitive
-rather than a stable PPO property; a shield-on-only battery on off-policy SAC
-in the same vendored suite reproduces the boundary on two of three seeds, so
-the susceptibility is learner-varied rather than confined to on-policy
-Monte-Carlo learners.  The attack does
-not establish benign utility over freeze.
+raw-release failures versus 2/120 clean and 0/120 under resident authority.
+The attack is contract-specific and detectable by task-aware reward checks,
+and does not stably reproduce in the official Safe-Control-Gym PPO learner;
+a separate third-party PPO implementation is paired-significant on one of
+three seeds, with no effect across ten full-phase seeds (0/10) and once
+across ten isolation seeds, so the boundary is implementation- and
+training-state-sensitive; a six-seed shield-on-only SAC battery reproduces it
+on three of six seeds, so the susceptibility is learner-varied but partial.
+The attack does not establish benign utility over freeze.
 \end{abstract}
 
 % NDSS submissions do not include a keyword block.

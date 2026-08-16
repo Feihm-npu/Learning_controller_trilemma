@@ -135,13 +135,16 @@ reproduced at scale on the primary metric, and the full-phase $1/3$ positive
 is training-state-specific rather than a stable on-policy learner property.  A three-seed
 shield-on-only battery on a second learner family from the same vendored
 suite (off-policy soft actor-critic, SAC) reproduces the retirement-boundary
-effect on two of three seeds (seed~401: $0.207\rightarrow0.561$; seed~403:
-$0.218\rightarrow0.513$; McNemar exact $p=5.6\times10^{-57}$ and
-$7.5\times10^{-41}$); the remaining seed, whose clean at-retirement fraction
-($0.502$) leaves no headroom below the $0.5$ susceptibility boundary, is
-protective ($0.502\rightarrow0.236$).  The isolation result is therefore not
-limited to on-policy Monte-Carlo learners: it establishes learner variety,
-not off-policy generality.
+effect on three of six seeds (seed~401: $0.207\rightarrow0.561$; seed~403:
+$0.218\rightarrow0.513$; seed~404: $0.479\rightarrow0.954$; McNemar exact
+$p=5.6\times10^{-57}$, $7.5\times10^{-41}$, and $3.5\times10^{-109}$); the
+three non-reproducing seeds are not ceiling seeds --- two are significantly
+protective in the reverse direction ($0.502\rightarrow0.236$,
+$p=3.6\times10^{-33}$; $0.497\rightarrow0.247$, $p=8.5\times10^{-30}$) and
+one shows no effect at all (clean and poisoned at-retirement both $0.218$,
+paired $p=1.00$).  The isolation result is therefore not limited to on-policy
+Monte-Carlo learners, but the off-policy learner-variety evidence is partial
+across seeds rather than an off-policy generality.
 
 \paragraph{Attack budget and susceptibility.}
 On the full-phase REINFORCE protocol the effect is budget- and
@@ -231,16 +234,37 @@ code version and are unaffected by that version change.
   fraction and attack headroom is also negative on the server battery
   (Spearman $-0.685$, $p=0.029$), consistent with the local value above.
   Across both platforms and all three learner families, the shield-on-only
-  isolation batteries reproduced the effect on every paired seed with clean
-  at-retirement below 0.5 (9/9: six REINFORCE, one PPO, and two SAC) and on
-  none of the ceiling seeds (0/17: seven REINFORCE, nine PPO, and one SAC).
-  The full-phase batteries at scale on the Linux host reproduce the same
-  susceptibility rule: over the locked cross-tabulation of all 46 paired rows
-  (both scopes, all three learner families, both domains), 11 of 13 seeds with
-  clean at-retirement below 0.5 reproduced the effect (the two exceptions
-  are the avoid-domain protective seeds of the environment boundary) and
-  none of the 33 ceiling seeds did, so the heterogeneity is platform-,
-  learner-, and scope-independent even though the absolute regime differs.
+  isolation batteries reproduced the effect on ten of twelve paired seeds with
+  clean at-retirement below 0.5 (10/12: six REINFORCE, one PPO, and three SAC)
+  and on none of the ceiling seeds (0/17: seven REINFORCE, nine PPO, and one
+  SAC).  The two isolation exceptions are both SAC extension seeds --- one at
+  the boundary that is significantly protective in the reverse direction and
+  one with no effect at all --- so the clean-below-0.5 rule is a strong
+  tendency rather than a deterministic gate, even within a single learner
+  family.  The full-phase batteries at scale on the Linux host reproduce the
+  same susceptibility tendency: over the locked cross-tabulation of all 49
+  paired rows (both scopes, all three learner families, both domains), 12 of
+  16 seeds with clean at-retirement below 0.5 reproduced the effect (the four
+  exceptions are the two avoid-domain protective seeds of the environment
+  boundary and the two SAC non-reproducing seeds) and none of the 33 ceiling
+  seeds did, so the heterogeneity is platform-, learner-, and
+  scope-independent even though the absolute regime differs
+  (Fig.~\ref{fig:two-by-two}).
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig8_2x2_susceptibility.pdf}
+\caption{Two-by-two susceptibility cross-tabulation across all locked paired
+seeds (both scopes, all three learner families, both domains).  Each point is
+one paired clean/poisoned seed; filled markers reproduce the positive effect
+(poisoned at-retirement at least $0.15$ above clean at retirement with paired
+McNemar exact $p<0.01$), hollow markers do not.  The dashed rule line is
+$y=x+0.15$ and the vertical dashed line marks the clean at-retirement $0.5$
+boundary: positive seeds concentrate below the $0.5$ boundary and ceiling
+seeds never reproduce, on any learner or platform.}
+\label{fig:two-by-two}
+\end{figure*}
 
 \paragraph{Environment boundary.}
 The lifecycle pattern is not obstacle-specific: on a second gridworld of

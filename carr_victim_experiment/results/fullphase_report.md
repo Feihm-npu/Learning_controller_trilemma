@@ -42,8 +42,8 @@ Protocol: amendment v1.9 (2026-08-16). All runs server vC code, sudden (HARD), c
 
 | | positive | not positive |
 |---|---|---|
-| clean at-ret < 0.5 | 11 | 2 |
+| clean at-ret < 0.5 | 12 | 4 |
 | clean at-ret >= 0.5 | 0 | 33 |
 
-> Rows included: 46 paired seeds (v1.9 full-phase + v1.5 PPO isolation + v1.6 REINFORCE isolation + v1.8 avoid isolation + v1.10 SAC isolation). Counts only; no re-weighting.
+> Rows included: 49 paired seeds (v1.9 full-phase + v1.5 PPO isolation + v1.6 REINFORCE isolation + v1.8 avoid isolation + v1.10+v1.12 SAC isolation). Counts only; no re-weighting.
 

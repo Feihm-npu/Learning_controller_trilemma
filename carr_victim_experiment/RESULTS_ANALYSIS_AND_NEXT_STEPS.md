@@ -20,6 +20,27 @@
 > REINFORCE PARTIAL 4/10 + PPO 0/10 at-ret）/ v1.10（SAC 隔离 POSITIVE 2/3 + retained
 > escape-condition PASS）——论文 learner-generality 措辞已按结果更新（含 SAC learner
 > variety 与 retained escape condition 落地）。
+>
+> **2026-08-16 21:40 状态（继续推进）**：2×2 susceptibility 规则已图形化
+> （`make_fig_2x2.py` → `results/figures/fig8_2x2_susceptibility.pdf`，46 rows，
+> strict 判定 11/13 vs 0/33，与论文 Reading 段一致），并已并入正文 §V Reading 段
+> （`\ref{fig:two-by-two}`，PDF 25pp、0 overfull）。SAC 隔离按协议 v1.12 扩展至
+> 6-seed pooled 命名空间（seeds 404–406，配置同 v1.10.1，服务器 `results/sac_v112/`
+> 运行中，ETA ~23:30–24:00）。完成后按 v1.12.3 pooled 规则更新 SAC 句与 2×2 计数、
+> 重生成 fig8 / sac_report / aggregate_table_v2，再重建 PDF + manifest + tests。
+
+> **2026-08-17 SAC v1.12 pooled 完成（最终状态）**：s404–406 六行追加后，按
+> v1.12.3 pooled 规则（poisoned at-ret ≥ clean at-ret +0.15 且 paired McNemar
+> p<0.01）SAC 隔离 6-seed 判定为 **POSITIVE 3/6**：s401 0.207→0.561 p=5.6e-57、
+> s403 0.218→0.513 p=7.5e-41、s404 0.479→0.954 p=3.5e-109；两个反向保护
+> （s402 0.502→0.236 p=3.6e-33、s405 0.497→0.247 p=8.5e-30）；一个无效应
+> （s406 clean/poisoned at-ret 均 0.218、paired p=1.00，完全同轨迹）。→ learner
+> variety 是 partial across-seed 信号而非 off-policy generality。2×2 重算为
+> **12/16 below-0.5 positive vs 0/33 ceiling（49 paired rows）**，4 个例外 = avoid
+> 域两个保护性种子 + SAC s405/s406；隔离子集 10/12 vs 0/17（6 REINFORCE + 1 PPO +
+> 3 SAC）。fig8 已重画为 49 rows；`sac_report.md` 为最终版；`aggregate_table_v2.csv`
+> = 138 rows（+6 SAC 行）；论文摘要/Intro/sec6/Conclusion/Related Work 已按 3/6 与
+> 12/16 vs 0/33 更新；PDF 26pp、0 overfull；manifest 重生成，17/17 tests 通过。
 
 ## 0. 一句话综合
 
@@ -150,7 +171,7 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
 | 3 | TF 2.15 CPU 非确定性 → 固定 seed 有 run-to-run 方差 | 跨版本绝对值不可混用 | 配对同版本；B0 服务器非确定性测试 |
 | 4 | δ 相对 reward scale 的意义未校准、无 dose-response | budget realism 存疑 | B3 |
 | 5 | 仅 obstacle 单域 | 环境 generality 未验证 | B4 avoid 域 |
-| 6 | SAC 已跑（v1.10.1, 2026-08-16）：**POSITIVE 2/3**（s401 0.207→0.561, s403 0.218→0.513; s402 clean at-ret 0.502 无 headroom、保护性 0.502→0.236） | learner variety 已建立（禁称 off-policy generality） | B5 ✅ |
+| 6 | SAC 已跑（v1.10.1+v1.12, 2026-08-16/17）：**POSITIVE 3/6**（s401 0.207→0.561, s403 0.218→0.513, s404 0.479→0.954；s402/s405 反向保护、s406 无效应 p=1.00） | learner variety 是 partial across-seed 信号（禁称 off-policy generality） | B5 ✅ |
 | 7 | escape condition 已测（v1.10.2 retained 对照 PASS）；detectability 未测 | 缓解证据部分补齐；检测证据仍缺 | B6 部分 ✅ |
 
 ---
@@ -217,10 +238,14 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
   p=2.6e-82，positive）；s1/s3 显著保护性（0.267→0.000 p=8.4e-81；
   0.135→0.038 p=1.3e-15）。→ 攻击 effect 环境特定（environment-specific）；
   clean lifecycle pattern 跨域通用。论文新增 "Environment boundary" 段。
-- **B5. SAC（P4）** ✅（2026-08-16，v1.10.1）：服务器 vC，shield-on-only 隔离，
-  s401--403，**POSITIVE 2/3**（s401 0.207→0.561 p=5.6e-57、s403 0.218→0.513
-  p=7.5e-41；s402 clean at-ret 0.502 无 headroom、保护性 0.502→0.236）。→ 论文
-  Learner boundary 段新增 SAC learner-variety 句（禁称 off-policy generality）。
+- **B5. SAC（P4）** ✅（2026-08-16/17，v1.10.1+v1.12）：服务器 vC，shield-on-only
+  隔离。v1.10.1（s401--403）**POSITIVE 2/3**（s401 0.207→0.561 p=5.6e-57、s403
+  0.218→0.513 p=7.5e-41；s402 保护性 0.502→0.236）。v1.12 扩展 pooled 6-seed
+  （追加 s404--406）→ **POSITIVE 3/6**：s404 0.479→0.954 p=3.5e-109；s405 反向
+  保护 0.497→0.247 p=8.5e-30；s406 无效应（均 0.218，p=1.00，clean/poisoned 完全
+  同轨迹）。→ 论文 Learner boundary 段：three of six SAC seeds（partial
+  across-seed learner variety，禁称 off-policy generality）；2×2 重算为 12/16 vs
+  0/33（49 rows），fig8 更新。
 - **B6. escape conditions** ✅ 部分（2026-08-16，v1.10.2）：retained-shield 对照
   PASS —— 同 full-scope 污染下 RETAINED shield 3 seeds during=0、final（shielded）
   eval=0，配对 sudden final 0.490/0.752/0.744；"resident authority contains; removal
