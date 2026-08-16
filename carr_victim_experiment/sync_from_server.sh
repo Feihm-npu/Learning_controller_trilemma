@@ -31,12 +31,16 @@ sync_dirs() {
 sync_dirs b1 obstacle_sudden_PPO_
 sync_dirs v16 obstacle_sudden_REINFORCE_
 sync_dirs fullvC obstacle_sudden_REINFORCE_
+sync_dirs dose obstacle_sudden_REINFORCE_
+sync_dirs avoid_fid avoid_
+sync_dirs avoid_iso avoid_
 
 echo "--- local analysis ---"
 cd "$LOCAL/.."
 ../.venv-safe-control/bin/python analyze_ppo_isolation.py --ppo        --out results/ppo_isolation_report.md
 ../.venv-safe-control/bin/python analyze_ppo_isolation.py --reinforce16 --out results/reinforce16_isolation_report.md
 ../.venv-safe-control/bin/python analyze_fullvC.py
+../.venv-safe-control/bin/python analyze_dose_response.py
 ../.venv-safe-control/bin/python analyze_seed_heterogeneity.py
 ../.venv-safe-control/bin/python make_fig6.py
 echo "--- done ---"

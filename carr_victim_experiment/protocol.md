@@ -296,3 +296,126 @@ v1.5, pre-registered before execution. No ad hoc expansion after results.
 - Figure: combined REINFORCE+PPO at-retirement isolation panel
   (`fig6_retirement_isolation_combined`) once both v1.6 (REINFORCE) and v1.5
   (PPO) batteries are complete, plus per-learner panels.
+
+## Amendment v1.7 (2026-08-16, attack-budget dose-response — P1/B3)
+
+Motivation: the paper's "Attack budget and susceptibility" paragraph currently has
+only two budget points (δ ∈ {2, 10}) per seed. A reviewer rehearsal demands a
+reasonable dose-response / susceptibility boundary for the attack effect on
+budget. This amendment pre-registers a dense δ grid on the server's
+transfer-sensitive seed (s1; clean at-retirement 0.232), reusing the existing
+same-machine same-version (vC) full-phase rows at δ=2 (at-ret 0.501) and δ=10
+(at-ret 0.499), and adding δ ∈ {0.1, 0.25, 0.5, 1.0}. A secondary shield-on-only
+series locks the same grid under the stricter causal scope (poison confined to
+the protected phase), supporting the paper's latent-damage claim with a budget
+threshold. No ad hoc expansion after results.
+
+### v1.7.1 Configuration (all locked)
+- Primary battery (full-phase, V3 contrast): obstacle (N=6), REINFORCE, sudden
+  (HARD) switch at episode 1000, `--poison-scope full`; training 5000 episodes,
+  at-retirement eval 1000 episodes, final eval 5000 episodes; code version vC.
+  CLI identical to `run_fullvC.sh` (seed, poison-name, poison-delta, outdir).
+- Secondary battery (shield-on-only, V3 contrast): identical config except
+  `--poison-scope shield-on` (mutation active only while the shield enforces the
+  action mask; stops at retirement; all later training clean). CLI identical to
+  `run_v16.sh` plus a poison-delta argument.
+- δ grid (locked): **{0.1, 0.25, 0.5, 1.0}** are new runs on seed 1;
+  **δ=2 and δ=10 are reused** from the existing vC full-phase battery
+  (`contrast_d2_s1_fullvC`, `contrast_d10_s1_fullvC`) and from the shield-on
+  secondary battery where present; **δ=0 (clean)** is the baseline from
+  `none_d2_s1_fullvC` (full-phase) and a new clean shield-on run (secondary).
+
+### v1.7.2 Seeds & namespace (locked before execution)
+- Seed **1** on the server (NUSdgx), the vC transfer-sensitive seed with clean
+  headroom (clean at-ret 0.232; contrast δ=2 at-ret 0.501). Ceiling seeds are
+  not extended here; susceptibility-boundary context uses existing vC rows.
+- Run dirs MUST be new (no overwrite of any existing dir):
+  - Primary (full): `obstacle_sudden_REINFORCE_contrast_d0p1_s1_doser`,
+    `..._d0p25_...`, `..._d0p5_...`, `..._d1p0_...` (4 runs).
+  - Secondary (shield-on): clean `obstacle_sudden_REINFORCE_none_d0_s1_shieldon_doser`
+    + contrast `..._d0p1_...`, `..._d0p25_...`, `..._d0p5_...`, `..._d1p0_...`,
+    `..._d2p0_...` (6 runs, all `_shieldon_doser`).
+
+### v1.7.3 Statistical analysis & pre-specified decision rule
+- Primary outcome: final (post-removal, 5000-episode) violation fraction,
+  paired clean vs poisoned per δ (McNemar exact on paired eval episodes).
+- Secondary: at-retirement violation fraction (1000-episode snapshot at the
+  switch instant); at-retirement disagreement (unmasked raw/shield
+  disagreement during training); first-violation episode; `poison_stats`
+  (mutated records, total δ applied, raw reward min/max/mean) for budget
+  realism.
+- **Effective-budget rule (locked)**: δ is "effective" if poisoned final
+  fraction ≥ clean final fraction + 0.15 (15 pp) AND paired McNemar exact
+  p < 0.01. δ_min = smallest effective δ in the grid. Report every point.
+- **Monotonicity (locked, descriptive)**: report whether at-retirement
+  disagreement and post-removal damage are non-decreasing in δ (e.g., Kendall
+  τ or simple monotone count). This is observational support for the
+  disagreement-as-mechanism reading (RESULTS_ANALYSIS E3), not a causal proof.
+- **Susceptibility boundary**: report the transfer-sensitive vs ceiling clean
+  regime contrast using existing vC rows (s2/s3 ceiling at-ret ≈ 0.755/0.749).
+
+### v1.7.4 Outputs & files
+- Per-run dirs with `*_summary.json` (incl. `at_retirement_stats`,
+  `disagreement_curve`, `poison_stats`), eval/at-ret traces.
+- Append v1.7 runs to `results/aggregate_table_v2.csv` (new rows,
+  `version=vC`, `scope=full` / `scope=shield-on`); do not overwrite rows.
+- Figure: dose-response curve on the transfer-sensitive seed (violation
+  fraction and at-ret disagreement vs δ, log-scale δ axis) as
+  `results/figures/fig7_dose_response.pdf` update (replacing the vA-only panel
+  with the vC dense grid; keep shape-control panel).
+- Update paper "Attack budget and susceptibility" paragraph and
+  `RESULTS_ANALYSIS_AND_NEXT_STEPS.md` / `EXPERIMENT_SUMMARY.md` P1 status.
+
+## Amendment v1.8 (2026-08-16, second-domain (Avoid) generality — P3/B4)
+
+Motivation: the paper's central claim (reward-record corruption → latent damage
+inside the protected phase → degradation at shield retirement) rests on a single
+domain (obstacle N=6). A reviewer rehearsal demands environment/task generality.
+B4 is registered in RESULTS_ANALYSIS_AND_NEXT_STEPS.md as "avoid 域: fidelity +
+clean + poisoned 隔离". Pre-registered before any avoid-domain run.
+
+Domain mapping (verified 2026-08-16 on NUSdgx): Carr et al.'s "Avoid" domain
+(AAAI'23 Fig. 3e, N=6, Radius=3) is exposed in the vendored gridstorm as
+`surveillance(N, RADIUS)` loading `avoid.nm`. It builds a 5,976-state POMDP;
+the shield (winning region + OTF belief-support query) computes in ~34 s; and it
+exposes 349 trap-adjacent (risk) states, so the locked V3-contrast attack shape
+(risk +δ, safe −δ) transfers without redefinition. Smoke run (10 training +
+3 at-ret + 3 final episodes, contrast δ=2) completed end-to-end with the vC
+pipeline.
+
+### v1.8.1 Fidelity gate (avoid domain, clean, seed 1)
+- Four runs, 5000 episodes, REINFORCE, `--grid-model surveillance
+  --constants N=6,RADIUS=3`, `--obs-level BELIEF_SUPPORT --valuations
+  --goal-value 1000 --at-retirement-eps 1000 --final-eval-eps 5000`.
+- Conditions: no-shield (`--noshield`), shield retained (`--switch-shield
+  RETAINED`), sudden (`--switch-shield HARD --shield-episode 1000`), smooth
+  (`--switch-shield SOFT --shield-episode 1000`).
+- Gate criterion (locked): qualitative ordering shield-retained (0/0) < smooth
+  ≪ sudden ≤ no-shield, matching Carr et al. Table 1 (which averages across six
+  domains; the ordering is the mechanism-level gate). Report absolute rates as
+  avoid-domain values; do NOT claim per-domain equality with the paper.
+
+### v1.8.2 Attack isolation (avoid domain, shield-on V3 contrast δ=2)
+- Same locked protocol as amendment v1.3 (P0) on the avoid domain: poison
+  scope shield-on (mutation active only while the shield enforces the action
+  mask; stops at retirement; later training clean), evaluate-/freeze-at-retirement
+  on the same snapshot, at-ret eval 1000 episodes, final eval 5000.
+- 3 paired seeds (1–3; new for the avoid domain), clean + contrast δ=2.
+- Positive-seed rule (identical to v1.5/v1.6): poisoned at-ret fraction ≥ clean
+  at-ret fraction + 0.15 AND paired McNemar exact p < 0.01. Report 3/3 / 2/3 /
+  <2/3 honestly; "generality" = 3/3, "partial" = 2/3, "not reproduced" < 2/3.
+
+### v1.8.3 Seeds & namespace (locked before execution)
+- New dirs (no overwrite), `avoid_` prefix:
+  - Fidelity: `avoid_noshield_s1_fid`, `avoid_retained_s1_fid`,
+    `avoid_sudden_s1_fid`, `avoid_smooth_s1_fid`.
+  - Isolation: `avoid_sudden_REINFORCE_none_d2_s{1,2,3}` /
+    `avoid_sudden_REINFORCE_v3_d2_s{1,2,3}` (shield-on scope, δ=2).
+- Staging: isolation battery is launched only after the fidelity gate passes.
+
+### v1.8.4 Outputs & files
+- Per-run dirs with `*_summary.json` (incl. `at_retirement_stats`,
+  `disagreement_curve`, `poison_stats`), traces. Append v1.8 rows to
+  `results/aggregate_table_v2.csv` (`version=vC`, `env=avoid`).
+- Update paper environment-generality discussion and
+  `RESULTS_ANALYSIS_AND_NEXT_STEPS.md` B4 status.
