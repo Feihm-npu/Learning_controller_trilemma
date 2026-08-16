@@ -16,7 +16,10 @@
 > review submission" 一节已过时，以本文档 §0–§6 的**实验结果与统计口径**为准、以其
 > **战略定位**部分（"Carr = next-cycle 头条"）过时。当前 open 实验 = 服务器上的
 > B0 determinism gate / fullvC（v1.4 full-phase 复跑）/ v16（REINFORCE 10-seed 隔离）/
-> B1（PPO 10-seed 隔离，已落地：NOT REPRODUCED 1/10）——论文 learner-generality 措辞已按结果更新。
+> B1（PPO 10-seed 隔离，已落地：NOT REPRODUCED 1/10）/ v1.9（full-phase at-scale 双电池，
+> REINFORCE PARTIAL 4/10 + PPO 0/10 at-ret）/ v1.10（SAC 隔离 POSITIVE 2/3 + retained
+> escape-condition PASS）——论文 learner-generality 措辞已按结果更新（含 SAC learner
+> variety 与 retained escape condition 落地）。
 
 ## 0. 一句话综合
 
@@ -147,8 +150,8 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
 | 3 | TF 2.15 CPU 非确定性 → 固定 seed 有 run-to-run 方差 | 跨版本绝对值不可混用 | 配对同版本；B0 服务器非确定性测试 |
 | 4 | δ 相对 reward scale 的意义未校准、无 dose-response | budget realism 存疑 | B3 |
 | 5 | 仅 obstacle 单域 | 环境 generality 未验证 | B4 avoid 域 |
-| 6 | SAC 未跑 | 第三 learner 家族缺口 | B5 |
-| 7 | detectability / escape conditions 未测 | 检测与缓解讨论缺证据 | B6 |
+| 6 | SAC 已跑（v1.10.1, 2026-08-16）：**POSITIVE 2/3**（s401 0.207→0.561, s403 0.218→0.513; s402 clean at-ret 0.502 无 headroom、保护性 0.502→0.236） | learner variety 已建立（禁称 off-policy generality） | B5 ✅ |
+| 7 | escape condition 已测（v1.10.2 retained 对照 PASS）；detectability 未测 | 缓解证据部分补齐；检测证据仍缺 | B6 部分 ✅ |
 
 ---
 
@@ -214,9 +217,15 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
   p=2.6e-82，positive）；s1/s3 显著保护性（0.267→0.000 p=8.4e-81；
   0.135→0.038 p=1.3e-15）。→ 攻击 effect 环境特定（environment-specific）；
   clean lifecycle pattern 跨域通用。论文新增 "Environment boundary" 段。
-- **B5. SAC（P4）**：B2/B3 通过后再开。
-- **B6. escape conditions**：trusted reward recomputation / raw-policy verification /
-  retain-shield 对照 → 检测与缓解证据。
+- **B5. SAC（P4）** ✅（2026-08-16，v1.10.1）：服务器 vC，shield-on-only 隔离，
+  s401--403，**POSITIVE 2/3**（s401 0.207→0.561 p=5.6e-57、s403 0.218→0.513
+  p=7.5e-41；s402 clean at-ret 0.502 无 headroom、保护性 0.502→0.236）。→ 论文
+  Learner boundary 段新增 SAC learner-variety 句（禁称 off-policy generality）。
+- **B6. escape conditions** ✅ 部分（2026-08-16，v1.10.2）：retained-shield 对照
+  PASS —— 同 full-scope 污染下 RETAINED shield 3 seeds during=0、final（shielded）
+  eval=0，配对 sudden final 0.490/0.752/0.744；"resident authority contains; removal
+  exposes" 已写入论文 "Escape condition" 段。剩余：trusted reward recomputation /
+  raw-policy verification 的 detectability 证据未测。
 
 ### Horizon C — 战略定位
 - Carr 实验 = next-cycle 头条素材："demonstrated on a third-party published

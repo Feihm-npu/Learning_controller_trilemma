@@ -203,3 +203,68 @@ paired McNemar p<0.01。B1（10 paired seeds s101–110, shield-on-only, vC）�
 **数据卫生**：`append_vC_results.py` 已追加 40 行（v1.9 full-phase 20×2，
 version=vC, scope=full）到 `aggregate_table_v2.csv`（现 123 行）。
 `fullphase_report.md` 已重新生成（含 PPO 完整 20/20）。
+
+---
+
+## v1.10 落地预案（2026-08-16 20:1x，SAC/retained 运行中；数据落地后按裁决套用）
+
+**v1.10.1 SAC Part A 裁决规则（locked）**：positive = poisoned at-ret ≥ clean at-ret
++ 0.15 AND paired McNemar p<0.01（3 paired seeds 401–403，at-ret 1000 eps）。
+verdict：≥2/3 POSITIVE / 1/3 PARTIAL / 0/3 NEGATIVE。smoke（seed 499）绝不进 verdict。
+论文口径：SAC 是 **learner variety** 证据（off-policy 家族），**禁止宣称 off-policy
+generality**。
+
+- **≥2/3**：Learner boundary 段追加 "A three-seed shield-on-only battery on a second
+  learner family (off-policy SAC) reproduces the retirement-boundary effect on N/3 seeds,
+  so the isolation result is not limited to on-policy Monte-Carlo learners; it establishes
+  learner variety, not off-policy generality."
+- **1/3**：PARTIAL，按 per-seed 报告。
+- **0/3**：Learner boundary 段追加 "A three-seed shield-on-only battery on off-policy SAC
+  did not reproduce the retirement-boundary effect (0/3), consistent with the PPO negative
+  boundary; the isolation evidence therefore remains confined to Monte-Carlo on-policy
+  learners."（视 SAC clean at-ret 是否 low-mode 决定是否提 ceiling/headroom。）
+
+**v1.10.2 retained Part B**：RETAINED shield + full 污染 + REINFORCE s1-3；PASS 条件 =
+3 seeds during_violations=0 且 final（shielded）eval=0。PASS → "resident authority
+contains the consequence; removal exposes it" 的 escape-condition 证据，配 retained-vs-
+sudden 表（sudden 用 v1.9 fullvC s1-3 同 seed）。
+
+**数据卫生**：v1.10 行 append 到 `aggregate_table_v2.csv`（version=vC，scope=shield-on
+for SAC；retained 行 scope=retained），不覆盖已有行。
+
+## v1.10 落地（2026-08-16 21:2x，SAC + retained 完成）— 已整合进论文
+
+**v1.10.1 SAC Part A 判定（locked rule，3 paired seeds 401–403）→ POSITIVE 2/3**：
+
+| seed | clean at-ret | pois at-ret | Δ | McNemar p | positive |
+|---|---|---|---|---|---|
+| 401 | 0.207 | 0.561 | +0.354 | 5.60e-57 | **Y** |
+| 402 | 0.502 | 0.236 | −0.266 | 3.55e-33 | N（无 headroom，保护性）|
+| 403 | 0.218 | 0.513 | +0.295 | 7.49e-41 | **Y** |
+
+- **v1.10.2 retained Part B → PASS**：retained during=0、final（shielded）eval=0
+  （s1/s2/s3）；配对 sudden final 0.490/0.752/0.744。resident authority contains;
+  removal exposes。
+
+**论文已整合（非占位）**：
+1. `sec6_third_party_case_study.tex` Learner boundary 段（PPO 句后追加）：SAC 2/3
+   复现（s401 0.207→0.561 p=5.6e-57、s403 0.218→0.513 p=7.5e-41；s402 clean
+   at-ret 0.502 无 headroom、保护性 0.502→0.236）→ "establishes learner variety,
+   not off-policy generality"。
+2. `sec6_third_party_case_study.tex` 新增 **Escape condition** 段（Reading 前）：
+   retained 0/0 vs sudden final 0.490/0.752/0.744。
+3. `sec6_third_party_case_study.tex` Reading 段 2×2 更新：isolation 7/7→**9/9**
+   （6 REINFORCE + 1 PPO + 2 SAC）、0/16→**0/17**；full 43→**46 rows**，
+   9/11→**11/13**、0/32→**0/33**；"both learners"→"all three learner families"。
+4. `sec6_conclusion.tex`：SAC 2/3 learner variety + retained escape-condition 句。
+5. `sec5_related_work.tex`：SAC 2/3（learner variety）+ retained 0/0 vs 0.49–0.75。
+6. `bare_conf_NDSS2027.tex` Abstract + `sec1_introduction.tex`：SAC 2/3
+   learner-varied 短句（篇幅内）。
+
+**数据卫生**：`append_vC_results.py` 扩展支持 SAC + retained（condition 加入 dedup
+key），追加 9 行（SAC 6 行 scope=shield-on version=vC + retained 3 行 scope=full
+version=vC）→ `aggregate_table_v2.csv` 现 **132 行**。`analyze_fullphase.py` 2×2
+纳入 SAC（locked v1.10.3）→ **11/13 vs 0/33（46 rows）**，`fullphase_report.md` 已
+重新生成。
+
+**PDF**：重建 25pp、0 overfull；manifest 重生成（255 files）、17/17 artifact 测试通过。

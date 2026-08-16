@@ -185,5 +185,8 @@ Our contributions are:
     third-party lifecycle's PPO implementation is paired-significant on one of
     three seeds and does not reproduce in a ten-seed full-phase battery (0/10
     at retirement) or a ten-seed isolation battery (1/10), so the boundary is
-    implementation- and training-state-sensitive.
+    implementation- and training-state-sensitive; a shield-on-only battery on
+    off-policy SAC in the same suite reproduces the boundary on two of three
+    seeds, so the susceptibility is learner-varied rather than confined to
+    on-policy Monte-Carlo learners.
 \end{itemize}

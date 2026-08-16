@@ -165,7 +165,11 @@ battery is partial (4/10), whereas the third-party PPO full-phase result is
 positive on 1/3 seeds and neither a ten-seed full-phase battery (0/10 at
 retirement) nor a ten-seed retirement-boundary isolation battery (1/10)
 reproduces it, so PPO retirement-boundary isolation is not reproduced at
-scale.  Eighth, the anchor audit models bounded error on
+scale; a shield-on-only battery on off-policy SAC does reproduce the boundary
+on two of three seeds (learner variety, not off-policy generality), and a
+retained-shield control keeps violations at zero under the same full-scope
+poisoning (0/0 vs.\ paired sudden finals of 0.49--0.75).  Eighth, the anchor
+audit models bounded error on
 only altitude and pitch and reports calls rather than platform-specific
 sensing latency, energy, or authentication cost.  These are result boundaries,
 not omitted positive evidence.

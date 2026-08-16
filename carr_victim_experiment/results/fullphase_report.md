@@ -38,12 +38,12 @@ Protocol: amendment v1.9 (2026-08-16). All runs server vC code, sudden (HARD), c
 **Positive seeds (locked rule (fraction + McNemar p<0.01)): 4/10** (4 strict, 4 fraction-only) -> **PARTIAL** (reproduce>=5/10, partial 3-4/10, no<3/10).
 
 
-### 2x2 susceptibility cross-tabulation (locked v1.9.3)
+### 2x2 susceptibility cross-tabulation (locked v1.10.3)
 
 | | positive | not positive |
 |---|---|---|
-| clean at-ret < 0.5 | 9 | 2 |
-| clean at-ret >= 0.5 | 0 | 32 |
+| clean at-ret < 0.5 | 11 | 2 |
+| clean at-ret >= 0.5 | 0 | 33 |
 
-> Rows included: 43 paired seeds (v1.9 full-phase + v1.5 PPO isolation + v1.6 REINFORCE isolation + v1.8 avoid isolation). Counts only; no re-weighting.
+> Rows included: 46 paired seeds (v1.9 full-phase + v1.5 PPO isolation + v1.6 REINFORCE isolation + v1.8 avoid isolation + v1.10 SAC isolation). Counts only; no re-weighting.
 

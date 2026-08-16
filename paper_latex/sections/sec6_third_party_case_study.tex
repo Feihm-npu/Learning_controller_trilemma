@@ -132,7 +132,16 @@ $\approx0.22$ under continued learning, so full-scope contamination blocks
 the post-retirement recovery that clean policies exhibit.  PPO
 retirement-boundary isolation and full-phase damage are therefore not
 reproduced at scale on the primary metric, and the full-phase $1/3$ positive
-is training-state-specific rather than a stable on-policy learner property.
+is training-state-specific rather than a stable on-policy learner property.  A three-seed
+shield-on-only battery on a second learner family from the same vendored
+suite (off-policy soft actor-critic, SAC) reproduces the retirement-boundary
+effect on two of three seeds (seed~401: $0.207\rightarrow0.561$; seed~403:
+$0.218\rightarrow0.513$; McNemar exact $p=5.6\times10^{-57}$ and
+$7.5\times10^{-41}$); the remaining seed, whose clean at-retirement fraction
+($0.502$) leaves no headroom below the $0.5$ susceptibility boundary, is
+protective ($0.502\rightarrow0.236$).  The isolation result is therefore not
+limited to on-policy Monte-Carlo learners: it establishes learner variety,
+not off-policy generality.
 
 \paragraph{Attack budget and susceptibility.}
 On the full-phase REINFORCE protocol the effect is budget- and
@@ -190,6 +199,16 @@ and bias/risk controls are protective or strictly weaker.}
 \label{fig:dose-response}
 \end{figure*}
 
+\paragraph{Escape condition.}
+Under the same full-scope poisoning used in the full-phase battery, a
+retained shield (no retirement switch; the final evaluation stays shielded)
+keeps physical violations at zero on all three paired seeds through the
+final evaluation ($0/0$ on seeds~1--3), while the paired sudden runs expose
+final violation fractions of $0.490$ (seed~1), $0.752$ (seed~2), and $0.744$
+(seed~3) after removal.  Resident authority therefore contains the downstream
+consequence of full-scope contamination; removing it exposes the same
+consequence as an unsafe released policy.
+
 \paragraph{Reading.}
 The third-party workflow is not a synthetic victim: its shield bootstrap and
 retirement schedule are the authors' design, and the release-time raw policy
@@ -211,17 +230,17 @@ code version and are unaffected by that version change.
   damage (two were protective).  The correlation between clean at-retirement
   fraction and attack headroom is also negative on the server battery
   (Spearman $-0.685$, $p=0.029$), consistent with the local value above.
-  Across both platforms and both learners, the shield-on-only isolation
-  batteries reproduced the effect on every paired seed with clean
-  at-retirement below 0.5 (7/7: six REINFORCE and one PPO) and on none of the
-  ceiling seeds (0/16: seven REINFORCE and nine PPO).  The full-phase
-  batteries at scale on the Linux host reproduce the same susceptibility
-  rule: over the locked cross-tabulation of all 43 paired rows (both scopes,
-  both learners, both domains), 9 of 11 seeds with clean at-retirement below
-  0.5 reproduced the effect (the two exceptions are the avoid-domain
-  protective seeds of the environment boundary) and none of the 32 ceiling
-  seeds did, so the heterogeneity is platform-, learner-, and scope-
-  independent even though the absolute regime differs.
+  Across both platforms and all three learner families, the shield-on-only
+  isolation batteries reproduced the effect on every paired seed with clean
+  at-retirement below 0.5 (9/9: six REINFORCE, one PPO, and two SAC) and on
+  none of the ceiling seeds (0/17: seven REINFORCE, nine PPO, and one SAC).
+  The full-phase batteries at scale on the Linux host reproduce the same
+  susceptibility rule: over the locked cross-tabulation of all 46 paired rows
+  (both scopes, all three learner families, both domains), 11 of 13 seeds with
+  clean at-retirement below 0.5 reproduced the effect (the two exceptions
+  are the avoid-domain protective seeds of the environment boundary) and
+  none of the 33 ceiling seeds did, so the heterogeneity is platform-,
+  learner-, and scope-independent even though the absolute regime differs.
 
 \paragraph{Environment boundary.}
 The lifecycle pattern is not obstacle-specific: on a second gridworld of
