@@ -50,10 +50,11 @@ at-retirement 大多落在"不安全天花板"区间（~0.72–0.76），而本�
 
 - **v16 fraction-only 判定**：positive = poisoned @ret ≥ clean @ret + 0.15 AND paired
   McNemar p<0.01。服务器大多无 headroom → 预期**大多 NOT positive**。这是诚实的
-  天花板效应（ceiling），按锁定规则"报告全部 10 seeds"。**关键观察项**：
-  `v3_d2_s201`（clean=0.24 的唯一 transfer-sensitive seed）的 poisoned run 尚未完成。
-  若其 @ret ≥ 0.39 且 p<0.01 → 1/10 positive，恰好验证 heterogeneity 故事（effect
-  集中在 low-clean-at-ret 的 seed），但不足以升级 3/3 → K/10。
+  天花板效应（ceiling），按锁定规则"报告全部 10 seeds"。**关键观察项（已由 §4 最终结果
+  取代）**：`v3_d2_s201`（clean=0.24 的唯一 transfer-sensitive seed）的 poisoned run
+  当时尚未完成；若其 @ret ≥ 0.39 且 p<0.01 → 1/10 positive。实际最终 3/10（s201/s205/s209
+  全部 transfer-sensitive 阳性），恰好验证 heterogeneity 故事（effect 集中在
+  low-clean-at-ret 的 seed），但不足以升级 3/3 → K/10。
 - **fullvC 定性 guard**：锁定模式是 s2 clean 0.225 → poisoned 0.755（大效应）。
   服务器 s2 clean 已是 0.755（天花板）→ **零 headroom，vA→vC 数字替换无意义**。
   按 `PENDING_PAPER_INTEGRATION_WORDING.md`：定性变化 → 回 protocol 讨论，**不要**把
@@ -72,19 +73,35 @@ at-retirement 大多落在"不安全天花板"区间（~0.72–0.76），而本�
 
 ---
 
-## 4. v16 确认结果（2026-08-16 08:40，18/20 落地，s201 poisoned 已回）
+## 4. v16 确认结果（2026-08-16 09:10，20/20 完成）
 
-**v16（REINFORCE 10-seed 隔离，服务器，s201-210，v1.6）判定 = 1/10 positive**
-- 唯一 transfer-sensitive seed **s201（clean @ret 0.240）→ poisoned @ret 0.533**，
-  effect +0.293 ≥ +0.15，paired McNemar p=8.25e-39 → **POSITIVE**（at-ret trace 复核）。
-- 其余 9 seeds clean @ret 全部落在 0.72–0.755 天花板，无 headroom：7 无效应、
+**v16（REINFORCE 10-seed 隔离，服务器，s201-210，v1.6）判定 = 3/10 PARTIAL**
+- 3 个 transfer-sensitive seeds 全部 **POSITIVE**（at-ret trace 复核）：
+  - **s201**：clean @ret 0.240 → poisoned 0.533（effect +0.293），paired McNemar p=8.25e-39
+  - **s205**：clean @ret 0.234 → poisoned 0.744（+0.510），p=1.90e-103
+  - **s209**：clean @ret 0.229 → poisoned 0.763（+0.534），p=6.83e-114
+- 其余 7 seeds clean @ret 全部落在 0.72–0.755 天花板，无 headroom：5 无效应、
   s203（0.744→0.208, p=6e-113）与 s208（0.733→0.528, p=9e-21）为**保护性**（poisoned 更低）。
-- **2×2 跨平台一致性**（本机 vC 3 + 服务器 v16 8-10）：
-  - clean@ret<0.5（transfer-sensitive）：**4/4 positive**（本机 s1,s2,s3 + 服务器 s201）
+- Spearman(clean_atret, effect) = **−0.685（p=0.029）**，与 vC 本机 −1.0 方向一致。
+- **2×2 跨平台一致性**（本机 vC 3 + 服务器 v16 10 = 13 seeds）：
+  - clean@ret<0.5（transfer-sensitive）：**6/6 positive**（本机 s1,s2,s3 + 服务器 s201,s205,s209）
   - clean@ret≥0.5（ceiling）：**0/7 positive**（无额外伤害，个别保护性）
   - → heterogeneity 机制（effect 集中在 clean 可转移安全性的 seed、天花板 seed 饱和）在
-    两个平台一致，但 v16 作为 10-seed 升级证据不成立（K=1 < 7 升级阈值，且 9/10 被
-    天花板混淆）。
-- **论文动作**：保持本机 vC 3/3 数字；可在 learner-boundary / attack-budget 段加
-  heterogeneity 句（vC Spearman -1.0 + 服务器 s201 0.24→0.53 数据点 + 天花板诚实句）。
+    两个平台一致，但 v16 作为 10-seed 升级证据不成立（K=3 < 7 升级阈值，且 7/10 被
+    天花板混淆）；按锁定规则 v1.5.4 为 **PARTIAL（3/10）**。
+- **论文动作（已执行）**：保持本机 vC 3/3 数字；Reading 段已改为 "3 个
+  transfer-sensitive seeds 全部复现（三组数字）+ Spearman −0.685 + 6/6 vs 0/7"。
   不做 "3/3 → K/10" 升级。
+
+## 5. fullvC 确认结果（2026-08-16 09:10，15/15 完成）
+
+**fullvC（v1.4 full-phase，服务器，3 seeds × 5 条件）**
+- 服务器 s1 是 transfer-sensitive（clean at-ret 0.232）：
+  - contrast δ=2：at-ret 0.501，after 1157→2451（p=4.63e-159）→ **复现**
+  - contrast δ=10 饱和（2450）；risk 2455；constant 无效应（1177, p=0.655）
+- 服务器 s2/s3 天花板（clean at-ret 0.755/0.749）：contrast δ=2 无效应（p=1）、
+  δ=10 保护性（2450/2466 vs clean 3762/3720）、risk s3 无效应（p=0.982）。
+- 定性模式：效应集中在 transfer-sensitive seed、天花板 seed 无 headroom —— 与论文
+  本机 vA 故事一致，只是 transfer-sensitive 的 seed 号不同（本机 s2 ↔ 服务器 s1）。
+- **论文动作（已执行）**：Attack budget 段跨平台注改写为完整 15-run 结果；本机 vA
+  数字保持为论文正文（locked rule）。

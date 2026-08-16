@@ -219,20 +219,25 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   REINFORCE δ=2/δ=10 attack-budget/susceptibility boundary. Earlier notes
   saying "Carr is not added to it" refer to the frozen 13-pp Fall submission
   and are obsolete under the quality-first rewrite.
-- **v16 (REINFORCE 10-seed isolation, server, 2026-08-16)**: verdict 1/10
-  positive.  The single transfer-sensitive seed (s201, clean at-retirement 0.24)
-  reproduced the effect (→ 0.533; McNemar exact p=8.25e-39); the other 9 seeds
-  landed in the unsafe ceiling regime (clean at-retirement 0.72–0.76) with no
-  headroom, 2 of them protective-signed.  K=1 < 7, so the "3/3 seeds" wording is
-  **not** upgraded; a heterogeneity sentence (Spearman −1.0 on the vC seeds;
-  cross-platform 2×2: clean<0.5 ⇒ 4/4 positive, ceiling ⇒ 0/7) and a
-  platform-honesty sentence were added to `sec6_third_party_case_study.tex`.
-- **fullvC (REINFORCE full-phase v1.4 re-run, server)**: landed in the ceiling
-  regime (clean at-retirement ≥0.72) with no paired headroom; contrast δ=2 had
-  no effect and δ=10 was protective on the server, so the qualitative pattern
-  did **not** re-measure there.  Per the locked plan the local vA paper numbers
-  are kept; a cross-platform ceiling note was added to the "Attack budget"
-  paragraph.
+- **v16 (REINFORCE 10-seed isolation, server, 2026-08-16)**: verdict 3/10
+  PARTIAL.  All three transfer-sensitive seeds reproduced the effect — s201
+  (clean at-retirement 0.240 → 0.533; McNemar exact p=8.25e-39), s205
+  (0.234 → 0.744; p=1.90e-103), s209 (0.229 → 0.763; p=6.83e-114); the other 7
+  seeds landed in the unsafe ceiling regime (clean at-retirement 0.72–0.76)
+  with no headroom, 2 of them protective-signed.  K=3 < 7, so the "3/3 seeds"
+  wording is **not** upgraded; the Reading paragraph now reports the 3/10
+  battery with the server Spearman −0.685 (p=0.029) and the cross-platform 2×2
+  (clean<0.5 ⇒ 6/6 positive, ceiling ⇒ 0/7).
+- **fullvC (REINFORCE full-phase v1.4 re-run, server)**: 15/15 completed.  The
+  server's transfer-sensitive seed (s1, clean at-retirement 0.232) reproduced
+  the contrast δ=2 effect (at-retirement 0.501; post-removal violations 1157 →
+  2451; McNemar exact p=4.63e-159) with δ=10 saturating (2450); s2/s3 landed in
+  the ceiling regime (clean at-retirement 0.755/0.749) where δ=2 had no effect
+  and δ=10 was protective.  The qualitative pattern (effect on the
+  transfer-sensitive seed, none on ceiling seeds) re-measures across platforms,
+  though the transfer-sensitive seed differs (local s2 ↔ server s1).  Per the
+  locked plan the local vA paper numbers are kept; the "Attack budget"
+  cross-platform note now reports the complete 15-run result.
 - **Open boundary**: PPO retirement-boundary isolation (B1, 10 seeds s101–110)
   is still running behind the B0 determinism gate; if ≥5/10 paired seeds
   reproduce, learner-generality wording can be upgraded (else it stays the

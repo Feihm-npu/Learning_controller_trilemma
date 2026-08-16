@@ -1,10 +1,15 @@
 # 数据落地后论文改稿情景方案（working note, 2026-08-16）
 # 数据落地后论文改稿情景方案（working note, 2026-08-16）
 
-> **状态（2026-08-16 08:50）**：
-> - v16 判定已落地（1/10 positive，s201），K<7 → 保持 "3/3"；heterogeneity 句 + 平台
->   ceiling 诚实句 + fullvC 跨平台 ceiling 注已写入 `sec6_third_party_case_study.tex`
->   （Causal isolation 段末 / Attack budget 段末 / Reading 段末），PDF 已重建（24pp, 0 overfull）。
+> **状态（2026-08-16 09:10）**：
+> - v16 判定已落地并复核为 **3/10 PARTIAL**（s201 0.240→0.533、s205 0.234→0.744、
+>   s209 0.229→0.763，全为 transfer-sensitive；其余 7 seeds 天花板无 headroom，2 保护性）。
+>   K=3 < 7 → 保持本机 "3/3" 措辞；Reading 段已写入 v16 heterogeneity
+>   （Spearman −0.685, p=0.029）+ 跨平台 2×2（clean<0.5 ⇒ 6/6，ceiling ⇒ 0/7）。
+> - fullvC 15/15 完成：服务器 s1 transfer-sensitive（clean at-ret 0.232）复现 contrast
+>   δ=2（at-ret 0.501；after 1157→2451, p=4.6e-159），s2/s3 天花板（δ=2 无效应、δ=10
+>   保护性）；Attack budget 段跨平台注已改写为完整 15-run 结果（保留本机 vA 数字）。
+> - PDF 已重建（24pp, 0 overfull），manifest 重生成（255 files），17/17 artifact 测试通过。
 > - B1（PPO 隔离 10 seeds s101-110）仍在 B0 determinism gate 之后排队；以下三个
 >   情景（REPRODUCES/PARTIAL/NOT）在 B1 落地前**不得修改论文 learner-generality 措辞**。
 
@@ -81,29 +86,33 @@ protocol 讨论。s1 clean 天花板、s3 d2 无效果、contrast 严格强于 r
 
 ---
 
-## v16 落地措辞（2026-08-16 08:40 更新：18/20 落地，判定 1/10，s201 阳性）
+## v16 落地措辞（2026-08-16 09:10 更新：20/20 完成，判定 3/10 PARTIAL）
 
-**v16 判定**：K/10 = 1（s201 clean 0.240 → poisoned 0.533, p=8.25e-39）；
-9/10 在 ceiling（clean@ret 0.72–0.76 无 headroom）。K < 7 → **不升级 3/3 → K/10**，
-不写 "K/10 independently trained seeds"。
+**v16 判定**：K/10 = 3（s201 clean 0.240 → poisoned 0.533, p=8.25e-39；
+s205 0.234 → 0.744, p=1.90e-103；s209 0.229 → 0.763, p=6.83e-114，全部为
+transfer-sensitive）；其余 7/10 在 ceiling（clean@ret 0.72–0.76 无 headroom，
+s203/s208 保护性）。K < 7 → **不升级 3/3 → K/10**，不写 "K/10 independently trained
+seeds"；按锁定规则 v1.5.4 判定为 **PARTIAL**。
 
-**待加 heterogeneity 句**（放 "Causal isolation" 段末，即 "…(Fig. fig:carr-disagreement)." 之后）：
-```
-Across the paired seeds the per-seed boundary is interpretable: clean
-at-retirement fraction and attack headroom are strongly negatively correlated
-(Spearman -1.0 on the vC seeds), so the effect concentrates on seeds whose
-clean learning would otherwise transfer safety and saturates on seeds already
-near the unsafe ceiling.
-```
-（严格措辞待最终定稿时微调；Spearman 只引用 vC 本机 3 seeds 配对，不混平台。）
+**✅ 已落地 heterogeneity 句**（"Causal isolation" 段末）：vC 本机 Spearman −1.0
+（三 seed 配对）已写入；服务器 v16 的 Spearman −0.685（p=0.029）与 6/6 vs 0/7 的
+跨平台 2×2 已写入 "Reading" 段。本机 vC 与服务器 v16 数字不混表。
 
-**待加 ceiling/平台诚实句**（放 "Reading" 段末，即 "…unaffected by that version change." 之后）：
+**✅ 已落地 ceiling/平台诚实句**（"Reading" 段末，2026-08-16 09:10 最终版）：
 ```
-Absolute rates also vary across platforms: an exploratory 10-seed battery on a
-Linux host with identical dependency versions landed most independently trained
-REINFORCE seeds in the unsafe regime at retirement (clean at-retirement
-0.72--0.76), leaving no headroom to measure the attack; the single
-transfer-sensitive seed reproduced the positive effect (0.24 -> 0.53; McNemar
-exact p=8e-39), and ceiling seeds showed no additional damage.  All paper
-comparisons remain paired within a locked code version on one platform.
+Absolute rates also vary across platforms.  A ten-seed shield-on-only
+battery on the same Linux host landed seven of the ten independently
+trained REINFORCE seeds in the unsafe regime at retirement (clean
+at-retirement 0.72--0.76), leaving no headroom to measure the attack on
+those seeds; the three transfer-sensitive seeds all reproduced the
+positive effect (0.240 → 0.533, p=8.3e-39; 0.234 → 0.744, p=1.9e-103;
+0.229 → 0.763, p=6.8e-114), while ceiling seeds showed no additional
+damage (two were protective).  The correlation between clean at-retirement
+fraction and attack headroom is also negative on the server battery
+(Spearman −0.685, p=0.029), consistent with the local value above.
+Across both platforms every paired seed with clean at-retirement below
+0.5 reproduced the effect (6/6) and every seed in the ceiling regime
+showed none (0/7), so the heterogeneity is platform-independent even
+though the absolute regime differs.
 ```
+（与 `sec6_third_party_case_study.tex` 正文一致，已随本次改稿进入 PDF。）

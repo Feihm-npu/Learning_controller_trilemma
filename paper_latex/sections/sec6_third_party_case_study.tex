@@ -137,11 +137,20 @@ neither budget adds damage while the shape controls are protective.  The
 attack is thus not a monotone ``more corruption $\Rightarrow$
 more damage'' effect; it is a shape-, budget-, and transfer-state-dependent
 steering of the released policy.
-  We attempted an independent re-run of the full-phase protocol on a Linux
-  host with identical dependency versions; on the seeds it completed, that
-  run landed in the unsafe ceiling regime at retirement (clean at-retirement
-  0.72--0.76) with no paired headroom for the effect, so the paired budget
-  dependence above is reported only from the local locked code version.
+  An independent re-run of the full-phase protocol on a Linux host with
+  identical dependency versions (15 runs, three seeds $\times$ five
+  conditions) completed.  The transfer-sensitive seed on that host
+  reproduced the contrast effect at retirement (clean at-retirement 0.232
+  $\rightarrow$ poisoned 0.501; post-removal violations 1157 $\rightarrow$
+  2451, McNemar exact $p=4.6\times10^{-159}$) with $\delta{=}10$ saturating
+  (2450).  The other two seeds landed in the unsafe ceiling regime at
+  retirement (clean at-retirement 0.755 and 0.749): contrast $\delta{=}2$
+  showed no effect ($p=1.00$) and $\delta{=}10$ was protective, leaving no
+  paired headroom for the budget dependence.  The pattern---effect on the
+  transfer-sensitive seed, none on ceiling seeds---thus reproduces across
+  platforms, although which seed is transfer-sensitive differs (local seed~2
+  vs.\ server seed~1); the paired budget dependence above is reported from
+  the local locked code version.
 
 \begin{figure*}[t]
 \centering
@@ -165,13 +174,18 @@ Absolute rates differ across instrumented and non-instrumented code versions
 because the unmasked-disagreement probe requires an independent belief
 tracker; all clean-vs-poisoned comparisons above are paired within a locked
 code version and are unaffected by that version change.
-  Absolute rates also vary across platforms.  An exploratory ten-seed
-  shield-on-only battery on the same Linux host landed most independently
+  Absolute rates also vary across platforms.  A ten-seed shield-on-only
+  battery on the same Linux host landed seven of the ten independently
   trained REINFORCE seeds in the unsafe regime at retirement (clean
-  at-retirement 0.72--0.76), leaving no headroom to measure the attack; the
-  single transfer-sensitive seed reproduced the positive effect
-  (0.240 $\rightarrow$ 0.533; McNemar exact $p=8.3\times10^{-39}$) while
-  ceiling seeds showed no additional damage.  Across both platforms every
-  paired seed with clean at-retirement below 0.5 reproduced the effect (4/4)
-  and every seed in the ceiling regime showed none (0/7), so the heterogeneity
-  is platform-independent even though the absolute regime differs.
+  at-retirement 0.72--0.76), leaving no headroom to measure the attack on
+  those seeds; the three transfer-sensitive seeds all reproduced the
+  positive effect (0.240 $\rightarrow$ 0.533, $p=8.3\times10^{-39}$;
+  0.234 $\rightarrow$ 0.744, $p=1.9\times10^{-103}$; 0.229 $\rightarrow$
+  0.763, $p=6.8\times10^{-114}$), while ceiling seeds showed no additional
+  damage (two were protective).  The correlation between clean at-retirement
+  fraction and attack headroom is also negative on the server battery
+  (Spearman $-0.685$, $p=0.029$), consistent with the local value above.
+  Across both platforms every paired seed with clean at-retirement below
+  0.5 reproduced the effect (6/6) and every seed in the ceiling regime
+  showed none (0/7), so the heterogeneity is platform-independent even
+  though the absolute regime differs.
