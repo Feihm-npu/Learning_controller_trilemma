@@ -182,6 +182,13 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
 - **B2. 种子矩阵（P2）**：REINFORCE + PPO × 8–10 seeds × clean/full/shield-on × δ=2。
   回答 "seed 2 是 lucky victim 还是可识别 susceptibility subset"。预设 positive-seed
   定义（如 at-ret poisoned ≥ clean +15pp 且 paired McNemar p<0.01）。可与 B1 并行。
+  ⚠️ **v1.9 落地（2026-08-16，full-phase at scale）**：
+  - REINFORCE full-phase（s201-210，vC，sudden，contrast δ=2，scope=full）✅ 完成
+    （20/20）—— **PARTIAL（4/10）**：s204/s205/s206/s209 positive（全部
+    transfer-sensitive，clean at-ret 0.206–0.217），s201/202/203/208/210 ceiling
+    无效应，s207 显著保护性。与 v16 隔离判定一致（transfer-sensitivity 是主预测律）。
+  - PPO full-phase（s101-110，vC，sudden，contrast δ=2，scope=full）⏳ 进行中
+    （contrast 8/10 完成，clean 未完成）。
 - **B3. 剂量-反应（P1）**：⚠️ 完成（2026-08-16，v1.7，server transfer-sensitive
   seed 1 dense grid）—— **无法读出 dose-response（data-quality finding）**：新批全部
   落在 unsafe-ceiling 轨迹模式（含自身 clean 对照 at-ret≈0.77）；同 seed 同 config 的
