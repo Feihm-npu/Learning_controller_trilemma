@@ -187,8 +187,14 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
     （20/20）—— **PARTIAL（4/10）**：s204/s205/s206/s209 positive（全部
     transfer-sensitive，clean at-ret 0.206–0.217），s201/202/203/208/210 ceiling
     无效应，s207 显著保护性。与 v16 隔离判定一致（transfer-sensitivity 是主预测律）。
-  - PPO full-phase（s101-110，vC，sudden，contrast δ=2，scope=full）⏳ 进行中
-    （contrast 8/10 完成，clean 未完成）。
+  - PPO full-phase（s101-110，vC，sudden，contrast δ=2，scope=full）✅ 完成
+    （20/20）—— **NOT REPRODUCED（0/10 at-ret，primary 口径）**：全部种子
+    clean at-ret 0.73–0.77 无 headroom（ceiling），7 显著保护性、3 无变化；
+    ⚠️ secondary **final** 指标显示 poisoned final 0.49–0.77 vs clean final
+    ≈0.22——at-ret 无效应但 full-scope 污染阻止了 clean 政策所表现出的
+    post-retirement 自愈（须在论文中如实呈现：primary 锁 at-ret = NOT
+    REPRODUCED；secondary final 显示污染阻止自愈）。论文 learner/conclusion/
+    related-work/abstract 已按此双口径更新（2026-08-16）。
 - **B3. 剂量-反应（P1）**：⚠️ 完成（2026-08-16，v1.7，server transfer-sensitive
   seed 1 dense grid）—— **无法读出 dose-response（data-quality finding）**：新批全部
   落在 unsafe-ceiling 轨迹模式（含自身 clean 对照 at-ret≈0.77）；同 seed 同 config 的

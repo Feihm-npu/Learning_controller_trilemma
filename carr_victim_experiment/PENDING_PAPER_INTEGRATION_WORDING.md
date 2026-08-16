@@ -161,3 +161,45 @@ paired McNemar p<0.01。B1（10 paired seeds s101–110, shield-on-only, vC）�
 **与预案的差异**：情景 3 预案占位文案为 "<3/10 seeds, so ... not reproduced"；实际
 落地措辞按真实结构（1/10 + 9/10 ceiling 中 6 保护性 3 n.s. + 2×2 扩展为 7/7 vs 0/16）
 撰写，比占位文案更具体（写入保护性计数与 first-violation，2×2 纳入 PPO）。
+
+---
+
+## v1.9 落地（2026-08-16 19:4x，full-phase at scale 双电池完成）— 已整合进论文
+
+**v1.9 判定（locked v1.9.3，primary = at-ret，identical to v1.5/v1.6）**：
+- **REINFORCE full-phase（s201–210, scope=full, δ=2）→ PARTIAL 4/10**：
+  s204 (0.217→0.728, p=6.6e-107)、s205 (0.206→0.487, p=4.2e-38)、
+  s206 (0.206→0.752, p=1.1e-126)、s209 (0.215→0.755, p=1.5e-117)；
+  其余 6 seeds ceiling（clean at-ret 0.73–0.75 无 headroom，s207 显著保护性）。
+- **PPO full-phase（s101–110, scope=full, δ=2）→ NOT REPRODUCED 0/10（primary）**：
+  全部 clean at-ret 0.730–0.770（ceiling），7 显著保护性、3 无变化。
+  ⚠️ **secondary final 口径（论文原 claim 所用指标）**：poisoned final
+  0.492–0.766 vs clean final ≈0.222–0.233（9/10；s109 clean final 0.513 例外）——
+  at-ret 无效应，但 full-scope 污染阻止了 clean 政策在 retirement 后表现出的
+  自愈。论文以双口径诚实呈现：primary 锁 at-ret = NOT REPRODUCED；secondary
+  final 显示污染阻止自愈（"blocks the post-retirement recovery that clean
+  policies exhibit"）。
+- **2×2 susceptibility（locked v1.9.3，43 paired rows = v1.9 full + v1.5 PPO iso
+  + v1.6 REINFORCE iso + v1.8 avoid iso）**：clean at-ret < 0.5 → **9 pos / 2 neg**
+  （2 neg 即 avoid s1/s3 保护性，见 Environment boundary 段）；ceiling → **0/32**。
+
+**论文已整合（非占位）**：
+1. `sec6_third_party_case_study.tex` Learner boundary 段：追加 full-phase at-scale
+   句（0/10 at-ret，all ceiling，7 protective）+ secondary final 自愈受阻句
+   （poisoned final 0.49–0.77 vs clean ≈0.22, 9/10）；结论句改为 "isolation and
+   full-phase damage are therefore not reproduced at scale on the primary
+   metric"。
+2. `sec6_third_party_case_study.tex` Reading 段：2×2 更新为 9/11 vs 0/32（43
+   paired rows，2 exceptions = avoid protective seeds）；scope-independence 加入
+   "platform-, learner-, scope-"。
+3. `sec6_conclusion.tex`：REINFORCE full-phase PARTIAL 4/10 + PPO full-phase
+   0/10 + isolation 1/10 + final 自愈受阻；PPO not reproduced at scale on
+   primary metric。
+4. `sec5_related_work.tex`：同步 REINFORCE full-phase PARTIAL、PPO full-phase
+   0/10 + isolation 1/10。
+5. `bare_conf_NDSS2027.tex` Abstract + `sec1_introduction.tex`：PPO 双电池
+   （full-phase 0/10 at-ret、isolation 1/10）+ boundary 措辞。
+
+**数据卫生**：`append_vC_results.py` 已追加 40 行（v1.9 full-phase 20×2，
+version=vC, scope=full）到 `aggregate_table_v2.csv`（现 123 行）。
+`fullphase_report.md` 已重新生成（含 PPO 完整 20/20）。

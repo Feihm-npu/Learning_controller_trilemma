@@ -6,20 +6,18 @@ Protocol: amendment v1.9 (2026-08-16). All runs server vC code, sudden (HARD), c
 
 | seed | clean at-ret | pois at-ret | +delta | clean final | pois final | disagree c/p | first-viol c/p | discr(b,c) | mcnemar p | positive |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 101 | (pair incomplete) |
-| 102 | (pair incomplete) |
-| 103 | (pair incomplete) |
-| 104 | (pair incomplete) |
-| 105 | (pair incomplete) |
-| 106 | (pair incomplete) |
-| 107 | (pair incomplete) |
-| 108 | (pair incomplete) |
-| 109 | (pair incomplete) |
-| 110 | (pair incomplete) |
+| 101 | 0.759 | 0.746 | -0.013 | 0.224 | 0.751 | 0.109/0.103 | 0/0 | 179,192 | 5.33e-01 | N |
+| 102 | 0.746 | 0.740 | -0.006 | 0.226 | 0.758 | 0.104/0.102 | 0/0 | 183,189 | 7.95e-01 | N |
+| 103 | 0.730 | 0.500 | -0.230 | 0.224 | 0.766 | 0.098/0.047 | 0/1 | 134,364 | 1.37e-25 | N |
+| 104 | 0.738 | 0.496 | -0.242 | 0.226 | 0.492 | 0.101/0.047 | 0/0 | 116,358 | 9.17e-30 | N |
+| 105 | 0.738 | 0.487 | -0.251 | 0.222 | 0.757 | 0.102/0.046 | 1/0 | 121,372 | 9.94e-31 | N |
+| 106 | 0.750 | 0.465 | -0.285 | 0.226 | 0.501 | 0.104/0.045 | 0/0 | 125,410 | 2.14e-36 | N |
+| 107 | 0.758 | 0.754 | -0.004 | 0.222 | 0.743 | 0.107/0.105 | 0/1 | 174,178 | 8.73e-01 | N |
+| 108 | 0.759 | 0.515 | -0.244 | 0.233 | 0.752 | 0.106/0.049 | 0/9 | 129,373 | 1.64e-28 | N |
+| 109 | 0.770 | 0.480 | -0.290 | 0.513 | 0.735 | 0.111/0.047 | 2/0 | 112,402 | 2.32e-39 | N |
+| 110 | 0.738 | 0.463 | -0.275 | 0.226 | 0.757 | 0.101/0.045 | 0/1 | 117,392 | 1.06e-35 | N |
 
-> Pending pairs (no complete clean+contrast summary): [101, 102, 103, 104, 105, 106, 107, 108, 109, 110]
-
-**Positive seeds (fraction-only (McNemar pending)): 0/10** (0 strict, 0 fraction-only) -> **NOT REPRODUCED** (reproduce>=5/10, partial 3-4/10, no<3/10).
+**Positive seeds (locked rule (fraction + McNemar p<0.01)): 0/10** (0 strict, 0 fraction-only) -> **NOT REPRODUCED** (reproduce>=5/10, partial 3-4/10, no<3/10).
 
 
 ### v1.9 full-phase REINFORCE (10 seeds, sudden, contrast $\delta$=2, scope=full, vC)
@@ -45,7 +43,7 @@ Protocol: amendment v1.9 (2026-08-16). All runs server vC code, sudden (HARD), c
 | | positive | not positive |
 |---|---|---|
 | clean at-ret < 0.5 | 9 | 2 |
-| clean at-ret >= 0.5 | 0 | 22 |
+| clean at-ret >= 0.5 | 0 | 32 |
 
-> Rows included: 33 paired seeds (v1.9 full-phase + v1.5 PPO isolation + v1.6 REINFORCE isolation + v1.8 avoid isolation). Counts only; no re-weighting.
+> Rows included: 43 paired seeds (v1.9 full-phase + v1.5 PPO isolation + v1.6 REINFORCE isolation + v1.8 avoid isolation). Counts only; no re-weighting.
 

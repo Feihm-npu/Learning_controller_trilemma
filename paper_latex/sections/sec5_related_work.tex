@@ -160,8 +160,12 @@ policy-gradient learners (REINFORCE and a learned-baseline variant sharing the
 same attack channel), not a genuinely distinct family; the official-PPO audit
 does not show a stable physical failure, and the benign-shift smoke shows no
 utility over always-freeze.  On the third-party lifecycle the REINFORCE
-retirement-boundary isolation reproduces on 3/3 seeds, whereas the third-party
-PPO full-phase result is positive on 1/3 seeds and a ten-seed PPO retirement-boundary isolation battery reproduces the effect on one of ten seeds, so PPO retirement-boundary isolation is not reproduced at scale.  Eighth, the anchor audit models bounded error on
+retirement-boundary isolation reproduces on 3/3 seeds and the full-phase
+battery is partial (4/10), whereas the third-party PPO full-phase result is
+positive on 1/3 seeds and neither a ten-seed full-phase battery (0/10 at
+retirement) nor a ten-seed retirement-boundary isolation battery (1/10)
+reproduces it, so PPO retirement-boundary isolation is not reproduced at
+scale.  Eighth, the anchor audit models bounded error on
 only altitude and pitch and reports calls rather than platform-specific
 sensing latency, energy, or authentication cost.  These are result boundaries,
 not omitted positive evidence.
