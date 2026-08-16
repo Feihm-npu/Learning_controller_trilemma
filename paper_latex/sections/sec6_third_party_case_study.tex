@@ -280,6 +280,22 @@ code version and are unaffected by that version change.
   protective seeds below the $0.5$ boundary), so the mechanism claim is
   restricted to this lifecycle.
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.72\textwidth]{fig9_mechanism_divergence.pdf}
+\caption{Clean at-retirement raw-policy/shield disagreement bounds attack
+headroom across the obstacle domain (both scopes, all three learner
+families).  Each point is one paired clean/poisoned seed; filled markers
+reproduce the positive effect under the locked rule, hollow markers do not.
+Filled markers all have clean disagreement $\le0.047$; the dashed lines mark
+the locked low/high disagreement bands ($<0.06$ and $\ge0.09$).  PPO rows
+(red) concentrate in the high-disagreement regime with negative headroom, so
+their at-scale negatives reflect absent headroom rather than a stable
+on-policy negative.}
+\label{fig:mechanism}
+\end{figure*}
+
+
 
 \begin{figure*}[t]
 \centering

@@ -48,7 +48,11 @@ ten-seed retirement-boundary isolation battery (1/10) reproduces it; PPO
 retirement-boundary isolation is therefore not reproduced at scale, full-scope
 poisoning instead persists as unrecovered unsafe released policies (poisoned
 final $0.49$--$0.77$ vs.\ clean $\approx0.22$), and the boundary remains
-transfer- and training-state-specific.  On a
+transfer- and training-state-specific: the at-scale negatives trace to the
+clean policy's raw-policy/shield disagreement at retirement, which is
+$\approx0.10$ on ceiling seeds and bounds attack headroom (Spearman $-0.59$
+over 46 obstacle paired rows), so they reflect absent headroom rather than a
+stable learner-specific negative.  On a
 second learner family (off-policy SAC) the shield-on-only isolation
 reproduces on three of six seeds ($0.207 \rightarrow 0.561$, $0.218
 \rightarrow 0.513$, and $0.479 \rightarrow 0.954$), establishing learner
