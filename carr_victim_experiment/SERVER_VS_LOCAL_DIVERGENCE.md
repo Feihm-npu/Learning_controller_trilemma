@@ -105,3 +105,36 @@ at-retirement 大多落在"不安全天花板"区间（~0.72–0.76），而本�
   本机 vA 故事一致，只是 transfer-sensitive 的 seed 号不同（本机 s2 ↔ 服务器 s1）。
 - **论文动作（已执行）**：Attack budget 段跨平台注改写为完整 15-run 结果；本机 vA
   数字保持为论文正文（locked rule）。
+
+## 6. fidelity_v2（服务器保真度电池，REINFORCE/obstacle/sudden, seed 1, vC-era FID 插桩）
+
+**性质**：robustness 探索电池，**不进入论文正文表格**；本机论文 fidelity gate 数字
+（vA 时代 3/3 复现顺序）保持不变。
+
+### 6.1 已落地数据（2026-08-16 09:40 同步自服务器）
+
+| 条件 | during | final eval | at-retirement | first_eval | wall(s) |
+|---|---|---|---|---|---|
+| noshield | 3896 | **1187 / 0.2374** | — | 0 | 2762 |
+| smooth | 1223 | 2541 / 0.5082 | 0 / 0.0 | 1 | 2476 |
+| sudden | 3385 | 3771 / 0.7542 | 768 / 0.768 | 1 | 1448 |
+| retained | 训练中（step~4160, loss 恒定 16170） | — | — | — | — |
+
+本机对照（论文 fidelity gate 段落引用，vA 时代 3/3 复现顺序）：
+shield 0/0、smooth 326/675、sudden 3277/3784、no-shield 3798/3784。
+
+### 6.2 Noshield 反转异常（平台特异性，不改变论文数字）
+
+- **本机**：no-shield final 3784/5000 (0.757)，维持 `shield < smooth ≪ sudden ≤ noshield`。
+- **服务器**：noshield final **0.2374**，低于 smooth (0.508) 与 sudden (0.754)，顺序反转。
+- during 计数方向仍保持（noshield 3896 > sudden 3385 > smooth 1223 > shield 0），
+  反转只出现在 final eval：服务器无盾 REINFORCE 在 5000 集后收敛到更安全的策略
+  （23.7% 违例），本机无盾收敛到 75.7%。
+- **解释**：与 v16 服务器 clean-at-ret ~0.24（s201）同族的平台异构——同一 seed 在两端
+  训练出不同策略（TF 跨平台非确定性）。服务器 sudden 保持 0.75 天花板，说明
+  sudden/shield 结构本身在两端一致；noshield 策略收敛点是平台敏感的。
+- **结论**：保真度门"定性顺序复现"在**服务器自身**上仍成立（smooth ≪ sudden，sudden≈0.75），
+  只是 noshield 收敛点不同；本机论文数字不动。若评审要求"保真度门在两端复现"，如实
+  报告该平台差异即可（与 §1 结论一致：跨版本/跨平台绝对值不混用）。
+- **待确认**：retained 完成后补表 + 检查 retained final 是否维持 0 违例（盾全程保留应
+  ≈0）；若 retained 也异常（>0），则说明服务器 sudden 的 0.75 不是盾结构所致。
