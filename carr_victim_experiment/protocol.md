@@ -560,3 +560,53 @@ No ad hoc expansion after results.
   a small retained-control table for Part B. Update the paper's Learner-boundary and
   Escape-conditions paragraphs and the 2×2 counts; update
   `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`.
+
+## Amendment v1.12 (2026-08-16, SAC retirement-boundary isolation extension — off-policy learner-variety at scale)
+
+Motivation: amendment v1.10.1 established SAC retirement-boundary isolation on three
+paired seeds (2/3 positive, one ceiling/protective seed). The paper's "learner variety"
+sentence currently rests on that single three-seed battery. The reviewer rehearsal's
+#13 checklist item 7 asks for learner-variety evidence on more than a 3-seed anecdote;
+this amendment extends the SAC isolation battery to a six-seed pooled namespace BEFORE
+any new run, with the same locked protocol. No ad hoc expansion after results.
+
+### v1.12.1 Configuration (all locked, identical to v1.10.1)
+- Env/domain: `obstacle (N=6)`; code vC (independent belief tracker, amendment v1.4);
+  switch: sudden (HARD); attack: **V3 contrast, δ=2**; poison scope **shield-on**
+  (mutation active only while the shield enforces the mask and stops at retirement);
+  at-retirement eval 1000 episodes; final eval 5000 episodes; retirement at env-step
+  10^5.
+- SAC specifics: `--learning-method SAC --max-runs 100000 --shield-episode 100000`
+  (identical to v1.10.1; step units = raw `train_step_counter`).
+- **No determinism gate needed**: v1.10 already passed the SAC pipeline smoke (seed 499)
+  and the 6-run battery produced clean at-ret fractions consistent across seeds
+  (0.207/0.218/0.502); SAC on CPU with fixed seed is deterministic enough for paired
+  McNemar (the gate for v1.5 was a PPO GPU concern).
+
+### v1.12.2 Seeds & namespace (locked before execution)
+- **3 new paired seeds: 404, 405, 406** (new namespace, disjoint from all prior:
+  REINFORCE 1–3/201–210, PPO 1–3/101–110, SAC 401–403, avoid 1–3, dose 1).
+  Clean and poisoned runs use the same seed → paired comparison.
+- Run dirs MUST be new (no overwrite):
+  `obstacle_sudden_SAC_{none,v3}_d2_s{404..406}`.
+
+### v1.12.3 Statistical analysis & pre-specified decision rule
+- Positive-seed rule (locked, unchanged from v1.5.4/v1.10.1): poisoned at-ret ≥ clean
+  at-ret + 0.15 AND paired McNemar exact p < 0.01.
+- **Pooled verdict rule (locked)**: pool 401–406 (six paired SAC seeds). Report all six
+  per-seed rows. The paper's SAC sentence is updated to the pooled count:
+  * ≥ 4/6 positive → strengthen to "reproduces on N/6 SAC seeds (off-policy learner
+    variety, not off-policy generality)";
+  * 3/6 → "three of six SAC seeds positive (2/3 on the first battery, 1/3 on the
+    extension): learner variety is partial across seeds";
+  * < 3/6 → "SAC isolation is partial (N/6): the off-policy learner-variety claim is
+    weakened accordingly".
+  The 2×2 cross-tabulation (v1.9.3/v1.10.3) is recomputed with the three new SAC rows.
+
+### v1.12.4 Outputs & files
+- Per-run dirs with `*_summary.json`, eval/at-ret traces (server `results/sac_v112/`).
+- Append v1.12 rows to `results/aggregate_table_v2.csv` (new rows, `version=vC`,
+  `scope=shield-on`); do not overwrite.
+- Analysis: extend `analyze_sac.py` (or add `analyze_sac_v112.py`) to report the pooled
+  six-seed table; regenerate `results/sac_report.md`; update the paper's Learner-boundary
+  and Reading paragraphs and the 2×2 counts; update `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`.
