@@ -8,10 +8,10 @@ On the published shield-retirement lifecycle of Carr et al., bounded
 reward-log poisoning confined to the shielded bootstrap phase already makes
 the raw policy $1.6$--$3.6\times$ more dangerous at retirement on 3/3 paired
 seeds, and the damage persists after fully clean post-retirement learning on
-2/3.  A controlled Safe-Control-Gym study then isolates the mechanism: after
-a development block locks the target, attacker, and detector, five untouched
-seeds yield 27/120 poisoned permanent-release failures versus 2/120 paired
-clean.  Resident predictive authority switches before every corresponding
+2/3.  A controlled Safe-Control-Gym study then isolates the mechanism.
+After a development block locks the target, attacker, and detector, five
+untouched seeds yield 27/120 poisoned permanent-release failures versus 2/120
+paired clean.  Resident predictive authority switches before every corresponding
 poisoned failure and incurs 0/120 failures; horizons 3, 5, and 10 all separate
 the contracts.  An independent audit finds that a one-step resident kernel
 still fails on 14/71, so the result depends on recoverability, not residence
@@ -33,38 +33,41 @@ precondition; commit admission and resident predictive authority contain its
 downstream consequence.  We do not claim a logging-service exploit or a
 stealthy attack.
 
-The remaining negative boundaries are part of the result: the target was
+The remaining negative boundaries are part of the result.  The target was
 development-fixed, the bounded \(\tanh\) perturbation is not a joint gate
 optimizer, and even the extended exact-support diagnostic produces no raw
 release failure.  The physical attack is established for low-dimensional
 Monte-Carlo policy-gradient learners (REINFORCE and a learned-baseline
 variant), does not stably transfer to official PPO, and admitted updates do
-not beat freeze in the benign-adaptation smoke.  On the third-party lifecycle
-the REINFORCE retirement-boundary isolation reproduces on 3/3 seeds and a
-ten-seed full-phase REINFORCE battery is partial (4/10), whereas the
-third-party PPO full-phase result is positive on 1/3 seeds and neither a
-ten-seed full-phase battery (0/10 on the primary at-retirement metric) nor a
-ten-seed retirement-boundary isolation battery (1/10) reproduces it; PPO
-retirement-boundary isolation is therefore not reproduced at scale, full-scope
-poisoning instead persists as unrecovered unsafe released policies (poisoned
-final $0.49$--$0.77$ vs.\ clean $\approx0.22$), and the boundary remains
-transfer- and training-state-specific: the at-scale negatives trace to the
-clean policy's raw-policy/shield disagreement at retirement, which is
-$\approx0.10$ on ceiling seeds and bounds attack headroom (Spearman $-0.55$
-over 50 obstacle paired rows), so they reflect absent headroom rather than a
-stable learner-specific negative.  On a
-second learner family (off-policy SAC) the shield-on-only isolation
+not beat freeze in the benign-adaptation smoke.
+
+On the third-party lifecycle, REINFORCE retirement-boundary isolation
+reproduces on 3/3 seeds, and a ten-seed full-phase REINFORCE battery is
+partial (4/10).  The third-party PPO full-phase result is positive on 1/3
+seeds.  Neither a ten-seed full-phase battery (0/10 on the primary
+at-retirement metric) nor a ten-seed retirement-boundary isolation battery
+(1/10) reproduces it, so PPO retirement-boundary isolation is not reproduced
+at scale.  Full-scope poisoning instead persists as unrecovered unsafe
+released policies (poisoned final $0.49$--$0.77$ vs.\ clean $\approx0.22$).
+The boundary remains transfer- and training-state-specific: the at-scale
+negatives trace to the clean policy's raw-policy/shield disagreement at
+retirement, which is $\approx0.10$ on ceiling seeds and bounds attack headroom
+(Spearman $-0.55$ over 50 obstacle paired rows).  They therefore reflect
+absent headroom rather than a stable learner-specific negative.
+
+On a second learner family (off-policy SAC), shield-on-only isolation
 reproduces on three of ten seeds ($0.207 \rightarrow 0.561$, $0.218
-\rightarrow 0.513$, and $0.479 \rightarrow 0.954$; seeds 401/403/404),
-while four independently trained extension seeds (407--410) did not
-reproduce (one protective, three no effect), so the pooled SAC
-learner-variety evidence weakens at scale (3/10) and establishes only a
-partial across-seed signal rather than a single-family artifact or an
-off-policy generality, and a retained-shield control under the same full-scope poisoning
-keeps violations at zero on all three seeds ($0/0$) while the paired sudden
-runs expose final violations of $0.49$--$0.75$, so resident authority contains
-the consequence and removal exposes it.  Formally, an evidence tuple $(s,a,p,i,\tau)$ collected under the training
+\rightarrow 0.513$, and $0.479 \rightarrow 0.954$; seeds 401/403/404).
+Four independently trained extension seeds (407--410) did not reproduce (one
+protective, three no effect), so the pooled SAC learner-variety evidence
+weakens at scale (3/10) and establishes only a partial across-seed signal
+rather than a single-family artifact or an off-policy generality.  A
+retained-shield control under the same full-scope poisoning keeps violations
+at zero on all three seeds ($0/0$), while the paired sudden runs expose final
+violations of $0.49$--$0.75$.  Resident authority therefore contains the
+consequence, and removal exposes it.
+
+Formally, an evidence tuple $(s,a,p,i,\tau)$ collected under the training
 contract must re-establish each component the deployment contract changes
-(Proposition~\ref{prop:transfer}).  Thus
-resident predictive evidence is contract-bound; raw release needs independent
-future coverage.
+(Proposition~\ref{prop:transfer}).  Thus resident predictive evidence is
+contract-bound; raw release needs independent future coverage.

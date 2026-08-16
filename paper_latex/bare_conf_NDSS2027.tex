@@ -423,20 +423,21 @@ runtime states, actions, code, parameters, and certification remain trusted.
 Evidence collected under resident predictive authority is reused to
 authorize permanent raw release.
 
-On a third-party published shield-retirement lifecycle, bounded reward-log
-poisoning confined to the shielded bootstrap phase makes the raw policy
-1.6 to 3.6 times more dangerous at retirement on all seeds, and clean
-post-retirement learning repairs the damage on only one.  A controlled
-Safe-Control-Gym study with five untouched seeds yields 27/120 poisoned
-raw-release failures versus 2/120 clean and 0/120 under resident authority.
-The attack is contract-specific and detectable by task-aware reward checks,
-and does not stably reproduce in official Safe-Control-Gym PPO; a separate
-third-party PPO implementation is paired-significant on one of three seeds,
-but not across ten full-phase (0/10) or ten isolation (1/10) seeds, so the
-boundary is implementation- and training-state-sensitive; a ten-seed
-shield-on-only SAC battery reproduces it on three of ten seeds (401/403/404),
-so the off-policy learner-variety evidence weakens at scale (3/10).
-The attack does not establish benign utility over freeze.
+On a third-party shield-retirement lifecycle, bounded reward-log poisoning
+confined to the shielded bootstrap phase makes the raw policy 1.6 to 3.6
+times more dangerous at retirement on all seeds, and clean post-retirement
+learning repairs it on only one.  A controlled Safe-Control-Gym study with
+five untouched seeds yields 27/120 poisoned raw-release failures versus
+2/120 clean and 0/120 under resident authority, and a residual-REINFORCE
+cross-system battery reproduces the pattern (68/72 quadrotor versus 0/72
+clean).  The attack is contract-specific and detectable by task-aware reward
+checks, and does not stably reproduce in official Safe-Control-Gym PPO; a
+third-party PPO is paired-significant on one of three seeds, but not across
+ten full-phase (0/10) or isolation (1/10) seeds, so the boundary is
+implementation- and training-state-sensitive; a ten-seed shield-on-only SAC
+battery reproduces it on three of ten seeds, so the off-policy
+learner-variety evidence weakens at scale.  The attack does not establish
+benign utility over freeze.
 \end{abstract}
 
 % NDSS submissions do not include a keyword block.

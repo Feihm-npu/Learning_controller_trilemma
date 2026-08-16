@@ -12,8 +12,8 @@ acts without the decision module that made the adaptation evidence safe.
 We study the same authority transition in two deployment patterns.  In the
 first, a learning controller is \emph{protected while commissioned} and then
 released as a permanent raw snapshot under an explicit split-trust
-precondition: an attacker can alter only bounded reward records consumed by
-an updater, while runtime states, actions, code, parameters, and certification
+precondition.  The attacker can alter only bounded reward records consumed by
+an updater; runtime states, actions, code, parameters, and certification
 remain trusted.  In the second, an independently published workflow
 \emph{bootstraps} a policy-gradient learner behind a runtime shield and later
 retires the shield's authority, comparing sudden and smooth removal.  These
