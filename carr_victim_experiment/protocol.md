@@ -610,3 +610,73 @@ any new run, with the same locked protocol. No ad hoc expansion after results.
 - Analysis: extend `analyze_sac.py` (or add `analyze_sac_v112.py`) to report the pooled
   six-seed table; regenerate `results/sac_report.md`; update the paper's Learner-boundary
   and Reading paragraphs and the 2×2 counts; update `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`.
+
+## Amendment v1.13 (2026-08-17, SAC retirement-boundary isolation extension to ten seeds — cross-learner mechanism check)
+
+Motivation: amendment v1.12 pooled 401–406 to a six-seed SAC isolation battery (3/6
+positive). The Reading paragraph currently explains seed heterogeneity by clean
+at-retirement fraction; a stronger, pre-registered mechanism claim is that the
+at-retirement raw-policy/shield disagreement of the *clean* policy (`at_retirement_stats.disagreement_fraction`)
+separates susceptible from ceiling seeds and bounds attack headroom. This amendment
+extends the SAC namespace to ten seeds (4 new paired seeds) so the mechanism can be
+checked across the off-policy learner family at the same n as the PPO isolation
+battery, with the verdict rule locked before any run. No ad hoc expansion after
+results.
+
+### v1.13.1 Configuration (all locked, identical to v1.12.1)
+- Env/domain: `obstacle (N=6)`; code vC (independent belief tracker, amendment v1.4);
+  switch: sudden (HARD); attack: **V3 contrast, δ=2**; poison scope **shield-on**
+  (mutation active only while the shield enforces the mask and stops at retirement);
+  at-retirement eval 1000 episodes; final eval 5000 episodes; retirement at env-step
+  10^5.
+- SAC specifics: `--learning-method SAC --max-runs 100000 --shield-episode 100000`
+  (identical to v1.10.1/v1.12.1).
+- **No determinism gate needed** (same reasoning as v1.12.1: SAC on CPU with fixed seed
+  is deterministic enough for paired McNemar).
+
+### v1.13.2 Seeds & namespace (locked before execution)
+- **4 new paired seeds: 407, 408, 409, 410** (new namespace, disjoint from all prior:
+  REINFORCE 1–3/201–210, PPO 1–3/101–110, SAC 401–406, avoid 1–3, dose 1).
+  Clean and poisoned runs use the same seed → paired comparison.
+- Run dirs MUST be new (no overwrite):
+  `obstacle_sudden_SAC_{none,v3}_d2_s{407..410}`.
+
+### v1.13.3 Statistical analysis & pre-specified decision rules
+- Positive-seed rule (locked, unchanged from v1.5.4/v1.10.1): poisoned at-ret ≥ clean
+  at-ret + 0.15 AND paired McNemar exact p < 0.01.
+- **Pooled verdict rule (locked)**: pool 401–410 (ten paired SAC seeds). Report all
+  ten per-seed rows. The paper's SAC sentence is updated to the pooled count:
+  * ≥ 6/10 positive → "reproduces on N/10 SAC seeds (off-policy learner variety,
+    not off-policy generality)";
+  * 4–5/10 → "partial across ten SAC seeds: the off-policy learner-variety claim is
+    qualified to a subset of seeds";
+  * < 4/10 → "SAC learner-variety evidence weakens (N/10): the off-policy
+    learner-variety claim is not supported at scale".
+  The 2×2 cross-tabulation (v1.9.3/v1.10.3/v1.12.3) is recomputed with the four new
+  SAC rows (total SAC isolation n=10).
+- **Pre-registered mechanism analysis (locked before runs)**:
+  1. Compute the clean at-retirement disagreement `cd` =
+     `at_retirement_stats.disagreement_fraction` of the clean run and the attack
+     headroom `h = poisoned_at_ret − clean_at_ret` per paired seed, pooled across
+     all SAC seeds 401–410.
+  2. Report Spearman correlation between `cd` and headroom, and between clean
+     at-retirement fraction and headroom, on the pooled SAC namespace.
+  3. Dichotomize by `cd`: "low disagreement" = `cd < 0.06`, "high disagreement" =
+     `cd ≥ 0.09` (gaps fixed from the existing 46-row analysis; seeds with
+     0.06 ≤ cd < 0.09 are reported but not dichotomized). Expected reading:
+     low-`cd` SAC seeds reproduce (positive/protective mixture on clean-at-ret
+     ≈ 0.2 vs ambiguous ≈ 0.5 boundary seeds), high-`cd` seeds do not reproduce
+     (ceiling). If the extension seeds land consistent with the existing
+     REINFORCE/PPO pattern, the clean-divergence→headroom mechanism is validated
+     across a third learner family; if not, the mechanism claim is restricted to
+     the obstacle REINFORCE/PPO namespace.
+  - All mechanism numbers enter the paper only as paired within locked code version.
+
+### v1.13.4 Outputs & files
+- Per-run dirs with `*_summary.json`, eval/at-ret traces (server `results/sac_v113/`).
+- Append v1.13 rows to `results/aggregate_table_v2.csv` (new rows, `version=vC`,
+  `scope=shield-on`); do not overwrite.
+- Analysis: extend `analyze_sac_v112.py` (or add `analyze_sac_v113.py`) to report the
+  pooled ten-seed table + the pre-registered mechanism analysis; regenerate
+  `results/sac_report.md`; update the paper's Learner-boundary and Reading paragraphs
+  and the 2×2 counts; update `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`.

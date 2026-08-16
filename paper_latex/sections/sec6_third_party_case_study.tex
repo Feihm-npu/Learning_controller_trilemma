@@ -132,7 +132,7 @@ $\approx0.22$ under continued learning, so full-scope contamination blocks
 the post-retirement recovery that clean policies exhibit.  PPO
 retirement-boundary isolation and full-phase damage are therefore not
 reproduced at scale on the primary metric, and the full-phase $1/3$ positive
-is training-state-specific rather than a stable on-policy learner property.  A three-seed
+is training-state-specific rather than a stable on-policy learner property.  A six-seed
 shield-on-only battery on a second learner family from the same vendored
 suite (off-policy soft actor-critic, SAC) reproduces the retirement-boundary
 effect on three of six seeds (seed~401: $0.207\rightarrow0.561$; seed~403:
@@ -250,6 +250,35 @@ code version and are unaffected by that version change.
   seeds did, so the heterogeneity is platform-, learner-, and
   scope-independent even though the absolute regime differs
   (Fig.~\ref{fig:two-by-two}).
+
+  The susceptibility boundary is not merely a clean-rate threshold: the
+  same forty-six obstacle paired rows that carry the disagreement probe
+  (both scopes, all three learner families) show that the \emph{clean}
+  raw-policy/shield disagreement at retirement is the predictor.  Clean
+  disagreement is near-monotone in clean at-retirement fraction (Spearman
+  $0.978$, $p=1.5\times10^{-31}$): ceiling seeds enter retirement with
+  disagreement $\approx0.10$ (clean at-retirement $0.73$--$0.77$) while
+  below-0.5 seeds stay $\le0.05$.  Disagreement also
+  bounds headroom: across the same rows, the Spearman correlation between
+  clean disagreement and attack headroom is $-0.589$
+  ($p=1.7\times10^{-5}$), and every positive row has clean disagreement
+  $\le0.047$ while non-positive rows reach $0.111$.  This reframes the
+  PPO boundary: 19 of 20 PPO rows land in the high-disagreement regime
+  ($\ge0.09$) with clean at-retirement $0.73$--$0.77$, leaving no headroom
+  to measure the attack, and the single low-disagreement PPO row (isolation
+  seed~101, disagreement $0.013$) is exactly the one that reproduced; PPO's
+  at-scale negatives are therefore a headroom artifact of the
+  training-state regime it samples rather than evidence against
+  transfer-sensitivity.  REINFORCE is mixed (13/20 high-disagreement, all
+  seven low-disagreement rows reproducing), and SAC is the cleanest check:
+  all six SAC rows are low-disagreement ($0.013$--$0.048$), and their
+  positive/protective/no-effect split follows clean at-retirement in the
+  same direction ($\approx0.2$ reproduces, $\approx0.5$ is ambiguous), so
+  the divergence signal is consistent across all three learner families on
+  the obstacle domain.  The signal is obstacle-scoped: the avoid-domain
+  seeds do not follow it (clean disagreement $0.476$ and $0.157$ on
+  protective seeds below the $0.5$ boundary), so the mechanism claim is
+  restricted to this lifecycle.
 
 
 \begin{figure*}[t]

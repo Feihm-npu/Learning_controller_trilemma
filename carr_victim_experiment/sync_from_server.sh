@@ -39,6 +39,7 @@ sync_dirs reinforce_full obstacle_sudden_REINFORCE_
 sync_dirs sac_smoke obstacle_sudden_SAC_
 sync_dirs sac_v110 obstacle_sudden_SAC_
 sync_dirs sac_v112 obstacle_sudden_SAC_
+sync_dirs sac_v113 obstacle_sudden_SAC_
 sync_dirs retained_v110 obstacle_retained_REINFORCE_
 
 # v1.9 full-phase at-scale + v1.10 SAC/retained analyzers (added when scripts land)
@@ -63,5 +64,6 @@ cd "$LOCAL/.."
 run_if_present analyze_fullphase.py --out results/fullphase_report.md
 run_if_present analyze_sac.py
 run_if_present analyze_sac_v112.py --out results/sac_report.md
+run_if_present analyze_sac_v113.py --out results/sac_report.md
 run_if_present analyze_retained_v110.py
 echo "--- done ---"

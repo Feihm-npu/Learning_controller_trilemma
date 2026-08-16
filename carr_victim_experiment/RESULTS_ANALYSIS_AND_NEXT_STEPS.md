@@ -327,3 +327,21 @@ different run-to-run trajectory modes, including its own clean control.
 (e.g., fixed PYTHONHASHSEED, verified clean baseline in the transfer-sensitive mode first)
 can yield a measurable dose-response. New dirs/new battery required (locked protocol
 forbids overwrite); requires user decision.
+
+> **2026-08-17 v1.13 SAC 扩展 + mechanism 段落（进行中）**：协议新增 amendment
+> v1.13（SAC 隔离扩展 seeds 407–410 → pooled 401–410 十 seed 命名空间；verdict 规则
+> 预注册：≥6/10 "reproduces on N/10"、4–5/10 "partial across ten SAC seeds"、<4/10
+> "learner-variety weakens"；机制分析预注册：clean at-ret disagreement `cd` 与 headroom
+> 的 Spearman + 二分化 cd<0.06 / ≥0.09）。服务器 `results/sac_v113/` 8 runs（s407–410
+> × clean/contrast，配置同 v1.12.1）已启动并确认训练中（GPU 0/1/2），ETA ~2h。
+>
+> **机制分析（已用现有 46 obstacle paired rows 落地，已写入论文 sec6 Reading 段）**：
+> Spearman(clean at-ret fraction, clean disagreement) = 0.978 (p=1.5e-31)；
+> Spearman(clean disagreement, headroom) = -0.589 (p=1.7e-5)。全部 positive rows 的
+> clean disagreement ≤ 0.047，non-positive 最高 0.111。PPO 19/20 rows 处于
+> cd≥0.09 高分歧（无 headroom），唯一低分歧 PPO row = isolation s101 (cd=0.013) 恰为
+> 唯一 positive → **PPO 负结果重新解读为 headroom artifact**；REINFORCE 13/20 高分歧、
+> 7 个低分歧 rows 全部 positive；SAC 6/6 低分歧（0.013–0.048）且 positive/protective/
+> no-effect 随 clean at-ret 边界（≈0.2 复现、≈0.5 ambiguous）。机制限定 obstacle 域
+> （avoid s1 cd=0.476、s3 cd=0.157 为保护性例外）。sec6 已同步修正 "three-seed SAC
+> battery" 笔误为 six-seed。
