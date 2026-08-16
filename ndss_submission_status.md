@@ -239,9 +239,11 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   locked plan the local vA paper numbers are kept; the "Attack budget"
   cross-platform note now reports the complete 15-run result.
 - **Open boundary**: PPO retirement-boundary isolation (B1, 10 seeds s101–110)
-  is still running behind the B0 determinism gate; if ≥5/10 paired seeds
-  reproduce, learner-generality wording can be upgraded (else it stays the
-  full-phase 1/3 boundary).
+  is running on the server.  B0 determinism gate PASSED on 2026-08-16
+  (s101 clean ×2: at-retirement 0.750/0.753, eval 0.222/0.229, max diff 0.0068 < 0.05);
+  B1 battery (20 runs) launched 10:07 and is expected to finish in ~2.5h.
+  If ≥5/10 paired seeds reproduce, learner-generality wording can be upgraded
+  (else it stays the full-phase 1/3 boundary).
 - Evidence: `carr_victim_experiment/` (protocol.md + amendments v1.1–v1.5,
   patches.md, results/, `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`,
   `SERVER_VS_LOCAL_DIVERGENCE.md`, `PENDING_PAPER_INTEGRATION_WORDING.md`,
