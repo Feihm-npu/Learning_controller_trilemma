@@ -182,10 +182,25 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
 - **B2. 种子矩阵（P2）**：REINFORCE + PPO × 8–10 seeds × clean/full/shield-on × δ=2。
   回答 "seed 2 是 lucky victim 还是可识别 susceptibility subset"。预设 positive-seed
   定义（如 at-ret poisoned ≥ clean +15pp 且 paired McNemar p<0.01）。可与 B1 并行。
-- **B3. 剂量-反应（P1）**：δ ∈ {0.1, 0.25, 0.5, 1.0, 2.0}，在 transfer-sensitive
-  种子上跑；求最小有效预算 + budget realism 报告；同时记录 at-ret disagreement 是否
-  随 δ 单调 → 机制佐证。
-- **B4. avoid 域（P3）**：fidelity + clean + poisoned 隔离。环境/task generality。
+- **B3. 剂量-反应（P1）**：⚠️ 完成（2026-08-16，v1.7，server transfer-sensitive
+  seed 1 dense grid）—— **无法读出 dose-response（data-quality finding）**：新批全部
+  落在 unsafe-ceiling 轨迹模式（含自身 clean 对照 at-ret≈0.77）；同 seed 同 config 的
+  fullvC clean 复跑（control_fullvC_clean_s1_repeat）给出 0.776 而非 0.232；
+  d0p5 shield-on 又落在 low mode（at-ret 0.208）—— 同 seed 同 scope 多稳。
+  → 不能 claim 最小有效 δ；仅同批 fullvC 配对行有效（δ=2 饱和、δ=10 无增量）。
+  论文处理：保留 fullvC budget 段；fig7 恢复为 within-batch fullvC budget +
+  shape controls（不再画 dense grid）；Third-Party 节新增 run-to-run
+  trajectory-variance limitation 一句。详见本节末尾 addendum。
+- **B4. avoid 域（P3）**：✅ fidelity gate PASS（2026-08-16，v1.8，clean seed 1）：
+  noshield after=1260(0.252)、retained=0(0.000)、smooth=643(0.129)、
+  sudden=1228(0.246) —— 顺序 retained(0/0) < smooth << sudden ≤ noshield，
+  复现 Carr et al. Table 1 的定性保真结构。avoid isolation（v1.8.2，
+  `avoid_iso/`，6 runs，REINFORCE × {none,v3} × s{1,2,3}，shield-on δ=2）
+  ✅ 完成（2026-08-16，server）：**1/3 positive → NOT REPRODUCED (<2/3)**
+  —— s2 是 transfer-sensitive（clean at-ret 0.000 → poisoned 0.272，
+  p=2.6e-82，positive）；s1/s3 显著保护性（0.267→0.000 p=8.4e-81；
+  0.135→0.038 p=1.3e-15）。→ 攻击 effect 环境特定（environment-specific）；
+  clean lifecycle pattern 跨域通用。论文新增 "Environment boundary" 段。
 - **B5. SAC（P4）**：B2/B3 通过后再开。
 - **B6. escape conditions**：trusted reward recomputation / raw-policy verification /
   retain-shield 对照 → 检测与缓解证据。
@@ -206,3 +221,62 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
   曾覆盖 `v3_d2_s1/2/3` 目录名——新实验必须用新目录名，避免再次覆盖）。
 - 统计口径：paired McNemar exact；at-ret 同快照；跨版本绝对值不混用。
 - 进论文前：vA full-phase 数字需用当前代码版本（vC）复核（protocol v1.4 要求）。
+
+---
+
+## Addendum 2026-08-16 — B3 dose-response battery: uninformative due to trajectory run-to-run variance (critical data-quality finding)
+
+**Pre-registered design (v1.7)**: dense δ grid on the server's transfer-sensitive seed 1
+(clean at-ret 0.232 from fullvC), reusing fullvC rows at δ∈{2,10} and adding
+δ∈{0.1,0.25,0.5,1.0}, plus a shield-on-only secondary series.
+
+**Result**: the dose battery cannot establish a dose-response. The new runs landed in
+different run-to-run trajectory modes, including its own clean control.
+
+| batch | run | scope | at-ret | final |
+|---|---|---|---|---|
+| fullvC | clean s1 | full | 0.232 | 0.231 |
+| fullvC | contrast s1 δ=2 | full | 0.501 | 0.490 |
+| fullvC | contrast s1 δ=10 | full | 0.499 | 0.490 |
+| dose | contrast s1 δ=0.1 | full | 0.502 | 0.239 |
+| dose | contrast s1 δ=0.25 | full | 0.776 | 0.755 |
+| dose | contrast s1 δ=0.5 | full | 0.772 | 0.755 |
+| dose | contrast s1 δ=1.0 | full | 0.775 | 0.755 |
+| dose | clean s1 (shield-on) | shield-on | 0.772 | 0.755 |
+| dose | contrast s1 δ=0.25 | shield-on | 0.775 | 0.236 |
+| dose | contrast s1 δ=0.5 | shield-on | **0.208** | 0.236 |
+| dose | contrast s1 δ=1.0 | shield-on | 0.772 | 0.755 |
+| dose | contrast s1 δ=2.0 | shield-on | 0.777 | 0.754 |
+| repeat | clean s1 (full-phase re-run) | full | **0.776** | 0.755 |
+
+**Evidence for the confound**:
+1. The dose batch's own clean control (shield-on, δ=0) sits at at-ret 0.772 — the ceiling
+   mode with no headroom — so poisoned runs at ~0.77 are indistinguishable from clean.
+2. A direct repeat of the fullvC clean s1 run (control_fullvC_clean_s1_repeat, same code,
+   same config, same seed) gives at-ret **0.776**, not 0.232. Same seed ⇒ different mode.
+3. The two-batch picture is mode-multistable rather than monotone: δ=0.5 shield-on landed
+   at-ret **0.208** (low/poisoned-like mode) while δ=1.0 shield-on gave 0.772 — the same
+   poison scope and seed, two different trajectory modes.
+4. at-ret disagreement is tightly mode-coupled (low 0.013 / mid 0.048 / high 0.112);
+   the fullvC clean (0.013) and dose-batch clean (0.112) are in different modes.
+5. The apparent "dose-response" (δ=0.1: 0.502/0.239 vs δ=0.25–1.0: 0.775/0.755) is purely
+   a trajectory-mode artifact.
+
+**Conclusion / honest boundary**:
+- No minimum-effective-δ can be claimed from the dose battery; cross-batch comparison
+  against the fullvC clean is invalid (different trajectory modes).
+- The within-batch fullvC budget evidence remains valid: on the transfer-sensitive seed,
+  δ=2 already saturates (at-ret 0.232→0.501) and δ=10 adds nothing (0.499).
+- The REINFORCE vC pipeline has substantial run-to-run trajectory variance: the
+  transfer-sensitive regime (clean at-ret <0.5, self-healing) is a per-run trajectory
+  state, not a reproducible seed property. This is consistent with the 2×2 heterogeneity
+  (effect 7/7 where clean at-ret<0.5; 0/16 at ceiling) and with the paper's existing
+  "training-state-sensitive" language.
+- Paper treatment: keep the fullvC budget paragraph; do NOT plot the dense grid as a
+  dose-response (fig7 restored to within-batch fullvC budget + shape controls); added a
+  limitation sentence about run-to-run trajectory variance in the Third-Party section.
+
+**Open question for next cycle**: whether re-running the grid under enforced determinism
+(e.g., fixed PYTHONHASHSEED, verified clean baseline in the transfer-sensitive mode first)
+can yield a measurable dose-response. New dirs/new battery required (locked protocol
+forbids overwrite); requires user decision.

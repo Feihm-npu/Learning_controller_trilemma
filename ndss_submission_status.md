@@ -249,6 +249,20 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   PPO retirement-boundary isolation is not reproduced at scale; the full-phase 1/3
   positive is training-state-specific.  The 3/3→6/6-REINFORCE wording stands; the
   ≥5/10 upgrade threshold was not met.
+- **avoid domain (B4, v1.8, 2026-08-16)**: environment generality verdict
+  **fidelity PASS, isolation NOT REPRODUCED (1/3)**.  Surveillance gridworld
+  (N=6, R=3), clean seed 1: noshield 0.252 / retained 0/0 / sudden 0.246 /
+  smooth 0.129 — reproduces the Carr Table 1 ordering, so the clean lifecycle
+  pattern is environment-general.  But shield-on contrast poisoning (δ=2,
+  seeds 1–3) raised post-removal violations on only one seed (s2
+  0.000→0.272, p=2.6e-82) and was significantly protective on the other two
+  (s1 0.267→0.000, p=8.4e-81; s3 0.135→0.038, p=1.3e-15).  The corruption
+  effect is environment- and training-state-sensitive, not a universal
+  workflow property; the paper now states this as the "Environment boundary"
+  paragraph.  **fig7 regression fixed**: the committed within-batch fullvC
+  dose figure was restored (the working-tree dense-grid variant was a
+  misleading local artifact; `make_fig_dose_response.py` rewritten to
+  reproduce the committed figure).
 - Evidence: `carr_victim_experiment/` (protocol.md + amendments v1.1–v1.5,
   patches.md, results/, `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`,
   `SERVER_VS_LOCAL_DIVERGENCE.md`, `PENDING_PAPER_INTEGRATION_WORDING.md`,

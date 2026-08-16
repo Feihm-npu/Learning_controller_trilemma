@@ -90,8 +90,8 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 
 1. **seeds 数量不足**（REINFORCE 3、PPO 3），且 REINFORCE+obstacle 在固定 seed 下存在 run-to-run 方差（TF 2.15 CPU 非确定性；clean s1 final 在无仪器版本为 3784，加仪器后 1182/1140）。**配对比较均在同一代码版本内进行，结论不受影响**（效应量远超方差、clean/poisoned 完全分离）；但跨版本绝对值不可混用，full-phase 旧数据（vA 版）进论文前需用当前代码版本复核（protocol v1.4）。
 2. **PPO full-phase 只有 1/3 seeds positive**；隔离实验（P0'，B1）已落地为 **NOT REPRODUCED（1/10）** —— 隔离层 learner generality 不成立，full-phase 1/3 positive 判定为 training-state-specific。
-3. **budget realism 未校准**：δ=2 相对 reward scale 的意义、dose-response（δ=0.1/0.25/0.5/1/2）未跑；`poison_stats` 已就绪（初步：raw reward min=0/max=1001/mean=33.7/sd=177.9，δ=2 ≈ 典型单步 reward 的 2×）。
-4. **环境 generality 未验证**（avoid 等 Carr 其他域未跑）；SAC 未跑。
+3. **budget realism**：`poison_stats` 就绪（raw reward min=0/max=1001/mean=33.7/sd=177.9，δ=2 ≈ 典型单步 reward 的 2×）。δ=2/δ=10 full-phase 对比已在 vA（locked local batch）内完成（transfer-sensitive seed 上 δ=2 已饱和）；服务器 dense dose grid（B3，v1.7）因同 seed 复跑落入不同 run-to-run trajectory mode（clean at-ret 0.776 vs 0.232）而**无法读出 dose-response**——跨批绝对值不可比，**不能声称 δ_min**；论文只报告 locked batch 内的 paired budget 依赖。
+4. **环境 generality**：avoid 域（B4，v1.8，surveillance N=6 R=3）fidelity gate **PASS**（noshield 0.252 / retained 0/0 / sudden 0.246 / smooth 0.129，复现 Carr Table 1 定性顺序），但 shield-on 隔离 **1/3 NOT REPRODUCED**（s2 0.000→0.272 显著 positive；s1/s3 显著 protective）→ 攻击 effect 是环境-与 training-state-specific，不是 workflow 的普适性质；SAC 未跑。
 5. **detectability / escape conditions 未测**（trusted reward recomputation、raw-policy verification、retain shield 对照）。
 
 ## 5. 进度状态与服务器任务清单（按优先级）
@@ -100,8 +100,8 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 |---|---|---|
 | **P0'** | ✅ 完成（B1，2026-08-16）：PPO 隔离（shield-on + at-retirement，10 seeds）**NOT REPRODUCED 1/10**；learner generality 不成立，2×2 扩展为 7/7 vs 0/16 | 补最大缺口：learner generality |
 | P2 | REINFORCE + PPO × 各 8–10 seeds 完整矩阵（clean / full / shield-on，δ=2） | 把 seed 方差变成统计推断；回答"seed 2 是 lucky victim 还是可识别 susceptibility subset" |
-| P1 | dose-response：δ ∈ {0.1, 0.25, 0.5, 1.0, 2.0} | 最小有效预算 + budget realism 报告 |
-| P3 | avoid 域（fidelity + clean + poisoned 隔离） | 环境/task generality |
+| P1 | ⚠️ 完成但无信息量（B3，v1.7）：dense dose grid 因 run-to-run trajectory 方差不可读（fig7 恢复为 within-batch fullvC budget）；无 δ_min claim | budget realism：仅 locked batch 内 paired 对比有效 |
+| P3 | ✅ 完成（B4，v1.8）：avoid fidelity PASS + shield-on 隔离 **1/3 NOT REPRODUCED**（环境特定） | 环境/task generality：生命周期模式普适、攻击 effect 环境特定 |
 | 复核 | vA 版 full-phase 数据用当前代码版本重跑 | 进论文前数据一致性 |
 | P4 | SAC（P2/P3 通过后） | learner-family generality |
 | 新增 | escape conditions（recomputation / raw verification / retain shield） | detectability 与缓解 |
@@ -122,3 +122,5 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 > 注：本仓库 .gitignore 规则"Python 代码不同步"；实验运行代码保留在本机 `carr_victim_experiment/`（venv、wheels_cache 亦不上传）。
 
 > **2026-08-16 论文整合**：上述 Carr 结果已写入正文 Section IV（Third-Party Shield-Retirement Case Study，23-pp working build）：fidelity gate、REINFORCE 3/3 seeds 退休边界因果隔离、PPO full-phase learner boundary（1/3 seeds）、dose-response 与 bias/risk 负对照（Attack budget and susceptibility 段）。摘要与 Intro 明确区分 official SCG PPO 不转移 与 第三方 Carr PPO 1/3 seeds positive。PPO 隔离（P0'）已落地为 **1/10 NOT REPRODUCED**：论文删去 “open learner-generality boundary” 措辞，改为 “PPO retirement-boundary isolation is not reproduced at scale; the full-phase 1/3 positive is training-state-specific”，2×2 扩展为 7/7 vs 0/16。
+
+> **2026-08-16 第二轮整合（B3/B4 + fig7 修复）**：B3 dose battery（v1.7）为 data-quality finding（跨批 trajectory 方差，fig7 由误导性 dense-grid 恢复为 committed within-batch fullvC 图，工作树与 `paper_latex/figures/` 均正确）；B4 avoid 域（v1.8）fidelity PASS、隔离 **1/3 NOT REPRODUCED**（环境特定）。论文 sec6 增补 "trajectory-variance limitation" 句与 "Environment boundary" 段（24-pp working build）；manifest 重新生成，17/17 artifact tests 通过。

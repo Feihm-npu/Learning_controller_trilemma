@@ -158,7 +158,13 @@ steering of the released policy.
   transfer-sensitive seed, none on ceiling seeds---thus reproduces across
   platforms, although which seed is transfer-sensitive differs (local seed~2
   vs.\ server seed~1); the paired budget dependence above is reported from
-  the local locked code version.
+  the local locked code version.  A dense budget grid
+  ($\delta\in\{0.1,0.25,0.5,1.0\}$) on the server transfer-sensitive seed
+  was inconclusive: re-running the identical clean configuration on that host
+  landed on a different run-to-run trajectory mode (clean at-retirement
+  $0.776$ vs.\ $0.232$ for the same seed and code), so cross-batch budget
+  comparisons are not meaningful and the budget dependence is reported only
+  within the locked local batch.
 
 \begin{figure*}[t]
 \centering
@@ -198,3 +204,19 @@ code version and are unaffected by that version change.
   PPO) and every seed in the ceiling regime showed none (0/16: seven
   REINFORCE and nine PPO), so the heterogeneity is platform- and
   learner-independent even though the absolute regime differs.
+
+\paragraph{Environment boundary.}
+The lifecycle pattern is not obstacle-specific: on a second gridworld of
+the same third-party suite (surveillance, $N{=}6$, $R{=}3$), a clean
+reproduction again satisfies the authors' ordering, shield retained $0/0$,
+smooth $0.129$, sudden $0.246$, and no-shield $0.252$ (retained $<$
+smooth $\ll$ sudden $\le$ no-shield).  The fixed attack shape, however,
+does not transfer as a general property: shield-on contrast poisoning at
+$\delta{=}2$ on three independent avoid seeds raised post-removal
+violations on only one seed ($0.000 \rightarrow 0.272$, McNemar exact
+$p=2.6\times10^{-82}$) and was significantly protective on the other two
+($0.267 \rightarrow 0.000$, $p=8.4\times10^{-81}$; $0.135 \rightarrow
+0.038$, $p=1.3\times10^{-15}$).  The clean lifecycle pattern therefore
+generalizes across environments, while the corruption effect is
+environment- and training-state-sensitive rather than a universal property
+of the workflow.

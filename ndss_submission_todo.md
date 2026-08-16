@@ -156,7 +156,11 @@ submission — it must stay anonymous.
       (`RESULTS_ANALYSIS_AND_NEXT_STEPS.md`, `results/aggregate_table_v2.csv`).
 - [ ] **If pursued as the next-cycle headline, server work first** (pre-registered
       amendments required; see `carr_victim_experiment/RESULTS_ANALYSIS_AND_NEXT_STEPS.md`
-      §6): (1) PPO isolation experiment (shield-on + at-retirement, 10 seeds,
-      amendment v1.5) — closes the learner-generality gap on the causal claim;
-      (2) seed matrix (8–10 seeds × clean/full/shield-on × δ=2); (3) dose-response
-      δ∈{0.1,0.25,0.5,1,2}; (4) avoid domain; (5) SAC; (6) escape conditions.
+      §6): (1) ✅ PPO isolation (v1.5, 10 seeds) — **NOT REPRODUCED 1/10**; learner
+      generality closed as negative, full-phase 1/3 is training-state-specific;
+      (2) seed matrix (8–10 seeds × clean/full/shield-on × δ=2) — REINFORCE 10-seed
+      (v16) = 3/10 PARTIAL; PPO full-phase multi-seed 仍缺; (3) ⚠️ dose-response
+      (v1.7 dense grid) — **uninformative** (run-to-run trajectory variance; no δ_min
+      claim; fig7 restored to within-batch fullvC); (4) ✅ avoid domain (v1.8) —
+      fidelity PASS, isolation **1/3 NOT REPRODUCED** (environment-specific);
+      (5) SAC; (6) escape conditions.

@@ -43,4 +43,6 @@ cd "$LOCAL/.."
 ../.venv-safe-control/bin/python analyze_dose_response.py
 ../.venv-safe-control/bin/python analyze_seed_heterogeneity.py
 ../.venv-safe-control/bin/python make_fig6.py
+../.venv-safe-control/bin/python make_fig_dose_response.py
+../.venv-safe-control/bin/python analyze_avoid.py
 echo "--- done ---"
