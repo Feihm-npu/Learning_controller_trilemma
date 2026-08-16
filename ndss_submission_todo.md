@@ -165,7 +165,8 @@ submission — it must stay anonymous.
       (v1.7 dense grid) — **uninformative** (run-to-run trajectory variance; no δ_min
       claim; fig7 restored to within-batch fullvC); (4) ✅ avoid domain (v1.8) —
       fidelity PASS, isolation **1/3 NOT REPRODUCED** (environment-specific);
-      (5) ✅ SAC (v1.10.1+v1.12, pooled 6-seed) — **POSITIVE 3/6** (partial
-      across-seed learner variety; s402/s405 reverse-protective, s406 no effect);
+      (5) ✅ SAC (v1.10.1+v1.12+v1.13, pooled 10-seed s401–410) — **POSITIVE 3/10**
+      (partial across-seed learner variety; s402/405/408 reverse-protective,
+      s406/407/409/410 no effect; 2×2 12/20 vs 0/33 over 53 rows);
       (6) escape conditions (retained-shield ✅ 2026-08-16; detectability
       recomputation/raw-verification evidence pending).

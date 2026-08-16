@@ -417,11 +417,9 @@
 
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
-\begin{abstract}
-Runtime assurance can mask an unsafe raw policy during protected adaptation.
-We study update-data integrity across runtime-authority transitions: an
-attacker alters bounded reward records consumed by an updater, while runtime
-states, actions, code, parameters, and certification remain trusted.
+\begin{abstract}Runtime assurance can mask an unsafe raw policy during protected adaptation:
+an attacker alters bounded reward records consumed by an updater, while
+runtime states, actions, code, parameters, and certification remain trusted.
 Evidence collected under resident predictive authority is reused to
 authorize permanent raw release.
 
@@ -432,12 +430,12 @@ post-retirement learning repairs the damage on only one.  A controlled
 Safe-Control-Gym study with five untouched seeds yields 27/120 poisoned
 raw-release failures versus 2/120 clean and 0/120 under resident authority.
 The attack is contract-specific and detectable by task-aware reward checks,
-and does not stably reproduce in the official Safe-Control-Gym PPO learner;
-a separate third-party PPO implementation is paired-significant on one of
-three seeds, with no effect across ten full-phase seeds (0/10) and once
-across ten isolation seeds, so the boundary is implementation- and
-training-state-sensitive; a six-seed shield-on-only SAC battery reproduces it
-on three of six seeds, so the susceptibility is learner-varied but partial.
+and does not stably reproduce in official Safe-Control-Gym PPO; a separate
+third-party PPO implementation is paired-significant on one of three seeds,
+but not across ten full-phase (0/10) or ten isolation (1/10) seeds, so the
+boundary is implementation- and training-state-sensitive; a ten-seed
+shield-on-only SAC battery reproduces it on three of ten seeds (401/403/404),
+so the off-policy learner-variety evidence weakens at scale (3/10).
 The attack does not establish benign utility over freeze.
 \end{abstract}
 

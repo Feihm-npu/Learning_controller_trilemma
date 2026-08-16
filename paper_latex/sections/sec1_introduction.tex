@@ -185,9 +185,11 @@ Our contributions are:
     third-party lifecycle's PPO implementation is paired-significant on one of
     three seeds and does not reproduce in a ten-seed full-phase battery (0/10
     at retirement) or a ten-seed isolation battery (1/10), so the boundary is
-    implementation- and training-state-sensitive; a six-seed shield-on-only
+    implementation- and training-state-sensitive; a ten-seed shield-on-only
     battery on off-policy SAC in the same suite reproduces the boundary on
-    three of six seeds, so the susceptibility is learner-varied, though only
-    partially across SAC seeds, rather than confined to on-policy
-    Monte-Carlo learners.
+    three of ten seeds (seeds 401/403/404; four independently trained
+    extension seeds 407--410 did not reproduce), so the susceptibility is
+    learner-varied but the off-policy learner-variety evidence weakens at
+    scale (3/10), rather than being confined to on-policy Monte-Carlo
+    learners or establishing an off-policy generality.
 \end{itemize}

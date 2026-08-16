@@ -244,12 +244,13 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   max diff 0.0068 < 0.05).  B1: only seed 101 reproduced (clean 0.219 → poisoned
   0.754, p=3.7e-113, first-viol 19→0); the other 9 seeds all landed in the unsafe
   ceiling regime (clean at-retirement 0.728–0.760): 6 significantly protective,
-  3 unchanged.  Cross-platform/cross-learner 2×2 is now final: isolation batteries 10/12
-  below-0.5 positive (6 REINFORCE + 1 PPO + 3 SAC) vs 0/17 ceiling (7 REINFORCE + 9
-  PPO + 1 SAC); the full locked cross-tabulation (49 paired rows, both scopes, all
-  three learner families, both domains) reads 12/16 below-0.5 positive vs 0/33
-  ceiling, with the four exceptions being the two avoid-domain protective seeds and
-  the two SAC non-reproducing seeds.  The paper now says
+  3 unchanged.  Cross-platform/cross-learner 2×2 is now final: shield-on-only isolation
+  batteries (33 rows incl. avoid) reproduced on 8/16 below-0.5 positive
+  (3 REINFORCE + 1 PPO + 3 SAC + 1 avoid) vs 0/17 ceiling (7 REINFORCE + 9 PPO + 1
+  SAC); the full locked cross-tabulation (53 paired rows, both scopes, all three
+  learner families, both domains) reads 12/20 below-0.5 positive vs 0/33 ceiling,
+  with the eight exceptions being the two avoid-domain protective seeds and the six
+  SAC non-reproducing seeds (405/408 protective, 406/407/409/410 no effect).  The paper now says
   PPO retirement-boundary isolation is not reproduced at scale; the full-phase 1/3
   positive is training-state-specific.  The 3/3→6/6-REINFORCE wording stands; the
   ≥5/10 upgrade threshold was not met.
@@ -267,15 +268,18 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   dose figure was restored (the working-tree dense-grid variant was a
   misleading local artifact; `make_fig_dose_response.py` rewritten to
   reproduce the committed figure).
-- **SAC (B5, v1.10.1+v1.12, 2026-08-16/17)**: off-policy SAC shield-on-only isolation,
-  pooled 6-seed namespace s401–406 → **POSITIVE 3/6**: s401 0.207→0.561 (p=5.6e-57),
-  s403 0.218→0.513 (p=7.5e-41), s404 0.479→0.954 (p=3.5e-109); two reverse-protective
-  (s402 0.502→0.236 p=3.6e-33; s405 0.497→0.247 p=8.5e-30); one no-effect (s406
-  clean/poisoned at-ret both 0.218, paired p=1.00).  Learner variety is a partial
-  across-seed signal, not off-policy generality.  Integrated into the working paper
-  (abstract, intro, sec6 Learner-boundary/Reading, conclusion, related work; fig8
-  updated to 49 rows); `sac_report.md` is the final pooled version and
-  `aggregate_table_v2.csv` now has 138 rows.
+- **SAC (B5, v1.10.1+v1.12+v1.13, 2026-08-17)**: off-policy SAC shield-on-only
+  isolation, pooled 10-seed namespace s401–410 → **POSITIVE 3/10**: s401 0.207→0.561
+  (p=5.6e-57), s403 0.218→0.513 (p=7.5e-41), s404 0.479→0.954 (p=3.5e-109); three
+  reverse-protective (s402 0.502→0.236 p=3.6e-33; s405 0.497→0.247 p=8.5e-30; s408
+  0.494→0.235 p=3.6e-32); four no-effect (s406 p=1.00, s407 p=0.71, s409 p=0.56, s410
+  p=0.48; s407–410 on a second Linux host under the identical locked config).
+  Learner variety is a partial across-seed signal, not off-policy generality; the
+  off-policy learner-variety evidence weakens at scale (3/10).  Integrated into the
+  working paper (abstract, intro, sec6 Learner-boundary/Reading, conclusion, related
+  work; fig8 updated to 53 rows, fig9 to 50 rows; abstract trimmed to ≤200 words);
+  `sac_report.md` is the final pooled version and `aggregate_table_v2.csv` now has
+  146 rows.
 - Evidence: `carr_victim_experiment/` (protocol.md + amendments v1.1–v1.12,
   patches.md, results/, `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`,
   `SERVER_VS_LOCAL_DIVERGENCE.md`, `PENDING_PAPER_INTEGRATION_WORDING.md`,

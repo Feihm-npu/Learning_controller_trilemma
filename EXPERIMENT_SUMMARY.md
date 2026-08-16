@@ -103,7 +103,7 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 | P1 | ⚠️ 完成但无信息量（B3，v1.7）：dense dose grid 因 run-to-run trajectory 方差不可读（fig7 恢复为 within-batch fullvC budget）；无 δ_min claim | budget realism：仅 locked batch 内 paired 对比有效 |
 | P3 | ✅ 完成（B4，v1.8）：avoid fidelity PASS + shield-on 隔离 **1/3 NOT REPRODUCED**（环境特定） | 环境/task generality：生命周期模式普适、攻击 effect 环境特定 |
 | 复核 | vA 版 full-phase 数据用当前代码版本重跑 | 进论文前数据一致性 |
-| P4 | ✅ 完成（B5，v1.10.1+v1.12，2026-08-16/17）：SAC shield-on 隔离 pooled 6-seed **POSITIVE 3/6**（s401/403/404；s402/405 保护性反向、s406 无效应） | learner-family generality（partial across-seed learner variety，禁称 off-policy generality） |
+| P4 | ✅ 完成（B5，v1.10.1+v1.12+v1.13，2026-08-17）：SAC shield-on 隔离 pooled 10-seed **POSITIVE 3/10**（s401/403/404；s402/405/408 保护性反向、s406/407/409/410 无效应） | learner-family generality（partial across-seed learner variety，禁称 off-policy generality） |
 | 新增 | escape conditions（recomputation / raw verification / retain shield） | detectability 与缓解 |
 
 **服务器注意事项**（供参考，非运行说明）：锁 git commit（`1baa6752`）+ venv 依赖版本；GPU 上 cuDNN 非确定性需先测（同 seed 两次 clean 对比），必要时 CPU 多核并行（gridworld 极小，CPU 吞吐更高）。
@@ -126,15 +126,18 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 > **2026-08-16 第二轮整合（B3/B4 + fig7 修复）**：B3 dose battery（v1.7）为 data-quality finding（跨批 trajectory 方差，fig7 由误导性 dense-grid 恢复为 committed within-batch fullvC 图，工作树与 `paper_latex/figures/` 均正确）；B4 avoid 域（v1.8）fidelity PASS、隔离 **1/3 NOT REPRODUCED**（环境特定）。论文 sec6 增补 "trajectory-variance limitation" 句与 "Environment boundary" 段（24-pp working build）；manifest 重新生成，17/17 artifact tests 通过。
 
 
-> **2026-08-17 SAC v1.12 pooled + 2×2 最终整合**：SAC 隔离按协议 v1.12 扩展至 pooled
-> 6-seed 命名空间（s404–406 追加，配置同 v1.10.1，服务器 vC 代码，防护开启隔离）。按
-> v1.12.3 锁定规则（poisoned at-ret ≥ clean at-ret +0.15 且 paired McNemar p<0.01）：
-> **3/6 positive**（s401 0.207→0.561 p=5.6e-57；s403 0.218→0.513 p=7.5e-41；s404
-> 0.479→0.954 p=3.5e-109）；两个反向保护（s402 0.502→0.236 p=3.6e-33；s405 0.497→0.247
-> p=8.5e-30）；一个无效应（s406 0.218→0.218 p=1.00，clean/poisoned 完全同轨迹）。→
-> learner variety 是 **partial across-seed 信号，不是 off-policy generality**。2×2 重新
-> 计算为 **12/16 below-0.5 positive vs 0/33 ceiling（49 paired rows）**，4 个例外 = avoid
-> 域两个保护性 + SAC s405/s406。fig8 已更新为 49 rows；`sac_report.md` 为最终版；
-> `aggregate_table_v2.csv` = 138 rows（+6 SAC 行）。论文摘要/Intro/sec6/Conclusion/
-> Related Work 已按 3/6 与 12/16 vs 0/33 更新；PDF 26pp、0 overfull；manifest 重生成，
-> 17/17 artifact tests 通过。
+> **2026-08-17 SAC v1.13 pooled + 2×2 最终整合**：SAC 隔离按协议 v1.12+v1.13 扩展至 pooled
+> 10-seed 命名空间（s401–410，配置同 v1.10.1，服务器 vC 代码，防护开启隔离；s407–410 为
+> Linux host 复核批次）。按锁定规则（poisoned at-ret ≥ clean at-ret +0.15 且 paired
+> McNemar p<0.01）：**3/10 positive**（s401 0.207→0.561 p=5.6e-57；s403 0.218→0.513
+> p=7.5e-41；s404 0.479→0.954 p=3.5e-109）；三个反向保护（s402 0.502→0.236 p=3.6e-33；
+> s405 0.497→0.247 p=8.5e-30；s408 0.494→0.235 p=3.6e-32）；四个无效应（s406 0.218→0.218
+> p=1.00、s407 p=0.71、s409 p=0.56、s410 p=0.48）。→ learner variety 是 **partial
+> across-seed 信号，不是 off-policy generality**；off-policy learner-variety evidence
+> weakens at scale (3/10)。2×2 重新计算为 **12/20 below-0.5 positive vs 0/33 ceiling
+> （53 paired rows，full-phase + isolation + both domains）**，8 个例外 = avoid 域两个保护性
+> + SAC 六个 non-reproducing（405/408 保护性、406/407/409/410 无效应）。fig8 已更新为
+> 53 rows、fig9 为 50 rows；`sac_report.md` 为最终版；`aggregate_table_v2.csv` = 146 rows
+> （+10 SAC 行）。论文摘要/Intro/sec6/Conclusion/Related Work 已按 3/10 与 12/20 vs 0/33
+> 更新；摘要已 trim 回 ≤200 words；PDF 27pp、0 overfull；manifest 重生成，artifact tests
+> 通过。
