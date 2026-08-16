@@ -18,13 +18,13 @@ sync_dirs() {
       echo "  skip $name (exists, has summary)"
       continue
     fi
-    if ! ssh "$HOST" "find '$d' -maxdepth 1 -name '*_summary.json' | grep -q ."; then
+    if ! ssh -n "$HOST" "find '$d' -maxdepth 1 -name '*_summary.json' | grep -q ."; then
       echo "  skip $name (no summary on server yet)"
       continue
     fi
     echo "  rsync $name"
     rsync -az "$HOST:$d/" "$LOCAL/$name/" && n=$((n+1))
-  done < <(ssh "$HOST" "find '$REMOTE/$src' -maxdepth 1 -type d -name '$base*' 2>/dev/null | sort")
+  done < <(ssh -n "$HOST" "find '$REMOTE/$src' -maxdepth 1 -type d -name '$base*' 2>/dev/null | sort")
   echo "  synced $n new dir(s)"
 }
 

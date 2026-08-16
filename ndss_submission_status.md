@@ -219,8 +219,25 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   REINFORCE δ=2/δ=10 attack-budget/susceptibility boundary. Earlier notes
   saying "Carr is not added to it" refer to the frozen 13-pp Fall submission
   and are obsolete under the quality-first rewrite.
-- **Open boundary**: PPO retirement-boundary isolation (P0') is still running;
-  if ≥5/10 paired seeds reproduce, learner-generality wording can be upgraded.
+- **v16 (REINFORCE 10-seed isolation, server, 2026-08-16)**: verdict 1/10
+  positive.  The single transfer-sensitive seed (s201, clean at-retirement 0.24)
+  reproduced the effect (→ 0.533; McNemar exact p=8.25e-39); the other 9 seeds
+  landed in the unsafe ceiling regime (clean at-retirement 0.72–0.76) with no
+  headroom, 2 of them protective-signed.  K=1 < 7, so the "3/3 seeds" wording is
+  **not** upgraded; a heterogeneity sentence (Spearman −1.0 on the vC seeds;
+  cross-platform 2×2: clean<0.5 ⇒ 4/4 positive, ceiling ⇒ 0/7) and a
+  platform-honesty sentence were added to `sec6_third_party_case_study.tex`.
+- **fullvC (REINFORCE full-phase v1.4 re-run, server)**: landed in the ceiling
+  regime (clean at-retirement ≥0.72) with no paired headroom; contrast δ=2 had
+  no effect and δ=10 was protective on the server, so the qualitative pattern
+  did **not** re-measure there.  Per the locked plan the local vA paper numbers
+  are kept; a cross-platform ceiling note was added to the "Attack budget"
+  paragraph.
+- **Open boundary**: PPO retirement-boundary isolation (B1, 10 seeds s101–110)
+  is still running behind the B0 determinism gate; if ≥5/10 paired seeds
+  reproduce, learner-generality wording can be upgraded (else it stays the
+  full-phase 1/3 boundary).
 - Evidence: `carr_victim_experiment/` (protocol.md + amendments v1.1–v1.5,
   patches.md, results/, `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`,
+  `SERVER_VS_LOCAL_DIVERGENCE.md`, `PENDING_PAPER_INTEGRATION_WORDING.md`,
   `results/aggregate_table_v2.csv`).

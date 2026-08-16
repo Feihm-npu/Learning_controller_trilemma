@@ -55,13 +55,13 @@ seed & clean & poisoned & clean & poisoned\\
 2 & 0.484 & 0.763 & 0.234 & 0.751\\
 3 & $^a$$\approx$0.24 & 0.748 & 0.233 & 0.741\\
 \bottomrule
-\multicolumn{5}{@{}l}{\footnotesize $^a$Seed-3 clean at-retirement is
+\end{tabular}
+\vspace{1pt}\par\footnotesize $^a$Seed-3 clean at-retirement is
 provenance-flagged in the artifact: its stored summary record is
 byte-identical to the seed-1 fix-check record in a separate directory, so we
 report the conservative upper bound of the plausible range
 ($\approx$0.21--0.24); the paired conclusion is unchanged at either bound
-(poisoned 0.748).}\\
-\end{tabular}
+(poisoned 0.748).
 \end{table}
 
 On all three seeds the poisoned raw policy is already $1.6$--$3.6\times$
@@ -77,6 +77,11 @@ $0.01$--$0.05$ for clean runs but rises to $0.11$--$0.15$ (peak 0.71) under
 poisoning while masked violations remain zero: the shield masks unsafe
 proposals whose physical consequence appears only after authority removal
 (Fig.~\ref{fig:carr-disagreement}).
+Across the three paired seeds the per-seed boundary is interpretable: clean
+at-retirement fraction and attack headroom are strongly negatively correlated
+(Spearman $-1.0$), so the effect concentrates on the seeds whose clean
+learning would otherwise transfer safety to the released policy and saturates
+on seeds already near the unsafe ceiling.
 
 \begin{figure*}[t]
 \centering
@@ -132,6 +137,11 @@ neither budget adds damage while the shape controls are protective.  The
 attack is thus not a monotone ``more corruption $\Rightarrow$
 more damage'' effect; it is a shape-, budget-, and transfer-state-dependent
 steering of the released policy.
+  We attempted an independent re-run of the full-phase protocol on a Linux
+  host with identical dependency versions; on the seeds it completed, that
+  run landed in the unsafe ceiling regime at retirement (clean at-retirement
+  0.72--0.76) with no paired headroom for the effect, so the paired budget
+  dependence above is reported only from the local locked code version.
 
 \begin{figure*}[t]
 \centering
@@ -155,3 +165,13 @@ Absolute rates differ across instrumented and non-instrumented code versions
 because the unmasked-disagreement probe requires an independent belief
 tracker; all clean-vs-poisoned comparisons above are paired within a locked
 code version and are unaffected by that version change.
+  Absolute rates also vary across platforms.  An exploratory ten-seed
+  shield-on-only battery on the same Linux host landed most independently
+  trained REINFORCE seeds in the unsafe regime at retirement (clean
+  at-retirement 0.72--0.76), leaving no headroom to measure the attack; the
+  single transfer-sensitive seed reproduced the positive effect
+  (0.240 $\rightarrow$ 0.533; McNemar exact $p=8.3\times10^{-39}$) while
+  ceiling seeds showed no additional damage.  Across both platforms every
+  paired seed with clean at-retirement below 0.5 reproduced the effect (4/4)
+  and every seed in the ceiling regime showed none (0/7), so the heterogeneity
+  is platform-independent even though the absolute regime differs.

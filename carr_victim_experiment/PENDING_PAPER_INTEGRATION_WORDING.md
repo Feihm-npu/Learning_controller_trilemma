@@ -1,4 +1,12 @@
 # 数据落地后论文改稿情景方案（working note, 2026-08-16）
+# 数据落地后论文改稿情景方案（working note, 2026-08-16）
+
+> **状态（2026-08-16 08:50）**：
+> - v16 判定已落地（1/10 positive，s201），K<7 → 保持 "3/3"；heterogeneity 句 + 平台
+>   ceiling 诚实句 + fullvC 跨平台 ceiling 注已写入 `sec6_third_party_case_study.tex`
+>   （Causal isolation 段末 / Attack budget 段末 / Reading 段末），PDF 已重建（24pp, 0 overfull）。
+> - B1（PPO 隔离 10 seeds s101-110）仍在 B0 determinism gate 之后排队；以下三个
+>   情景（REPRODUCES/PARTIAL/NOT）在 B1 落地前**不得修改论文 learner-generality 措辞**。
 
 > 依据：评审 #13 checklist 第 6/7 条；锁定决策规则 v1.5.4（positive = poisoned at-ret
 > ≥ clean at-ret + 0.15 AND paired McNemar p<0.01；≥5/10 → REPRODUCES，3–4/10 → PARTIAL，
@@ -70,3 +78,32 @@
 落地流程：`analyze_fullvC.py` 产出 vC 口径表 + paired McNemar（用 `_eval_trace.npy`）。
 若定性模式保持 → 用 vC 绝对数字替换论文 vA 数字（同代码版本口径）；若定性变化 → 回
 protocol 讨论。s1 clean 天花板、s3 d2 无效果、contrast 严格强于 risk 是锁定模式。
+
+---
+
+## v16 落地措辞（2026-08-16 08:40 更新：18/20 落地，判定 1/10，s201 阳性）
+
+**v16 判定**：K/10 = 1（s201 clean 0.240 → poisoned 0.533, p=8.25e-39）；
+9/10 在 ceiling（clean@ret 0.72–0.76 无 headroom）。K < 7 → **不升级 3/3 → K/10**，
+不写 "K/10 independently trained seeds"。
+
+**待加 heterogeneity 句**（放 "Causal isolation" 段末，即 "…(Fig. fig:carr-disagreement)." 之后）：
+```
+Across the paired seeds the per-seed boundary is interpretable: clean
+at-retirement fraction and attack headroom are strongly negatively correlated
+(Spearman -1.0 on the vC seeds), so the effect concentrates on seeds whose
+clean learning would otherwise transfer safety and saturates on seeds already
+near the unsafe ceiling.
+```
+（严格措辞待最终定稿时微调；Spearman 只引用 vC 本机 3 seeds 配对，不混平台。）
+
+**待加 ceiling/平台诚实句**（放 "Reading" 段末，即 "…unaffected by that version change." 之后）：
+```
+Absolute rates also vary across platforms: an exploratory 10-seed battery on a
+Linux host with identical dependency versions landed most independently trained
+REINFORCE seeds in the unsafe regime at retirement (clean at-retirement
+0.72--0.76), leaving no headroom to measure the attack; the single
+transfer-sensitive seed reproduced the positive effect (0.24 -> 0.53; McNemar
+exact p=8e-39), and ceiling seeds showed no additional damage.  All paper
+comparisons remain paired within a locked code version on one platform.
+```
