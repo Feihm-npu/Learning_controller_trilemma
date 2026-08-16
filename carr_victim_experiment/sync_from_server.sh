@@ -34,6 +34,20 @@ sync_dirs fullvC obstacle_sudden_REINFORCE_
 sync_dirs dose obstacle_sudden_REINFORCE_
 sync_dirs avoid_fid avoid_
 sync_dirs avoid_iso avoid_
+sync_dirs ppo_full obstacle_sudden_PPO_
+sync_dirs reinforce_full obstacle_sudden_REINFORCE_
+sync_dirs sac_smoke obstacle_sudden_SAC_
+sync_dirs sac_v110 obstacle_sudden_SAC_
+sync_dirs retained_v110 obstacle_retained_REINFORCE_
+
+# v1.9 full-phase at-scale + v1.10 SAC/retained analyzers (added when scripts land)
+run_if_present() {
+  if [ -x "$1" ] || [ -f "$1" ]; then
+    ../.venv-safe-control/bin/python "$1" "${@:2}"
+  else
+    echo "  (skip $1: not present yet)"
+  fi
+}
 
 echo "--- local analysis ---"
 cd "$LOCAL/.."
@@ -45,4 +59,7 @@ cd "$LOCAL/.."
 ../.venv-safe-control/bin/python make_fig6.py
 ../.venv-safe-control/bin/python make_fig_dose_response.py
 ../.venv-safe-control/bin/python analyze_avoid.py
+run_if_present analyze_fullphase.py
+run_if_present analyze_sac.py
+run_if_present analyze_retained_v110.py
 echo "--- done ---"

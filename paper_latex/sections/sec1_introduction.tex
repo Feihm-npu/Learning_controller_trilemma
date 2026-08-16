@@ -120,8 +120,9 @@ The controlled study then answers mechanistic questions on Safe-Control-Gym.
 After a sequential development block freezes the five-step check, target,
 bounded reward rule, detector, and stop rule, five untouched learner/
 evaluation seed pairs are run once.  All 120 poisoned snapshot--state pairs
-pass the initial check.  Poisoned permanent raw release fails physically on
-27/120, versus 2/120 paired clean failures; 25 poison-only versus zero
+pass the initial check.  Poisoned permanent raw release of the two-parameter linear
+residual learner fails physically on 27/120 under the locked fixed-target
+$\tanh$ reward rule, versus 2/120 paired clean failures; 25 poison-only versus zero
 clean-only discordances give two-sided exact $p=5.960\times10^{-8}$.  Pairs
 within a learner seed are not independent replicates, so five-seed
 reproduction, not the count, conveys generality.  Every seed reproduces
@@ -136,9 +137,9 @@ is insufficient.
 
 Broader Safe-Control-Gym evidence characterizes the conditional attack and
 its costs.
-Reward-log-only poisoning causes 38/188 delayed cartpole failures and 68/72
-delayed two-dimensional quadrotor failures, compared with 1/188 and 0/72 for
-paired clean residual-REINFORCE learners.  Commit admission and always-freeze
+Reward-log-only poisoning of a residual-REINFORCE learner causes 38/188 delayed
+cartpole failures and 68/72 delayed two-dimensional quadrotor failures, compared
+with 1/188 and 0/72 for the paired clean learner.  Commit admission and always-freeze
 have no observed failure.  A unified quadrotor audit compares raw release,
 commit, freeze, a permanent backup shield, and the official linear MPSC on
 identical rollout blocks; it exposes different coverage, intervention, reward,

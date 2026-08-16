@@ -286,3 +286,41 @@ at-ret 评估在 16 位浮点上全等，概率上不可能；合理推断为生
   hero table + 章节顺序均为硬约束（`test_tdsc_submission_artifacts.py`）。
 - 跨版本绝对值不可混用（vA vs vC）；配对同版本；paired McNemar exact。
 - 新实验必须新目录名/新 seed 命名空间。
+
+---
+
+## §7 审计记录（2026-08-16 第二轮）：mock review 14 点 → 当前论文状态
+
+> 目的：把「如果现在就送 NDSS，reviewer 会看到什么」的 14 点逐条映射到当前
+> working build（24pp，`ea6cf32` 后工作树），区分「已解决」「部分」「未解决」，
+> 作为质量优先轮次的改动清单依据。审查对象是更早一版 PDF（无 Carr 正文），
+> 当前版本已大幅超越该审查基准。
+
+| # | Reviewer 建议 | 当前论文状态 |
+|---|---|---|
+| 1 | 摘要须反映 Carr/第三方/PPO | ✅ 摘要已含 third-party lifecycle（1.6–3.6× at retirement）+ PPO 区分句（`bare_conf_NDSS2027.tex` L428-437） |
+| 2 | Contributions 层级更新 | ✅ 贡献 #2 = third-party case study；#5 = PPO boundary 双面陈述（official SCG 负 / third-party Carr 1/3 paired-significant） |
+| 3 | Related Work 对 Carr 概括不准确（与 Sim-to-Lab-to-Real 混淆） | ✅ `sec5_related_work.tex` 明确区分两个角色：Hsu = 正确的 negative control（transition 前独立 transfer evidence）；Carr = 真实的 shield bootstrap→retirement workflow（trusted provenance，无 adversarial log） |
+| 4 | 位置表缺 Carr | ✅ `tab:delta` 已含 Carr 行（authority removed = yes，independent raw-policy evidence = empirical retirement, no formal claim）+ "This paper, third-party case study" 行 |
+| 5 | 不能只讲自建 contract | ✅ Intro 开篇即两个 deployment patterns；`sec4_evaluation` 标题改 "Controlled Mechanism Study"，定位为 mechanism study，Carr 为 external lifecycle case study |
+| 6 | 标题 | ✅ 已改 "When Assurance Authority Changes: Reward Poisoning Across Learning-to-Deployment Transitions" |
+| 7 | 降级 Theorem 2/SOCP | ⚠️ 部分：`sec3_methodology` 开篇显式 "supporting rather than load-bearing"；contributions 列为 supporting analysis；但 SOCP 定理仍在正文中占较多篇幅。质量优先轮可考虑把推导细节移附录（不删结论） |
+| 8 | 更强理论 = evidence transfer 条件 | ✅ `sec3_threat_model` §Evidence Transfer 形式化 evidence tuple E=(s,a,p,i,τ) + Proposition (prop:transfer) + proof |
+| 9 | Ethics 区分 fielded vulnerability vs 非假设的 shield-retirement | ✅ `sec7_ethics.tex` 已写入该区分 |
+| 10 | novelty 迁移到 security composition failure | ✅ Intro 第 2 段（bounded corruption silently shapes raw policy while authority masks consequence; damage relevant at retirement） |
+| 11 | 新实验是否进 PDF | ✅ 已核实：摘要/Intro/Section IV/Conclusion/Related Work 均引用 Carr+PPO 数字，与 `PPO_stage_report.md`/`ppo_isolation_report.json` 逐项一致 |
+| 12–13 | 审稿决定逻辑 | 适用；PPO at-scale 未复现 → 当前 honest 边界 |
+| 14 | 结构重排（第三方研究提前） | ✅ 主 tex 顺序：Intro → Model → Threat → Failure Modes → **Third-Party Case Study** → Controlled Study → Analysis → Escape Conditions → Related Work → Conclusion |
+
+**剩余真实质量缺口（本轮主攻）：**
+1. **off-policy learner（SAC）在第三方研究上无证据**——受控研究只有 MC-PG 族
+   （REINFORCE + A2C），第三方研究只有 REINFORCE + PPO；reviewer 明确把
+   SAC/DDPG 列为 evidence stack 之外。→ 新实验：Carr obstacle shield-on 隔离 SAC。
+2. **第三方研究缺 retain-shield 逃生条件对照**——"shield 常驻则损害被包含"
+   在 Carr 上只有 fidelity 的 clean 0/0，没有 poisoned 对照。→ 新实验：
+   RETAINED + contrast δ=2（3 seeds）。
+3. **v1.9 full-phase at scale（PPO+REINFORCE 各 10 seeds）运行中**（服务器 40 procs，
+   step 2000+/100000）→ 完成后整合。
+4. 写作收尾：intro 两个 cartpole 区分句；PPO isolation 图（可选附录/正文）；
+   BADControl 引用完成度（作者项）。
+

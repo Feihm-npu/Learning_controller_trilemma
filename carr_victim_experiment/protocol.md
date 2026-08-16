@@ -419,3 +419,144 @@ pipeline.
   `results/aggregate_table_v2.csv` (`version=vC`, `env=avoid`).
 - Update paper environment-generality discussion and
   `RESULTS_ANALYSIS_AND_NEXT_STEPS.md` B4 status.
+
+## Amendment v1.9 (2026-08-16, full-phase attack at scale — P2: PPO + REINFORCE 10-seed batteries)
+
+Motivation: the paper's full-phase learner-boundary claim (PPO 1/3 seeds, local vA)
+and the budget/susceptibility paragraph rest on 3-seed full-phase data per learner.
+A reviewer rehearsal (mock review items 13.7/13.8) asks for (i) PPO positive
+evidence in several independent seeds, or an explanation of the seed
+heterogeneity, and (ii) a budget/susceptibility boundary.  The causal isolation
+batteries (v1.5 PPO 101–110, v1.6 REINFORCE 201–210) already exist at scale, so
+this amendment pre-registers the **full-phase** batteries on the **same seed
+namespaces**, making full-phase vs shield-on isolation directly comparable on
+identical seeds and testing the susceptibility rule (clean at-ret < 0.5) across
+both scopes.  Locked before execution; no ad hoc expansion after results.
+
+### v1.9.1 Configuration (all locked)
+- Env/domain: `obstacle (N=6)`; code version vC (independent belief tracker,
+  amendment v1.4).  Switch: sudden (HARD).  Attack: **V3 contrast, δ=2**.
+  Poison scope: **`full`** — mutation active for the entire training budget
+  (the original full-phase attack condition of the local vA runs, now at scale
+  on the server vC code).
+- PPO: `--learning-method PPO --max-runs 100000 --shield-episode 4000`
+  (retirement at env-step 10^5, step units per v1.2); at-ret eval 1000 episodes,
+  final eval 5000 episodes.  CLI identical to `run_p0.sh` except
+  `--poison-scope full`.
+- REINFORCE: `--learning-method REINFORCE --max-runs 5000 --shield-episode 1000`
+  (retirement at episode 1000); at-ret eval 1000, final eval 5000.  CLI
+  identical to `run_v16.sh` except `--poison-scope full`.
+- Threads: `OMP_NUM_THREADS=1 TF_NUM_INTRAOP_THREADS=1 TF_NUM_INTEROP_THREADS=1`
+  (CPU, as all prior server batteries).
+
+### v1.9.2 Seeds & namespace (locked before execution)
+- **PPO: seeds 101–110** (the exact namespace of the v1.5/B1 isolation battery).
+- **REINFORCE: seeds 201–210** (the exact namespace of the v1.6/v16 isolation
+  battery).
+- Run dirs MUST be new (no overwrite), `_fullvC` suffix marks vC full-phase:
+  `obstacle_sudden_PPO_{none,v3}_d2_s{101..110}_fullvC` and
+  `obstacle_sudden_REINFORCE_{none,v3}_d2_s{201..210}_fullvC`.
+
+### v1.9.3 Statistical analysis & pre-specified decision rule
+- Primary outcome: **at-retirement** violation fraction (1000-episode snapshot,
+  paired clean vs poisoned), consistent with v1.5/v1.6 so full-phase and
+  isolation are on the same metric.
+- Secondary: final post-removal (5000-episode) violation fraction (the metric
+  of the original full-phase PPO claim 1178→2439); at-retirement disagreement;
+  first-violation episode.
+- **Positive-seed rule (locked, identical to v1.5/v1.6)**: poisoned at-ret
+  fraction ≥ clean at-ret fraction + 0.15 AND paired McNemar exact p < 0.01.
+- **Decision rule (locked, identical to v1.5/v1.6)**: full-phase at scale
+  "reproduces" if ≥ 5/10 seeds positive; "partial" if 3–4/10; "not reproduced"
+  if < 3/10.  Report all seeds either way.
+- **Susceptibility-rule test (locked, pre-specified)**: across all paired rows
+  of v1.9 + v1.5 + v1.6 + v1.8, test the existing 2×2 claim (positive seeds are
+  exactly those with clean at-ret < 0.5) by cross-tabulating
+  {clean at-ret < 0.5} × {positive}.  Report the counts; do not re-weight.
+- **Budget follow-up (pre-registered, contingent)**: IF the PPO full-phase
+  battery yields ≥1 transfer-sensitive seed (clean at-ret < 0.5), a
+  deterministic PPO dose grid (δ ∈ {0.5, 1, 4, 10} on that seed, full scope,
+  vC) may be locked as amendment v1.11 before running.  (NOTE 2026-08-16:
+  the name v1.10 was subsequently taken by the locked SAC retirement-boundary
+  isolation + retained-shield control amendment, so the contingent PPO dose
+  grid is renumbered v1.11; it remains conditional on a v1.9 transfer-sensitive
+  seed and is NOT locked until it fires.)  This is the only
+  permitted response to the B3 trajectory-variance finding; no REINFORCE
+  cross-batch dose claims.
+
+### v1.9.4 Outputs & files
+- Per-run dirs with `*_summary.json` (incl. `at_retirement_stats`,
+  `disagreement_curve`, `poison_stats`), eval/at-ret traces.
+- Append v1.9 rows to `results/aggregate_table_v2.csv` (new rows,
+  `version=vC`, `scope=full`); do not overwrite existing rows.
+- Analysis: extend `analyze_ppo_isolation.py` / add `analyze_fullphase.py`
+  to produce per-seed paired tables for both learners; update the paper's
+  "Learner boundary" and "Reading" paragraphs and the 2×2 susceptibility
+  counts; update `RESULTS_ANALYSIS_AND_NEXT_STEPS.md` B2 status.
+
+## Amendment v1.10 (2026-08-16, off-policy learner (SAC) retirement-boundary isolation + retained-shield escape control)
+
+Motivation: the third-party lifecycle's learner boundary is currently REINFORCE + PPO
+(both on-policy policy-gradient learners); the reviewer rehearsal explicitly lists
+off-policy (SAC/DDPG) as outside the evidence stack, and the paper's "retained shield is a
+sound escape condition" claim on the Carr workflow rests only on the clean fidelity
+retained condition (0/0). This amendment pre-registers two small batteries before any
+execution: (A) SAC retirement-boundary isolation (off-policy learner variety on the same
+workflow), and (B) a poisoned retained-shield control (escape-condition containment).
+No ad hoc expansion after results.
+
+### v1.10.1 Part A — SAC retirement-boundary isolation (3 paired seeds)
+- Configuration (all locked): `obstacle (N=6)`; code vC (independent belief tracker,
+  amendment v1.4); sudden (HARD); **V3 contrast, δ=2**; poison scope **shield-on**
+  (mutation active only while the shield enforces the mask and stops at retirement);
+  at-retirement eval 1000 episodes; final eval 5000 episodes.
+- SAC specifics: `--learning-method SAC --max-runs 100000 --shield-episode 100000`.
+  Step units for non-PPO/REINFORCE are the raw `train_step_counter`
+  (rl_simulator.py: `step = train_step_counter.numpy()`), so retirement is at
+  env-step 10^5 — matching the upstream SAC obstacle budget (`cfgs/SAC.json`,
+  `obstacle_sac`, max_runs 100000) and directly comparable to the PPO battery's
+  env-step-10^5 retirement (v1.5/v1.9).
+- Seeds & namespace (locked before execution): **401, 402, 403** (new namespace,
+  disjoint from all prior: REINFORCE 1–3/201–210, PPO 1–3/101–110, avoid 1–3,
+  dose 1). Run dirs MUST be new (no overwrite):
+  `obstacle_sudden_SAC_{none,v3}_d2_s{401..403}`.
+- Statistical analysis & decision rule (locked, identical to v1.5/v1.6):
+  primary = at-retirement violation fraction (1000-episode snapshot, paired clean vs
+  poisoned); secondary = final (5000-episode) fraction, at-retirement disagreement,
+  first-violation episode. **Positive-seed rule**: poisoned at-ret ≥ clean at-ret + 0.15
+  AND paired McNemar exact p < 0.01. **Verdict rule (locked, 3 seeds)**: ≥2/3 positive →
+  add a SAC sentence to the paper's Learner-boundary paragraph (off-policy learner
+  variety; NOT "off-policy generality"); 1/3 → PARTIAL (report per-seed); 0/3 → SAC
+  negative boundary (paper states SAC did not reproduce). All seeds reported either way.
+- Susceptibility check (locked, pre-specified): add SAC rows to the 2×2 cross-tabulation
+  {clean at-ret < 0.5} × {positive} (per v1.9.3); report counts, do not re-weight.
+- **Pipeline smoke (pre-battery, not a battery run)**: one clean + one contrast run at
+  `--max-runs 2000 --seed 499` (smoke namespace, dir `sac_smoke/`) to verify the SAC
+  off-policy pipeline (training, shield switch at env-step 2000, at-ret eval, summaries).
+  Smoke results are NOT included in any paired battery or paper number.
+
+### v1.10.2 Part B — retained-shield escape-condition control (3 paired seeds)
+- Configuration (all locked): `obstacle (N=6)`; code vC; **switch-shield RETAINED**
+  (never switches; final eval remains shielded via `final_unshielded=False`);
+  V3 contrast **δ=2**, poison scope **full**; REINFORCE, 5000 episodes, maxsteps 100;
+  final eval 5000 episodes.
+- Seeds & namespace (locked before execution): **1, 2, 3** — identical seeds to the
+  server fullvC sudden full-phase runs (`results/fullvC/..._s{1,2,3}_fullvC`, same vC
+  code) so the retained-vs-sudden comparison is on identical seed/code/platform and
+  isolates the authority transition. Run dirs MUST be new (no overwrite):
+  `obstacle_retained_REINFORCE_v3_d2_s{1,2,3}`.
+- Decision rule (locked): **PASS** if all 3 seeds have `during_violations = 0` AND final
+  (shielded) eval = 0. Any nonzero violation under the retained shield is a protocol
+  incident: stop and discuss before any paper claim. Report the paired retained-vs-sudden
+  final numbers as evidence that "resident authority contains the consequence; removal
+  exposes it."
+
+### v1.10.3 Outputs & files
+- Per-run dirs with `*_summary.json` (incl. `at_retirement_stats`, `disagreement_curve`,
+  `poison_stats`), eval/at-ret traces.
+- Append v1.10 rows to `results/aggregate_table_v2.csv` (new rows, `version=vC`,
+  `scope=shield-on` for Part A, `scope=full,retained` for Part B); do not overwrite.
+- Analysis: extend `analyze_ppo_isolation.py` (or add `analyze_sac.py`) for Part A;
+  a small retained-control table for Part B. Update the paper's Learner-boundary and
+  Escape-conditions paragraphs and the 2×2 counts; update
+  `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`.
