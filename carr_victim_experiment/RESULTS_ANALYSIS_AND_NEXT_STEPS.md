@@ -16,7 +16,7 @@
 > review submission" 一节已过时，以本文档 §0–§6 的**实验结果与统计口径**为准、以其
 > **战略定位**部分（"Carr = next-cycle 头条"）过时。当前 open 实验 = 服务器上的
 > B0 determinism gate / fullvC（v1.4 full-phase 复跑）/ v16（REINFORCE 10-seed 隔离）/
-> B1（PPO 10-seed 隔离），落地后再更新论文数字与 learner-generality 措辞。
+> B1（PPO 10-seed 隔离，已落地：NOT REPRODUCED 1/10）——论文 learner-generality 措辞已按结果更新。
 
 ## 0. 一句话综合
 
@@ -143,7 +143,7 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
 | # | 边界 | 影响 | 缓解 |
 |---|---|---|---|
 | 1 | seed 仅 3（REINFORCE 隔离 3、PPO full 3） | 无法做跨 seed 统计推断 | B2 seed 矩阵 |
-| 2 | PPO 隔离未跑 | "两 learner 家族"的因果 claim 不成立 | B1（第一优先） |
+| 2 | PPO 隔离已跑（B1，2026-08-16）：**NOT REPRODUCED 1/10**，仅 s101 复现；其余 9/10 全在 unsafe ceiling（6 保护性、3 无变化） | 隔离层 "两 learner 家族"的因果 claim 不成立；full-phase 1/3 positive 是 training-state-specific | B2 seed 矩阵（REINFORCE 侧 10-seed 已跑，PPO 侧结论已锁定） |
 | 3 | TF 2.15 CPU 非确定性 → 固定 seed 有 run-to-run 方差 | 跨版本绝对值不可混用 | 配对同版本；B0 服务器非确定性测试 |
 | 4 | δ 相对 reward scale 的意义未校准、无 dose-response | budget realism 存疑 | B3 |
 | 5 | 仅 obstacle 单域 | 环境 generality 未验证 | B4 avoid 域 |
@@ -171,12 +171,14 @@ isolation（7 行，含 fixcheck），repo 相对路径 + `version` 列 + `scope
 - **B0. 环境确定性测试（先做，门槛）**：GPU 上 cuDNN 非确定性测试（同 seed 两次 clean
   对比）；gridworld 极小，CPU 多核并行吞吐可能更高。锁 git commit `1baa6752` + venv
   依赖版本。→ 否则同 seed 两次 clean 的差异会被误读为效应。
-- **B1. PPO 隔离实验（P0'，第一优先）**：shield-on + at-retirement，10 seeds。
-  先写 protocol amendment v1.5（PPO 是 env-step 制：以 `train_step_counter` 对应
-  `shield_episode=4000` 的 `shield_on` 边界 + at-ret eval 同快照 + 新 seed 命名空间 +
-  运行前锁定 positive-seed 判定）。**决策规则预设**：若 PPO 隔离 < 1/3 seeds 有效 →
-  主张降级为 "REINFORCE 因果 + PPO full-phase 边界"，与主论文 PPO-negative 边界一致
-  （诚实且可写）。
+- **B1. PPO 隔离实验（P0'，第一优先）**：✅ 完成（2026-08-16，v1.5，10 seeds
+  s101-110）—— **NOT REPRODUCED（1/10）**：仅 s101 复现（clean 0.219 → poisoned 0.754，
+  p=3.7e-113，first-viol 19→0）；其余 9 seeds 全部落在 unsafe ceiling（clean at-ret
+  0.728–0.760 无 headroom），6 显著保护性、3 无变化。论文 learner-generality 措辞按
+  预设降级（full-phase 1/3 positive = training-state-specific；PPO retirement-boundary
+  isolation not reproduced at scale）；2×2 扩展为 7/7 vs 0/16（platform- 与
+  learner-independent）。完整 10-seed 报告：
+  `results/ppo_isolation_report.md`。
 - **B2. 种子矩阵（P2）**：REINFORCE + PPO × 8–10 seeds × clean/full/shield-on × δ=2。
   回答 "seed 2 是 lucky victim 还是可识别 susceptibility subset"。预设 positive-seed
   定义（如 at-ret poisoned ≥ clean +15pp 且 paired McNemar p<0.01）。可与 B1 并行。

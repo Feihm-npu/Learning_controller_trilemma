@@ -112,7 +112,15 @@ first-violation episode $6\rightarrow0$), while the other two seeds show no
 change ($p=1.00$ and $0.96$).  The vulnerability is therefore real and
 paired-significant but transfer-sensitive: it is not a universal learner
 property, and the effect concentrates on seeds whose clean learning would
-otherwise transfer safety to the released policy.
+otherwise transfer safety to the released policy.  A ten-seed shield-on-only isolation battery under the same locked
+protocol reproduces the retirement-boundary effect on one of ten seeds
+(seed~101: $0.219\rightarrow0.754$ at retirement; McNemar exact
+$p=3.7\times10^{-113}$; first-violation episode $19\rightarrow0$), while the
+other nine seeds landed in the unsafe ceiling regime (clean at-retirement
+$0.728$--$0.760$) and showed no additional damage (six were significantly
+protective, three unchanged).  PPO retirement-boundary isolation is
+therefore not reproduced at scale: the full-phase $1/3$ positive is
+training-state-specific rather than a stable on-policy learner property.
 
 \paragraph{Attack budget and susceptibility.}
 On the full-phase REINFORCE protocol the effect is budget- and
@@ -185,7 +193,8 @@ code version and are unaffected by that version change.
   damage (two were protective).  The correlation between clean at-retirement
   fraction and attack headroom is also negative on the server battery
   (Spearman $-0.685$, $p=0.029$), consistent with the local value above.
-  Across both platforms every paired seed with clean at-retirement below
-  0.5 reproduced the effect (6/6) and every seed in the ceiling regime
-  showed none (0/7), so the heterogeneity is platform-independent even
-  though the absolute regime differs.
+  Across both platforms and both learners, every paired seed with clean
+  at-retirement below 0.5 reproduced the effect (7/7: six REINFORCE and one
+  PPO) and every seed in the ceiling regime showed none (0/16: seven
+  REINFORCE and nine PPO), so the heterogeneity is platform- and
+  learner-independent even though the absolute regime differs.

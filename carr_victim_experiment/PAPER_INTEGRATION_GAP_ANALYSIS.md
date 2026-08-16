@@ -47,12 +47,12 @@ Shield-Retirement Case Study）、Intro、Abstract 与 Conclusion。本文档保
 
 ### 当前 open 项（服务器实验中，落地后再改论文）
 
-| 实验 | 状态（2026-08-16 上午） | 落地后论文动作 |
+| 实验 | 状态（2026-08-16） | 落地后论文动作 |
 |---|---|---|
-| B0 determinism gate（PPO s101 clean ×2） | 运行中 | 决定 B1 是否可判读 |
-| fullvC（REINFORCE full-phase 18 runs，当前代码 v1.4 复跑） | 运行中 | 论文 full-phase 数字换成当前代码版本口径 |
-| v16（REINFORCE 隔离 10 seeds s201-210，v1.6） | 运行中 | 可能把 REINFORCE 3/3 升级为 10-seed 统计 |
-| B1（PPO 隔离 10 seeds s101-110，v1.5，等 gate） | 排队中 | ≥5/10 positive → learner-generality 措辞升级；3–4 → PARTIAL；<3 → 保持当前 1/3 边界 |
+| B0 determinism gate（PPO s101 clean ×2） | ✅ PASS（max diff 0.0068 < 0.05） | 已过，B1 可判读 |
+| fullvC（REINFORCE full-phase 18 runs，当前代码 v1.4 复跑） | ✅ 完成（15/15） | 论文 full-phase 数字换成当前代码版本口径；Attack budget 段跨平台注已改写 |
+| v16（REINFORCE 隔离 10 seeds s201-210，v1.6） | ✅ 完成（3/10 PARTIAL） | Reading 段已写入 3/10 + Spearman −0.685 + 跨平台 2×2 |
+| B1（PPO 隔离 10 seeds s101-110，v1.5） | ✅ 完成（**NOT REPRODUCED 1/10**） | Learner boundary / Conclusion / Related Work 措辞已更新（not reproduced at scale）；2×2 扩展为 7/7 vs 0/16 |
 | 论文措辞纪律（§2.3） | 依然有效 | "demonstrates off-policy generality" 仍禁止；PPO 隔离正例只作 on-policy 证据 |
 
 ---

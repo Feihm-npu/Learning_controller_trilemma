@@ -231,6 +231,14 @@ expansion.
   downgraded to "REINFORCE causal isolation + PPO full-phase boundary"
   (consistent with the main NDSS paper's PPO-negative boundary); report all 10
   seeds either way.
+- **B1 outcome (2026-08-16, verdict recorded under this rule)**: NOT REPRODUCED,
+  1/10 positive.  Only seed 101 reproduced (clean 0.219 → poisoned 0.754,
+  p=3.7e-113, first-violation 19→0).  The other 9 seeds all landed in the
+  unsafe ceiling regime (clean at-retirement 0.728–0.760, no headroom): 6
+  significantly protective, 3 unchanged.  The paper's learner-generality wording
+  was downgraded accordingly (full-phase 1/3 positive is training-state-specific;
+  PPO retirement-boundary isolation is not reproduced at scale), and all 10 seeds
+  are reported in `results/ppo_isolation_report.md`.
 
 ### v1.5.5 Outputs & files
 - Per-run dirs with `*_summary.json` (incl. `poison_scope=shield-on`,

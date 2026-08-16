@@ -1,7 +1,7 @@
 # 数据落地后论文改稿情景方案（working note, 2026-08-16）
 # 数据落地后论文改稿情景方案（working note, 2026-08-16）
 
-> **状态（2026-08-16 09:10）**：
+> **状态（2026-08-16 18:xx，B1 已落地）**：
 > - v16 判定已落地并复核为 **3/10 PARTIAL**（s201 0.240→0.533、s205 0.234→0.744、
 >   s209 0.229→0.763，全为 transfer-sensitive；其余 7 seeds 天花板无 headroom，2 保护性）。
 >   K=3 < 7 → 保持本机 "3/3" 措辞；Reading 段已写入 v16 heterogeneity
@@ -10,8 +10,12 @@
 >   δ=2（at-ret 0.501；after 1157→2451, p=4.6e-159），s2/s3 天花板（δ=2 无效应、δ=10
 >   保护性）；Attack budget 段跨平台注已改写为完整 15-run 结果（保留本机 vA 数字）。
 > - PDF 已重建（24pp, 0 overfull），manifest 重生成（255 files），17/17 artifact 测试通过。
-> - B1（PPO 隔离 10 seeds s101-110）仍在 B0 determinism gate 之后排队；以下三个
->   情景（REPRODUCES/PARTIAL/NOT）在 B1 落地前**不得修改论文 learner-generality 措辞**。
+> - B1（PPO 隔离 10 seeds s101-110）已落地为 **NOT REPRODUCED（1/10）**（详见文末
+>   "情景 3 落地"）：仅 s101 复现（0.219→0.754, p=3.7e-113, first-viol 19→0）；其余
+>   9/10 全部落在 unsafe ceiling（clean at-ret 0.728–0.760 无 headroom），6 显著保护性、
+>   3 无变化。Learner boundary / Conclusion / Related Work 措辞已按实际结果更新
+>   （not reproduced at scale；full-phase 1/3 positive = training-state-specific）；
+>   跨平台 2×2 扩展为 7/7 vs 0/16（纳入 PPO）。
 
 > 依据：评审 #13 checklist 第 6/7 条；锁定决策规则 v1.5.4（positive = poisoned at-ret
 > ≥ clean at-ret + 0.15 AND paired McNemar p<0.01；≥5/10 → REPRODUCES，3–4/10 → PARTIAL，
@@ -116,3 +120,44 @@ showed none (0/7), so the heterogeneity is platform-independent even
 though the absolute regime differs.
 ```
 （与 `sec6_third_party_case_study.tex` 正文一致，已随本次改稿进入 PDF。）
+
+---
+
+## 情景 3 落地（B1 完成，2026-08-16 18:xx）— NOT REPRODUCED（1/10）
+
+**B1 判定（v1.5.4 锁定规则）**：positive = poisoned at-ret ≥ clean at-ret + 0.15 AND
+paired McNemar p<0.01。B1（10 paired seeds s101–110, shield-on-only, vC）结果：
+
+- **s101 唯一 positive**：clean 0.219 → poisoned 0.754（Δ+0.535，p=3.7e-113，
+  first-violation 19→0）。
+- **其余 9 seeds 全部落在 unsafe ceiling（clean at-ret 0.728–0.760，无 headroom）**：
+  s102/103/104/105/108/109 为**显著保护性**（Δ −0.23~−0.29, p=1e-26~1e-39），
+  s106/107/110 无变化（p=0.68–1.0）。**没有任何 ceiling seed 显示额外伤害**。
+- K/10 = 1 < 3 → **NOT REPRODUCED**。learner-generality 不升级；full-phase 1/3
+  判定为 training-state-specific（不具 on-policy 稳定性）。
+
+**跨平台/跨 learner 2×2 更新**（合并 vC + v16 REINFORCE 与 B1 PPO，仅 fraction 口径，
+≥0.15 threshold）：
+- clean at-ret < 0.5 → **7/7 positive**（REINFORCE vC s1/s2/s3 + v16 s201/s205/s209
+  = 6；PPO s101 = 1）。
+- clean at-ret ≥ 0.5（ceiling）→ **0/16 positive**（REINFORCE v16 7 seeds + PPO 9 seeds）。
+- 结论：heterogeneity 是 **platform- 与 learner-independent**（原 6/6 vs 0/7 只覆盖
+  REINFORCE；现扩展为 7/7 vs 0/16，PPO 亦遵循同一 clean-at-ret < 0.5 预测律）。
+
+**论文已按实际结果落地（非预案占位文案）**：
+1. `sec6_third_party_case_study.tex` Learner boundary 段（L112 后追加）：10-seed
+   shield-on-only 电池 1/10 复现（s101: 0.219→0.754, p=3.7e-113, first-viol 19→0）；
+   其余 9 个 ceiling（clean at-ret 0.728–0.760）无额外伤害（6 保护性、3 无变化）；
+   结论 "PPO retirement-boundary isolation is therefore not reproduced at scale: the
+   full-phase 1/3 positive is training-state-specific rather than a stable on-policy
+   learner property."
+2. `sec6_third_party_case_study.tex` Reading 段 2×2：7/7（six REINFORCE and one PPO）
+   vs 0/16（seven REINFORCE and nine PPO），platform- and learner-independent。
+3. `sec6_conclusion.tex`：删 "open learner-generality boundary"，改为 ten-seed 电池
+   1/10 复现 → not reproduced at scale，boundary 保持 transfer- and
+   training-state-specific。
+4. `sec5_related_work.tex`：同步 "not reproduced at scale"。
+
+**与预案的差异**：情景 3 预案占位文案为 "<3/10 seeds, so ... not reproduced"；实际
+落地措辞按真实结构（1/10 + 9/10 ceiling 中 6 保护性 3 n.s. + 2×2 扩展为 7/7 vs 0/16）
+撰写，比占位文案更具体（写入保护性计数与 first-violation，2×2 纳入 PPO）。

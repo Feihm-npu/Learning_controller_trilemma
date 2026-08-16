@@ -83,13 +83,13 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 
 ### 3.5 Learner generality（部分）
 
-- **PPO**（vendored tf-agents PPO，10^5 步，suddden，contrast δ=2）：seed 2 上 post-removal 1178 → 2439（2.1×，McNemar p=2.6e-149，first-violation 6→0）；seed 1/3 无效果。**PPO 的隔离实验（P0', shield-on + at-retirement）已在服务器运行**（v1.5 协议，10 paired seeds 101-110；决策规则：≥5/10 positive 升级 learner-generality，3-4/10 partial，<3/10 保持当前措辞）。B0 determinism gate 已 PASS（s101 clean ×2：at-ret 0.750/0.753，eval 0.222/0.229，max diff 0.0068 < 0.05），B1 电池（20 runs）于 2026-08-16 10:07 启动，预计 ~2.5h 完成。
+- **PPO**（vendored tf-agents PPO，10^5 步，suddden，contrast δ=2）：seed 2 上 post-removal 1178 → 2439（2.1×，McNemar p=2.6e-149，first-violation 6→0）；seed 1/3 无效果。**PPO 隔离实验（P0', shield-on + at-retirement）已完成：NOT REPRODUCED（1/10）**（v1.5 协议，10 paired seeds 101-110，B1 电池 2026-08-16 完成）。B0 determinism gate 已 PASS（s101 clean ×2：at-ret 0.750/0.753，eval 0.222/0.229，max diff 0.0068 < 0.05）。仅 seed 101 复现（clean 0.219 → poisoned 0.754，p=3.7e-113，first-violation 19→0）；其余 9 seeds 全部落在 unsafe ceiling（clean at-ret 0.728–0.760 无 headroom），其中 6 个显著保护性、3 个无变化。跨平台/跨 learner 2×2 扩展为 clean at-ret<0.5 ⇒ 7/7 positive（6 REINFORCE + 1 PPO）vs ceiling ⇒ 0/16（7 REINFORCE + 9 PPO），heterogeneity 是 platform- 与 learner-independent。
 - **REINFORCE**：full-phase 1/3 seeds 显著、δ=10 扩到 2/3；隔离实验 3/3 seeds 显著。
 
 ## 4. 诚实边界与已知问题
 
 1. **seeds 数量不足**（REINFORCE 3、PPO 3），且 REINFORCE+obstacle 在固定 seed 下存在 run-to-run 方差（TF 2.15 CPU 非确定性；clean s1 final 在无仪器版本为 3784，加仪器后 1182/1140）。**配对比较均在同一代码版本内进行，结论不受影响**（效应量远超方差、clean/poisoned 完全分离）；但跨版本绝对值不可混用，full-phase 旧数据（vA 版）进论文前需用当前代码版本复核（protocol v1.4）。
-2. **PPO full-phase 只有 1/3 seeds positive**；隔离实验（P0'，B1）运行中 —— 结果落地前 learner generality 尚不成立。
+2. **PPO full-phase 只有 1/3 seeds positive**；隔离实验（P0'，B1）已落地为 **NOT REPRODUCED（1/10）** —— 隔离层 learner generality 不成立，full-phase 1/3 positive 判定为 training-state-specific。
 3. **budget realism 未校准**：δ=2 相对 reward scale 的意义、dose-response（δ=0.1/0.25/0.5/1/2）未跑；`poison_stats` 已就绪（初步：raw reward min=0/max=1001/mean=33.7/sd=177.9，δ=2 ≈ 典型单步 reward 的 2×）。
 4. **环境 generality 未验证**（avoid 等 Carr 其他域未跑）；SAC 未跑。
 5. **detectability / escape conditions 未测**（trusted reward recomputation、raw-policy verification、retain shield 对照）。
@@ -98,7 +98,7 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 
 | 优先级 | 任务 | 目的 |
 |---|---|---|
-| **P0'** | PPO 隔离实验（shield-on + at-retirement，10 seeds） | 补最大缺口：learner generality |
+| **P0'** | ✅ 完成（B1，2026-08-16）：PPO 隔离（shield-on + at-retirement，10 seeds）**NOT REPRODUCED 1/10**；learner generality 不成立，2×2 扩展为 7/7 vs 0/16 | 补最大缺口：learner generality |
 | P2 | REINFORCE + PPO × 各 8–10 seeds 完整矩阵（clean / full / shield-on，δ=2） | 把 seed 方差变成统计推断；回答"seed 2 是 lucky victim 还是可识别 susceptibility subset" |
 | P1 | dose-response：δ ∈ {0.1, 0.25, 0.5, 1.0, 2.0} | 最小有效预算 + budget realism 报告 |
 | P3 | avoid 域（fidelity + clean + poisoned 隔离） | 环境/task generality |
@@ -121,4 +121,4 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 
 > 注：本仓库 .gitignore 规则"Python 代码不同步"；实验运行代码保留在本机 `carr_victim_experiment/`（venv、wheels_cache 亦不上传）。
 
-> **2026-08-16 论文整合**：上述 Carr 结果已写入正文 Section IV（Third-Party Shield-Retirement Case Study，23-pp working build）：fidelity gate、REINFORCE 3/3 seeds 退休边界因果隔离、PPO full-phase learner boundary（1/3 seeds）、dose-response 与 bias/risk 负对照（Attack budget and susceptibility 段）。摘要与 Intro 明确区分 official SCG PPO 不转移 与 第三方 Carr PPO 1/3 seeds positive。PPO 隔离（P0'）仍是 open learner-generality boundary。
+> **2026-08-16 论文整合**：上述 Carr 结果已写入正文 Section IV（Third-Party Shield-Retirement Case Study，23-pp working build）：fidelity gate、REINFORCE 3/3 seeds 退休边界因果隔离、PPO full-phase learner boundary（1/3 seeds）、dose-response 与 bias/risk 负对照（Attack budget and susceptibility 段）。摘要与 Intro 明确区分 official SCG PPO 不转移 与 第三方 Carr PPO 1/3 seeds positive。PPO 隔离（P0'）已落地为 **1/10 NOT REPRODUCED**：论文删去 “open learner-generality boundary” 措辞，改为 “PPO retirement-boundary isolation is not reproduced at scale; the full-phase 1/3 positive is training-state-specific”，2×2 扩展为 7/7 vs 0/16。

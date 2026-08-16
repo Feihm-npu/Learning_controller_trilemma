@@ -238,12 +238,17 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   though the transfer-sensitive seed differs (local s2 ↔ server s1).  Per the
   locked plan the local vA paper numbers are kept; the "Attack budget"
   cross-platform note now reports the complete 15-run result.
-- **Open boundary**: PPO retirement-boundary isolation (B1, 10 seeds s101–110)
-  is running on the server.  B0 determinism gate PASSED on 2026-08-16
-  (s101 clean ×2: at-retirement 0.750/0.753, eval 0.222/0.229, max diff 0.0068 < 0.05);
-  B1 battery (20 runs) launched 10:07 and is expected to finish in ~2.5h.
-  If ≥5/10 paired seeds reproduce, learner-generality wording can be upgraded
-  (else it stays the full-phase 1/3 boundary).
+- **Open boundary (CLOSED, NOT REPRODUCED)**: PPO retirement-boundary isolation
+  (B1, 10 seeds s101–110) completed 2026-08-16; verdict **NOT REPRODUCED (1/10)**.
+  B0 determinism gate PASSED (s101 clean ×2: at-ret 0.750/0.753, eval 0.222/0.229,
+  max diff 0.0068 < 0.05).  B1: only seed 101 reproduced (clean 0.219 → poisoned
+  0.754, p=3.7e-113, first-viol 19→0); the other 9 seeds all landed in the unsafe
+  ceiling regime (clean at-retirement 0.728–0.760): 6 significantly protective,
+  3 unchanged.  Cross-platform/cross-learner 2×2 now reads 7/7 below-0.5 positive
+  (6 REINFORCE + 1 PPO) vs 0/16 ceiling (7 REINFORCE + 9 PPO).  The paper now says
+  PPO retirement-boundary isolation is not reproduced at scale; the full-phase 1/3
+  positive is training-state-specific.  The 3/3→6/6-REINFORCE wording stands; the
+  ≥5/10 upgrade threshold was not met.
 - Evidence: `carr_victim_experiment/` (protocol.md + amendments v1.1–v1.5,
   patches.md, results/, `RESULTS_ANALYSIS_AND_NEXT_STEPS.md`,
   `SERVER_VS_LOCAL_DIVERGENCE.md`, `PENDING_PAPER_INTEGRATION_WORDING.md`,
