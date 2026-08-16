@@ -1,0 +1,4 @@
+GATE at_retirement_stats: r1=0.75 r2=0.753 diff=0.0030000000000000027
+GATE eval_stats: r1=0.222 r2=0.2288 diff=0.0068000000000000005
+GATE max_diff=0.0068 tol=0.05
+GATE: PASS
