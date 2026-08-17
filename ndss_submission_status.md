@@ -217,7 +217,11 @@ demonstration was executed 2026-08-14/15 and returned **GO**:
   (`obstacle_sudden_REINFORCE_none_d2_s3_iso_rr`) with new value **0.241**
   (in the reported plausible range 0.21–0.24).  Paper Table II + figure now
   use the regenerated value; paired conclusion unchanged (poisoned 0.748,
-  3.1×).
+  3.1×).  The paired poisoned rerun in the same fresh namespace also
+  completed and did NOT reproduce (clean 0.241 → poisoned 0.242 at
+  retirement; clean final 0.747 vs poisoned 0.228), an eligible-state
+  non-reproduction consistent with the headroom-necessary-not-sufficient
+  susceptibility result; disclosed in the paper footnote and Reading.
   violations remain 0.
 - **Integrated into the working paper (2026-08-16)**: the Carr third-party
   result is now Section IV of the main body ("Third-Party Shield-Retirement

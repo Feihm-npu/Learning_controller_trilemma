@@ -80,6 +80,23 @@ obstacle / REINFORCE / sudden，paired seeds 1–3：
 > （0.21–0.24）内，配对结论不变（poisoned 0.748，3.1×）。论文 Table II
 > 已改用新值并改写 footnote；paired poisoned 重跑仍在服务器后台运行
 > （可选 corroboration，若完成则并入 Reading 段）。
+> **补充（paired poisoned 重跑完成，2026-08-17）**：服务器全新 namespace
+> 的 paired poisoned（`obstacle_sudden_REINFORCE_v3_d2_s3_iso_rr`，contrast
+> δ=2，shield-on，38k 条记录被改）at-ret = **0.242**，与 clean 0.241 几乎
+> 相同 → **该 fresh replicate 未复现退休边界效应**（clean final 0.747 落在
+> ceiling-final mode，poisoned final 0.228）。这是一个 eligible-state
+> non-reproduction（cd 0.013 低分歧但未复现），与 50 行分析中 "headroom 必要
+> 不充分" 一致；论文 footnote 与 Reading 段已如实披露。
+
+> **2026-08-17 susceptibility-predictor（attacker-side precondition）分析**：
+> 用 50 行 obstacle paired 数据验证"attack 前可观测特征能否预测 susceptible
+> replicate"——以 clean at-ret raw/shield disagreement 为触发器（band <0.06
+> 已在 v1.13.3 锁定）：**11/11 positive 全部落在 low-disagreement，32 行
+> high-disagreement 中 0 positive**（AUC 0.95，MWU p=5.5e-6）；
+> leave-one-family-out 在 REINF 20/20、PPO 20/20 完美，SAC 3/10
+> （over-predict，headroom 必要不充分）；leave-one-host-out 本地 3-seed 一致。
+> 论文 Reading/contributions/conclusion 已据此改写为 "attacker can identify
+> eligible states but cannot guarantee success within them"。
 
 ### 3.4 机制信号：盾内 disagreement 曲线 ✅
 

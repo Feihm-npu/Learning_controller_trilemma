@@ -34,7 +34,12 @@ policy repair~\cite{zhou_runtime_policy_repair_2020}, repair with preservation
 These works establish that resident assurance and trusted repair can be
 effective.  They do not establish that finite evidence sufficient for a
 resident decision module remains sufficient after that module is removed,
-when the update log itself is adversarial.
+when the update log itself is adversarial.  The prior lines are
+complementary rather than overlapping: poisoning work assumes trusted
+runtime assurance, and runtime-assurance work assumes trusted update data.
+Neither line characterizes their composition at an authority transition, and
+we give the first end-to-end empirical characterization of that composition
+boundary.
 
 We study that gap under an explicit split-trust precondition.  Safety-critical
 runtime control and asynchronous learning-data services need not share an
@@ -177,12 +182,17 @@ Our contributions are:
     seeds reproduce failure, and three monitor horizons separate the contracts.
     An independent audit retains the failed
     one-step resident-kernel result, 14/71 versus 0/71 under that authority.
-    \item We characterize when the attack transfers.  Larger PPO, SAC,
+    \item We characterize when the attack transfers, and we show the
+    susceptibility condition is attacker-observable.  Larger PPO, SAC,
     cross-platform, and second-domain batteries show that success is not
-    universal: it concentrates in retirement states with low
-    raw-policy/shield disagreement and available safety headroom, while
-    headroom alone is insufficient, so the susceptibility factor is
-    necessary-looking rather than a complete predictor.
+    universal and concentrates in retirement states with low
+    raw-policy/shield disagreement and available safety headroom.  The
+    low-disagreement condition is a necessary precondition that transfers
+    across learner families and hosts (it holds for all 11 positive
+    replicates and for none of the 32 high-disagreement rows), while headroom
+    alone is insufficient (SAC reproduces on three of ten eligible rows), so
+    an attacker can identify states in which the attack can matter but cannot
+    guarantee success within them.
     \item We retain the broader two-system attack, contract-cost audits,
     escape-condition costs, and benign-utility boundaries to delimit
     sampled-certificate strength and the practical scope of each mitigation;

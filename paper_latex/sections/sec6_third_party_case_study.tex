@@ -61,11 +61,14 @@ regenerated from the artifact's fresh namespace
 (\texttt{obstacle\_sudden\_REINFORCE\_none\_d2\_s3\_iso\_rr} in the
 artifact, server host, current code version): the original local
 at-retirement record duplicated the seed-1
-fix-check record and was discarded.  The regenerated value (0.241) falls in
-the plausible range reported in the prior draft (0.21--0.24).  The poisoned
-control and the final evals retain their original provenance; the paired
-conclusion is unchanged at the regenerated bound (poisoned 0.748 vs clean
-0.241).
+fix-check record and was discarded.  The regenerated clean value (0.241)
+falls in the plausible range reported in the prior draft (0.21--0.24).  A
+fresh server-host paired replicate under the same locked configuration did
+not reproduce the retirement-boundary effect at retirement (clean 0.241
+vs.\ poisoned 0.242) and its clean control landed in a different final
+trajectory mode (0.747), consistent with the documented run-to-run
+variability and the partial reproduction rate within eligible states; the
+locked local batch values are reported here.
 \end{table}
 
 On all three seeds the poisoned raw policy is already $1.6$--$3.6\times$
@@ -242,6 +245,13 @@ retirement schedule are the authors' design, and the release-time raw policy
 inherits exactly the update-data provenance assumption the paper
 challenges.  The security contribution of this paper is the integrity
 dimension on top of that published lifecycle, not the lifecycle itself.
+Carr et al. do not claim a formal zero-violation guarantee for the unshielded
+raw policy, and we do not claim to violate one: the case study establishes
+that authority retirement is independently proposed and operationally
+meaningful, while the controlled study in Section~\ref{sec:study}
+separately establishes the unsound evidence-reuse mechanism the transition
+invites under adversarial update provenance.  No single prior system needs
+to embody both properties for their composition to be security-relevant.
 Absolute rates differ across instrumented and non-instrumented code versions
 because the unmasked-disagreement probe requires an independent belief
 tracker; all clean-vs-poisoned comparisons above are paired within a locked
@@ -257,11 +267,23 @@ code version and are unaffected by that version change.
   (two were protective).  The correlation between clean at-retirement
   fraction and attack headroom is also negative on the server battery
   (Spearman $-0.685$, $p=0.029$), consistent with the local value above.
+  A fresh server-host replicate of the seed-3 pair under the identical
+  locked configuration (the provenance-fix run in
+  Table~\ref{tab:carr-isolation}) did not reproduce at retirement (clean
+  0.241 $\rightarrow$ poisoned 0.242), and its clean control ended in a
+  ceiling-final trajectory mode (clean final 0.747 vs.\ poisoned 0.228), so
+  it is an eligible-state non-reproduction rather than a missing-precondition
+  case, consistent with the partial reproduction rate among the
+  low-disagreement rows counted below (it is not part of that 50-row
+  cross-tabulation, which uses disjoint seed namespaces).
   Training replicates are indexed by configured seed but are not bitwise
   deterministic across hosts or backends (the same configured seed and code
   can land in different trajectory modes); the replication unit throughout is
   an independent paired training replicate under a locked configuration,
-  not a deterministic re-run of a fixed seed.
+  not a deterministic re-run of a fixed seed.  Episode-level paired McNemar
+  tests are therefore conditional on the fixed trained policy and are not
+  training-level replications; the seed-level batteries are the replication
+  evidence and are reported separately.
   Across both platforms, both domains, and all three learner families, the
   shield-on-only isolation batteries reproduced the effect on eight of sixteen
   paired seeds with clean at-retirement below 0.5 (8/16: three REINFORCE, one
@@ -306,7 +328,29 @@ code version and are unaffected by that version change.
   the pooled verdict is genuinely partial across seeds (3/10: seeds 401/403/404
   positive, 402/405/408 protective, 406/407/409/410 no effect).  Headroom is
   therefore a necessary-looking susceptibility factor, not a sufficient one:
-  SAC retains headroom on all ten seeds and still reproduces on only three.  The divergence signal is consistent
+  SAC retains headroom on all ten seeds and still reproduces on only three.
+
+  These susceptibility signals are attacker-observable rather than post-hoc.
+  A white-box, batch-aware attacker that sees the learner's proposed actions
+  and can compute the public shield semantics can evaluate the
+  raw-policy/shield disagreement of the current policy before the authority
+  transition commits it.  Across the 50 paired obstacle rows, the locked
+  low-disagreement band ($cd<0.06$) is a necessary precondition for the
+  attack: all 11 positive replicates lie in it, and none of the 32
+  high-disagreement rows is positive (AUC 0.95; Mann--Whitney
+  $p=5.5\times10^{-6}$).  The necessary condition transfers out-of-family
+  (leave-one-family-out accuracy 20/20 for REINFORCE and 20/20 for PPO) and
+  out-of-host (the local three-seed REINFORCE battery is likewise
+  low-disagreement, and no host has produced a high-disagreement positive
+  row).  It is not sufficient:
+  seven of the 18 low-disagreement rows do not reproduce, and SAC is the
+  cleanest counterexample (all ten SAC rows are low-disagreement yet three
+  reproduce).  An attacker can therefore identify training states in which
+  the attack can matter---those with headroom---but cannot guarantee success
+  within them.  The positive-seed rule, the 0.5 clean-at-retirement
+  boundary, and the 0.06/0.09 disagreement bands were all locked in the
+  protocol amendments before these analyses were run, so the susceptibility
+  law is not a post-hoc partition of the observed outcomes.  The divergence signal is consistent
   across all three learner families on the obstacle domain.  The signal is
   obstacle-scoped: the avoid-domain seeds do not follow it (clean
   disagreement $0.476$ and $0.157$ on protective seeds below the $0.5$

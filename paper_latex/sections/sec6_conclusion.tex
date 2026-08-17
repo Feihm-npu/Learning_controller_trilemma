@@ -55,7 +55,11 @@ disagreement at retirement, which is $\approx0.10$ on ceiling seeds and
 bounds attack headroom (Spearman $-0.55$ over 50 obstacle paired rows).
 They are therefore consistent with absent headroom rather than demonstrating
 a stable learner-specific negative; headroom is necessary but not sufficient,
-as the SAC battery shows.
+as the SAC battery shows.  The low-disagreement condition is attacker-
+observable before the authority transition and holds for every positive
+replicate and for no high-disagreement row across families and hosts, so the
+attack's brittleness is partly attributable to identifiable training states
+rather than to an unexplained learner-specific failure.
 
 On a second learner family (off-policy SAC), shield-on-only isolation
 reproduces on three of ten seeds ($0.207 \rightarrow 0.561$, $0.218
