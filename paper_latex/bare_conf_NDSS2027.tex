@@ -346,7 +346,7 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{When Assurance Authority Changes: Reward Poisoning Across Learning-to-Deployment Transitions}
+\title{Reward Poisoning at Runtime-Assurance Authority Transitions}
 
 
 % author names and affiliations
@@ -417,26 +417,26 @@
 
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
-\begin{abstract}Runtime assurance can mask an unsafe raw policy during protected adaptation:
-an attacker alters only bounded reward records consumed by an updater, while
-runtime states, actions, code, parameters, and certification remain trusted.
-When the assurance authority is later retired, evidence collected under that
-authority may be reused to authorize permanent raw release.
-
-On a third-party shield-retirement lifecycle, reward-log poisoning confined
-to the shielded bootstrap phase already makes the raw policy 1.6 to 3.6
-times more dangerous at the retirement instant, while physical violations
-during the protected phase remain zero; the damage persists after fully
-clean post-retirement learning on two of three seeds.  A controlled
-Safe-Control-Gym study isolates the mechanism: five untouched seeds yield
-27/120 poisoned raw-release failures versus 2/120 clean and 0/120 under
-resident authority, and a residual-REINFORCE cross-system battery reproduces
-the pattern.  The effect is not universal across learners or training
-states: larger PPO and SAC batteries reveal a susceptibility boundary tied to
-the raw-policy/shield divergence present at retirement, with headroom
-necessary but not sufficient.  Provenance binding and trusted recomputation
-remove the upstream attack; resident authority, commit admission, and simple
-task-aware checks contain or detect its consequence.
+\begin{abstract}Runtime assurance can mask an unsafe raw policy while a
+trusted mechanism retains action authority during adaptation.  Retiring that
+authority can therefore expose a policy trained from update evidence whose
+provenance was not re-established for raw release.  We examine this
+authority-transition vulnerability under bounded reward-record poisoning.  In
+a third-party shield-retirement lifecycle, poisoning increased raw-policy
+violation rates at retirement by factors of 3.6 and 1.6 in two of three
+provenance-complete paired REINFORCE training runs.  A freshly regenerated
+third pair was unchanged, and protected execution remained violation-free.  A
+controlled Safe-Control-Gym study isolated the same mechanism: poisoned raw
+release failed on 27/120 evaluated snapshot--state pairs, compared with 2/120
+for paired clean release and 0/120 under resident predictive authority.
+Across a locked 50-run obstacle corpus, all 11 positive outcomes occurred
+below 0.06 clean raw-policy/shield disagreement, whereas none of 32
+high-disagreement runs was positive.  Seven of 18 low-disagreement runs were
+non-positive; the separate fresh third-party pair was also low-disagreement
+and non-positive.  Retirement-state disagreement thus identifies an
+opportunity region, not an attack-success predictor.  Provenance binding and
+trusted recomputation close the upstream channel; commit admission and
+retained authority contain its downstream consequence.
 \end{abstract}
 
 % NDSS submissions do not include a keyword block.
@@ -458,10 +458,10 @@ task-aware checks contain or detect its consequence.
 \input{sections/sec2_preliminary}
 \input{sections/sec3_threat_model}
 \input{sections/sec4_lifecycle_attacks}
-\input{sections/sec6_third_party_case_study}
-\input{sections/sec4_evaluation}
 \input{sections/sec3_methodology}
 \input{sections/sec5_lifecycle_gate_design}
+\input{sections/sec6_third_party_case_study}
+\input{sections/sec4_evaluation}
 \input{sections/sec5_related_work}
 \input{sections/sec6_conclusion}
 

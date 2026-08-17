@@ -1,79 +1,37 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Conditional on bounded write access at an otherwise isolated reward-ingestion
-interface, protected adaptation and raw release are different security
-contracts.  The distinction is not an artifact of a self-defined benchmark.
-On the published shield-retirement lifecycle of Carr et al., bounded
-reward-log poisoning confined to the shielded bootstrap phase already makes
-the raw policy $1.6$--$3.6\times$ more dangerous at retirement on 3/3 paired
-seeds, and the damage persists after fully clean post-retirement learning on
-2/3.  A controlled Safe-Control-Gym study then isolates the mechanism.
-After a development block locks the target, attacker, and detector, five
-untouched seeds yield 27/120 poisoned permanent-release failures versus 2/120
-paired clean.  Resident predictive authority switches before every corresponding
-poisoned failure and incurs 0/120 failures; horizons 3, 5, and 10 all separate
-the contracts.  An independent audit finds that a one-step resident kernel
-still fails on 14/71, so the result depends on recoverability, not residence
-alone.
+Protected adaptation and permanent raw release require different security
+evidence.  Runtime assurance can keep the executed composition safe while
+adversarial reward provenance changes the policy that later receives action
+authority.  Carr et al.'s shield-retirement workflow provides an independent
+lifecycle instance of this transition.  Bootstrap-only poisoning increased
+raw-policy violations at retirement by factors of $3.6$ and $1.6$ in two of
+three provenance-complete paired REINFORCE training runs.  The freshly
+regenerated third pair was unchanged, and protected execution remained
+violation-free.
 
-The normalized reward-influence analysis characterizes the batch-local update
-authority available through reward corruption.  Conic homogenization makes
-positive support exact across normalization singularities and global
-gradient-norm clipping, while coordinatewise parameter clipping and
-multi-batch attack construction remain outside the theorem.  The broader
-cartpole and quadrotor experiments, finite-horizon commit gate, freeze, backup
-shield, and official MPSC then expose the coverage, intervention, reward, and
-latency costs of different escape contracts.
+The controlled Safe-Control-Gym study isolated the same evidence boundary.
+After the attack and five-step release check were fixed, poisoned permanent
+release failed on 27/120 snapshot--state pairs, compared with 2/120 for clean
+release.  Resident predictive authority incurred 0/120 failures and switched
+before every corresponding poisoned failure.  A one-step resident kernel
+still failed on 14/71 accepted pairs, showing that repeated recoverability
+checks, rather than residence alone, supplied the observed protection.
 
-The integrity boundary is also part of the result.  Trusted recomputation
-blocks every evaluated edit, and simple task-aware checks detect over 90\% of
-poisoned batches.  Provenance or recomputation removes the upstream attack
-precondition; commit admission and resident predictive authority contain its
-downstream consequence.  We do not claim a logging-service exploit or a
-stealthy attack.
+Exploitability remained conditional on the training realization.  Across 50
+locked obstacle pairs, all 11 positive outcomes had clean retirement-state
+disagreement below $0.06$, and none of 32 high-disagreement runs was positive.
+Seven of 18 low-disagreement corpus runs were non-positive.  The separate
+fresh REINFORCE pair was also low-disagreement and non-positive.  Low
+disagreement therefore identifies an opportunity region without predicting
+attack success.  Because the measurement is taken at retirement, it
+characterizes the realized state rather than an online attacker-side trigger.
 
-The remaining negative boundaries are part of the result.  The target was
-development-fixed, the bounded \(\tanh\) perturbation is not a joint gate
-optimizer, and even the extended exact-support diagnostic produces no raw
-release failure.  The physical attack is established for low-dimensional
-Monte-Carlo policy-gradient learners (REINFORCE and a learned-baseline
-variant), does not stably transfer to official PPO, and admitted updates do
-not beat freeze in the benign-adaptation smoke.
-
-On the third-party lifecycle, REINFORCE retirement-boundary isolation
-reproduces on 3/3 seeds, and a ten-seed full-phase REINFORCE battery is
-partial (4/10).  The third-party PPO full-phase result is positive on 1/3
-seeds.  Neither a ten-seed full-phase battery (0/10 on the primary
-at-retirement metric) nor a ten-seed retirement-boundary isolation battery
-(1/10) reproduces it, so PPO retirement-boundary isolation is not reproduced
-at scale.  Full-scope poisoning instead persists as unrecovered unsafe
-released policies (poisoned final $0.49$--$0.77$ vs.\ clean $\approx0.22$).
-The boundary remains transfer- and training-state-specific: the at-scale
-negatives are largely confounded by the clean policy's raw-policy/shield
-disagreement at retirement, which is $\approx0.10$ on ceiling seeds and
-bounds attack headroom (Spearman $-0.55$ over 50 obstacle paired rows).
-They are therefore consistent with absent headroom rather than demonstrating
-a stable learner-specific negative; headroom is necessary but not sufficient,
-as the SAC battery shows.  The low-disagreement condition is attacker-
-observable before the authority transition and holds for every positive
-replicate and for no high-disagreement row across families and hosts, so the
-attack's brittleness is partly attributable to identifiable training states
-rather than to an unexplained learner-specific failure.
-
-On a second learner family (off-policy SAC), shield-on-only isolation
-reproduces on three of ten seeds ($0.207 \rightarrow 0.561$, $0.218
-\rightarrow 0.513$, and $0.479 \rightarrow 0.954$; seeds 401/403/404).
-Four independently trained extension seeds (407--410) did not reproduce (one
-protective, three no effect), so the pooled SAC learner-variety evidence
-weakens at scale (3/10) and establishes only a partial across-seed signal
-rather than a single-family artifact or an off-policy generality.  A
-retained-shield control under the same full-scope poisoning keeps violations
-at zero on all three seeds ($0/0$), while the paired sudden runs expose final
-violations of $0.49$--$0.75$.  Resident authority therefore contains the
-consequence, and removal exposes it.
-
-Formally, an evidence tuple $(s,a,p,i,\tau)$ collected under the training
-contract must re-establish each component the deployment contract changes
-(Proposition~\ref{prop:transfer}).  Thus resident predictive evidence is
-contract-bound; raw release needs independent future coverage.
+The resulting design rule is contract-specific.  Provenance binding and
+trusted recomputation close the upstream reward-record channel.  Commit
+admission constrains which raw snapshot can receive authority, while resident
+predictive authority and permanent filtering contain downstream physical
+consequences.  Evidence collected for an assured composition remains bound to
+its subject, authority, provenance, information, and horizon.  Raw release
+must re-establish the obligations changed by the authority transition.

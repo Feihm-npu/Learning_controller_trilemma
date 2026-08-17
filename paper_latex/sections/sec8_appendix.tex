@@ -31,10 +31,9 @@ action-interface error and actuator saturation are zero.
 The grid exposes a model-mismatch boundary.  Without a guard, poisoned
 snapshots produce 1, 2, and 1 false acceptances at horizons 20, 50, and 100.
 Every locked positive guard removes observed false acceptance, with increasing
-false rejection as the guard grows.  Because 0.003 was declared as the
-primary pre-existing configuration before this audit, this is not post-hoc
-guard selection.  Zero observed false acceptance on this finite distribution
-still does not establish continuous-state invariance.
+false rejection as the guard grows.  The value 0.003 was the declared primary
+configuration before this audit.  Zero observed false acceptance on the finite
+evaluation distribution does not establish continuous-state invariance.
 
 
 \section{Unified Paired Security--Availability Frontier}

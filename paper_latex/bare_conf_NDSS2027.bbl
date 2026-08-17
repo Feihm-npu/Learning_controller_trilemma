@@ -99,12 +99,6 @@ H.~Zhang, Z.~Li, and A.~Clark, ``Safe control for nonlinear systems under
   Available: \url{https://arxiv.org/abs/2207.05146}
 \BIBentrySTDinterwordspacing
 
-\bibitem{yuan_safe_control_gym_2022}
-Z.~Yuan, A.~W. Hall, S.~Zhou, L.~Brunke, M.~Greeff, J.~Panerati, and A.~P.
-  Schoellig, ``Safe-control-gym: A unified benchmark suite for safe
-  learning-based control and reinforcement learning in robotics,'' \emph{IEEE
-  Robotics and Automation Letters}, vol.~7, no.~4, pp. 11\,142--11\,149, 2022.
-
 \bibitem{schaible_fractional_duality_1976}
 S.~Schaible, ``Duality in fractional programming: A unified approach,''
   \emph{Operations Research}, vol.~24, no.~3, pp. 452--461, 1976.
@@ -123,22 +117,11 @@ A.~Belloni and R.~M. Freund, ``On the second-order feasibility cone:
 A.~Agrawal and S.~Boyd, ``Disciplined quasiconvex programming,''
   \emph{Optimization Letters}, vol.~14, no.~7, pp. 1643--1657, 2020.
 
-\bibitem{pasqualetti_attack_2013}
-F.~Pasqualetti, F.~D{\"o}rfler, and F.~Bullo, ``Attack detection and
-  identification in cyber-physical systems,'' \emph{IEEE Transactions on
-  Automatic Control}, vol.~58, no.~11, pp. 2715--2729, 2013.
-
-\bibitem{li_et_mfapc_deception_2024}
-F.~Li and Z.~Hou, ``Event-triggered model-free adaptive predictive control for
-  networked control systems under deception attacks,'' \emph{IEEE Transactions
-  on Systems, Man, and Cybernetics: Systems}, vol.~54, no.~2, pp. 1325--1334,
-  2024.
-
-\bibitem{hou_et_mfapc_dos_microgrids_2026}
-R.~Hou, L.~Jia, X.~Bu, and J.~Li, ``Event-triggered model-free adaptive
-  predictive control for networked wind-power microgrids subject to aperiodic
-  {DoS} attacks,'' \emph{IEEE Transactions on Information Forensics and
-  Security}, vol.~21, pp. 1737--1750, 2026.
+\bibitem{yuan_safe_control_gym_2022}
+Z.~Yuan, A.~W. Hall, S.~Zhou, L.~Brunke, M.~Greeff, J.~Panerati, and A.~P.
+  Schoellig, ``Safe-control-gym: A unified benchmark suite for safe
+  learning-based control and reinforcement learning in robotics,'' \emph{IEEE
+  Robotics and Automation Letters}, vol.~7, no.~4, pp. 11\,142--11\,149, 2022.
 
 \bibitem{wabersich_linear_mpsc_2018}
 K.~P. Wabersich and M.~N. Zeilinger, ``Linear model predictive safety
@@ -154,6 +137,28 @@ A.~Didier, K.~P. Wabersich, and M.~N. Zeilinger, ``Adaptive model predictive
 M.~Alshiekh, R.~Bloem, R.~Ehlers, B.~K{\"o}nighofer, S.~Niekum, and U.~Topcu,
   ``Safe reinforcement learning via shielding,'' in \emph{Proceedings of the
   AAAI Conference on Artificial Intelligence}, vol.~32, no.~1, 2018.
+
+\bibitem{yu_certificate_repair_2025}
+E.~Yu, D.~{\v Z}ikeli{\'c}, and T.~A. Henzinger, ``Neural control and
+  certificate repair via runtime monitoring,'' in \emph{Proceedings of the AAAI
+  Conference on Artificial Intelligence}, vol.~39, no.~25, 2025, pp.
+  26\,409--26\,417.
+
+\bibitem{mirzaeedodangeh_safe_updates_2026}
+\BIBentryALTinterwordspacing
+O.~Mirzaeedodangeh, E.~S. Shekhtman, N.~Matni, and L.~Lindemann, ``Safe
+  planning in interactive environments via iterative policy updates and
+  adversarially robust conformal prediction,'' in \emph{Proceedings of The 8th
+  Annual Learning for Dynamics and Control Conference}, ser. Proceedings of
+  Machine Learning Research, vol. 331.\hskip 1em plus 0.5em minus 0.4em\relax
+  PMLR, 2026, pp. 678--704. [Online]. Available:
+  \url{https://proceedings.mlr.press/v331/mirzaeedodangeh26a.html}
+\BIBentrySTDinterwordspacing
+
+\bibitem{pasqualetti_attack_2013}
+F.~Pasqualetti, F.~D{\"o}rfler, and F.~Bullo, ``Attack detection and
+  identification in cyber-physical systems,'' \emph{IEEE Transactions on
+  Automatic Control}, vol.~58, no.~11, pp. 2715--2729, 2013.
 
 \bibitem{brunke_barrier_learning_2022}
 \BIBentryALTinterwordspacing
@@ -214,23 +219,6 @@ L.~Burbano, H.~Sasahara, R.~Song, Z.~B. Celik, and A.~A. C{\'a}rdenas,
   \emph{Proceedings of the 35th USENIX Security Symposium}, 2026. [Online].
   Available:
   \url{https://www.usenix.org/conference/usenixsecurity26/presentation/burbano}
-\BIBentrySTDinterwordspacing
-
-\bibitem{yu_certificate_repair_2025}
-E.~Yu, D.~{\v Z}ikeli{\'c}, and T.~A. Henzinger, ``Neural control and
-  certificate repair via runtime monitoring,'' in \emph{Proceedings of the AAAI
-  Conference on Artificial Intelligence}, vol.~39, no.~25, 2025, pp.
-  26\,409--26\,417.
-
-\bibitem{mirzaeedodangeh_safe_updates_2026}
-\BIBentryALTinterwordspacing
-O.~Mirzaeedodangeh, E.~S. Shekhtman, N.~Matni, and L.~Lindemann, ``Safe
-  planning in interactive environments via iterative policy updates and
-  adversarially robust conformal prediction,'' in \emph{Proceedings of The 8th
-  Annual Learning for Dynamics and Control Conference}, ser. Proceedings of
-  Machine Learning Research, vol. 331.\hskip 1em plus 0.5em minus 0.4em\relax
-  PMLR, 2026, pp. 678--704. [Online]. Available:
-  \url{https://proceedings.mlr.press/v331/mirzaeedodangeh26a.html}
 \BIBentrySTDinterwordspacing
 
 \bibitem{ma_policy_poisoning_2019}

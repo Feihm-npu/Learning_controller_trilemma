@@ -61,13 +61,16 @@ numpy 1.26.4. `wheels_cache/` holds the downloaded wheels for offline rebuilds.
 5. Fidelity gate: clean baseline must reproduce paper Tab. 1 ordering
    (shield 0/0 < smooth ≪ sudden < no-shield) before any poisoned run is reported.
 
-## Headline results (2026-08-15, obstacle/REINFORCE/sudden, paired seeds 1–3)
+## Headline results (2026-08-17, obstacle/REINFORCE/sudden, paired runs)
 Fidelity gate passed (paper Tab. 1 ordering reproduced). V3 contrast poisoning
-(full-phase) is effective on transfer-sensitive seeds; V1 bias / V2 risk are
-negative controls. P0 causal isolation (`poison_scope=shield-on`, at-retirement
-eval/freeze): 3/3 seeds show the released raw policy already 1.6–3.6× more
-dangerous AT the authority transition (74–78% vs clean 22–48%); 2/3 seeds do not
-self-heal after 4000 fully-clean post-retirement episodes. Mechanism signal:
-shield-on disagreement 2.3–8.6× higher under poisoning while physical violations
-stay 0. PPO full-phase positive on 1/3 seeds; PPO isolation experiment pending
-(server, top priority).
+(full-phase) is effective in some low-clean-violation training realizations;
+V1 bias / V2 risk are negative controls. In the provenance-complete P0 causal
+isolation set (`poison_scope=shield-on`, at-retirement eval/freeze), two of
+three paired runs show a 1.6–3.6× higher raw-policy violation rate at the
+authority transition. The complete fresh configured-seed-3 pair is unchanged
+(0.241→0.242) despite low clean disagreement. One positive effect persists
+after 4000 fully clean post-retirement episodes. Physical violations remain
+zero during shielded execution. PPO isolation is positive in 1/10 paired runs,
+and SAC isolation is positive in 3/10 low-disagreement paired runs; these
+batteries establish conditional rather than seed- or learner-wide
+exploitability.

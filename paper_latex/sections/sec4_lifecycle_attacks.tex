@@ -1,30 +1,41 @@
 \section{Assurance-Contract Failure Modes}
 \label{sec:lifecycle-attacks}
 
-This section separates three failure modes that are often conflated.
+This section separates four failure modes that arise at different points in
+the assurance lifecycle.
 
 \textbf{Nominal-state certification.}
-A nominal certificate checks safety only at an estimate $\hat x(h)$ or at the reported sensor value. Under FDI, this can accept an action that is safe for $\hat x(h)$ but unsafe for another state in $X_{\mathcal A}(h)$. This is the classical state-semantics failure already addressed by severe-attack safety filters.
+A nominal certificate evaluates an estimate $\hat x(h)$ or a reported sensor
+value.  Under FDI, an accepted action may be safe for $\hat x(h)$ but unsafe
+for another state in $X_{\mathcal A}(h)$.  Severe-attack safety filters address
+this state-semantics failure.
 
 \textbf{Action-only filtering.}
-A robust safety filter can repair the current action by projecting it into $K_\Gamma(h)$. This protects the physical action applied at that step when the kernel is nonempty. It does not, by itself, certify the learner update. If the update rule still changes $\theta_t$ to $\theta_{t+1}$ such that the raw policy $\pi_{\theta_{t+1}}$ leaves $K_\Gamma(h)$, then the certificate applies to the filtered action, not to the updated learner. The next certificate must therefore reason about the updated action map, not only about the one action that was just projected.
+A robust safety filter can project the current action into $K_\Gamma(h)$ when
+the kernel is nonempty.  This operation protects the applied action at that
+step.  The learner update remains a separate object.  If
+$\pi_{\theta_{t+1}}(h)$ leaves $K_\Gamma(h)$, the certificate covers the
+filtered action but not the updated action map.  Certified learning must
+therefore admit the updated policy as well as the current action.
 
 \textbf{Uncertified learning after rejection.}
-When $K_\Gamma(h)=\emptyset$, a severe-attack filter can reject or enter fail-safe mode. If the learner nevertheless updates $\theta_t$ using the same attacked history, this update is not certified learning. The mechanism may still operate as an engineering fail-safe, but it cannot claim that the online learner remained inside a sound certificate lifecycle.
+When $K_\Gamma(h)=\emptyset$, a severe-attack filter can reject the action or
+enter fail-safe mode.  An update computed from the same attacked history then
+falls outside the accepted certificate lifecycle.  A fail-safe can protect the
+plant while learning is frozen, rolled back, or re-anchored.
 
 \textbf{Protected adaptation, unsafe deployment.}
-An adaptation shield can keep every data-collection transition safe while an
-attacker corrupts only the log consumed by the learner.  If the resulting
-snapshot is later deployed without the shield, the attack succeeds only
-through the legitimate update rule.  This delayed failure is distinct from
-evading the runtime shield.  A sound snapshot lifecycle therefore requires a
-commit certificate before the protected adaptation environment releases a raw
-policy.
+An adaptation shield can keep every data-collection transition safe while
+corrupted reward records influence the learner.  The trusted update rule can
+then produce an unsafe raw policy without a physical failure during
+adaptation.  Releasing that policy after shield retirement exposes the delayed
+effect.  Raw release therefore requires evidence for the policy that receives
+action authority.
 
-These attacks motivate separate metrics. An \emph{unsafe certified action}
+These failure modes require separate metrics.  An \emph{unsafe certified action}
 counts accepted certificates whose applied action is unsafe for some plausible
-state. A \emph{stale certified policy} counts accepted certificates for which
-the updated raw policy leaves the kernel. \emph{Uncertified learning} counts
+state.  A \emph{stale certified policy} counts accepted certificates for which
+the updated raw policy leaves the kernel.  \emph{Uncertified learning} counts
 nontrivial updates after certificate rejection.  End-to-end studies
 add delayed deployment violations, admission coverage, paired clean/poison
 outcomes, update fraction, intervention, reward, and certificate runtime.

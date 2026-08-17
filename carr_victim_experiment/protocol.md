@@ -2,6 +2,19 @@
 
 **Status**: locked 2026-08-14 (before any experiment run). Amendments require a new version block.
 
+## Current provenance status (2026-08-17)
+
+The original local configured-seed-3 clean at-retirement summary duplicated a
+separate fix-check record.  It is excluded from paired inference.  The current
+paper table uses local pairs 1--2 and the complete fresh configured-seed-3 pair:
+0.241→0.242 at retirement and 0.747→0.228 at the final endpoint.  The archived
+local poisoned realization (0.748 at retirement) has no provenance-valid paired
+clean endpoint.  Consequently, the current causal-isolation result is two of
+three provenance-complete paired runs positive at retirement, with one positive
+effect persisting after clean post-retirement learning.  Historical amendments
+below record the chronology and are superseded by this provenance correction
+for paired inference.
+
 ## Amendment v1.1 (2026-08-14, after clean fidelity gate passed)
 
 - Fidelity gate PASSED on obstacle/REINFORCE (seed 1, 5000 eps): shield 0/0,

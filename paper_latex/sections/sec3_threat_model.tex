@@ -10,45 +10,39 @@ $K_\Gamma(h_t)$.  The defender may also possess a trusted state anchor,
 backup controller, or external fail-safe, but each is an explicit
 architectural assumption and cost.
 
-We distinguish two deployment contracts.  Under \emph{snapshot deployment}, a
-safety layer protects data collection and adaptation, after which a raw
-snapshot $\pi_{\theta^+}$ may be committed for deployment.  The snapshot
-itself therefore requires admission.  Under \emph{permanently filtered
-deployment}, a sound filter $F$ remains online and the certified object is the
-composition $F\circ\pi_{\theta^+}$.  Our raw-snapshot attack does not bypass
-such a filter; we evaluate permanent filtering as an escape condition and
-measure its intervention and reward cost.
+We distinguish two deployment families.  Under \emph{raw-policy deployment},
+a safety layer protects adaptation before a raw policy snapshot
+$\pi_{\theta^+}$ receives action authority.  Under \emph{permanently filtered
+deployment}, a sound filter $F$ remains online and certifies the composition
+$F\circ\pi_{\theta^+}$.
 
-We use four contract names consistently.  \emph{Permanent raw release} removes
-runtime authority after a one-time five-step check.  \emph{Resident predictive
-authority} repeats that check online and can switch permanently to the trusted
-baseline.  The \emph{one-step resident kernel} is a current-state action filter
-retained as a negative control.  \emph{Commit admission} instead certifies a
-candidate snapshot on a declared state set and horizon before raw deployment.
-These labels identify evidence scope, not interchangeable algorithm names.
+The evaluation instantiates four contracts within these families.
+\emph{Permanent raw release} removes runtime authority after a one-time
+five-step check.  \emph{Commit admission} certifies a candidate snapshot on a
+declared state set and horizon before raw release.  \emph{Resident predictive
+authority} repeats the five-step check online and can transfer control to the
+trusted baseline.  The \emph{one-step resident kernel} applies a current-state
+action filter and serves as a negative control.  Each name denotes a distinct
+evidence scope and authority contract.
 
-Permanent removal is an intentional handoff, not a crash of the safety layer.
-Examples include protected commissioning followed by snapshot export, an edge
-learner promoted to a lower-latency control target, or a fleet update whose
-deployment target does not carry the training-time predictor.  Operators may
-prefer this handoff to avoid permanent compute, intervention, or dependency on
-a backup service; Section~\ref{sec:study} measures those costs.  Our claim is
-conditional on making that handoff.  If runtime authority remains resident,
-the raw-policy failure is contained rather than physically realized.
+Permanent raw release is an intentional handoff.  Examples include protected
+commissioning followed by snapshot export and promotion to a lower-latency
+control target without the training-time predictor.  The handoff avoids
+permanent computation, intervention, or dependence on a backup service.
+Section~\ref{sec:study} measures these tradeoffs.  Resident authority instead
+contains raw-policy failure within the assured composition.
 
 \subsection{Split-Trust Learning Pipeline}
 
-We separate a high-integrity runtime-assurance plane from an asynchronous
-learning-data plane.  This is a least-privilege model, not a claim that the
-entire controller is compromised.  The runtime plane owns authenticated plant
-state, the action selector, actuator interface, trusted baseline, and
-certificate outcome.  The learning plane consumes recorded transitions and a
-scalar reward through a telemetry, historian, replay-buffer, or external-KPI
-interface.  OT guidance explicitly separates control from data-management
-assets and recognizes historians that exchange data across zones
-\cite{nist_ot_security_2023,mitre_data_historian}.  These architectures
-motivate the split; our benchmark does not emulate compromise of a particular
-historian or product.
+The least-privilege model separates a high-integrity runtime-assurance plane
+from an asynchronous learning-data plane.  The runtime plane owns the
+authenticated plant state, action selector, actuator interface, trusted
+baseline, and certificate outcome.  The learning plane consumes recorded
+transitions and scalar rewards through telemetry, a historian, a replay
+buffer, or an external key-performance-indicator interface.  OT guidance
+recognizes this separation and the exchange of historian data across zones
+\cite{nist_ot_security_2023,mitre_data_historian}.  The benchmark models the
+resulting interface without assuming a particular product.
 
 \begin{table}[t]
 \centering
@@ -70,57 +64,50 @@ Held-out states and release rule & Fixed, honest evaluation & No write or select
 \end{tabular}
 \end{table}
 
-The evaluated attack begins after a principal with this reward-field write
-capability has been compromised.  Establishing that foothold is outside the
-experiment.  The model fits post-computation/pre-update mutation by a replay
-writer or broker.  A compromised reward producer is equivalent only if it has
-the same bounded output authority; source authentication alone would then
-authenticate a malicious value rather than establish its semantics.
+The evaluated attack begins after compromise of a principal with bounded
+reward-field write access.  This access permits post-computation,
+pre-update mutation by a replay writer or broker.  A compromised reward
+producer is equivalent when it has the same bounded output authority.  In
+that case, source authentication establishes origin but not reward semantics.
 
 \subsection{Attack Channels and Capabilities}
 
 The general history model permits two attack channels.  Observation FDI
 $a_t$ changes the state semantics of the history and enlarges
-$X_{\mathcal A}(h_t)$.  Update-data corruption $b_t$ changes rewards, logs, or
-auxiliary learning signals and can redirect $U(\theta_t,h_t)$ even when the
-state is trusted.  The formal lifecycle condition applies to either channel
-because both can affect the next action map.
+$X_{\mathcal A}(h_t)$.  Update-data corruption $b_t$ modifies learning signals
+and can redirect $U(\theta_t,h_t)$ with trusted state observations.  Either
+channel can alter the next action map.
 
-The end-to-end learner experiments deliberately use the narrower reward-log
-channel.  The attacker is white-box and batch-aware: it observes the current
-learner and adaptation batch, but not the held-out deployment-state choice,
-and modifies only scalar rewards before an ordinary policy-gradient update,
-within a declared per-step $L_\infty$ budget.  It cannot write actuator
-commands, physical states, observations, dynamics, gradients, policy
-parameters, optimizer state, deployment states, or certificate outcomes.  The
-adaptation selector sees the learner's proposed action before the plant step.
-Physical safety during collection therefore does not arise from giving the
-attacker direct policy-write or actuator access.
+The end-to-end learner experiments use the narrower reward-record channel.
+The white-box, batch-aware attacker observes the current learner and
+adaptation batch, but not the held-out deployment-state choice.  It modifies
+only scalar rewards before an ordinary policy-gradient update, subject to a
+declared per-step $L_\infty$ budget.  It cannot write actuator commands,
+physical states, observations, dynamics, gradients, policy parameters,
+optimizer state, deployment states, or certificate outcomes.  The adaptation
+selector observes each proposed action before the plant step and retains
+physical authority during data collection.
 
 \subsection{Evidence Transfer Across Authority Transitions}
 \label{sec:evidence-transfer}
 
-The contracts above differ in what an acceptance decision may rely on, so
-evidence valid under one contract need not be valid under another.  We make
-that boundary explicit.  An assurance decision consumes an \emph{evidence
-tuple}
+The contracts above differ in their evidence obligations.  We represent the
+evidence used by an assurance decision as
 \begin{equation}
     E=(s,a,p,i,\tau),
 \end{equation}
-whose components are: the \emph{subject} $s$, either the raw policy
-$\pi_\theta$ or the assured composition $F\circ\pi_\theta$; the
-\emph{authority} $a$, either a resident decision module, shield, or filter
-that constrains applied actions, or no authority; the \emph{provenance} $p$
-of the learning signals, trusted update data or an adversarial update log
-with bounded reward write access; the \emph{information} $i$ available to the
-subject at decision time (full state, partial observation, belief state, or
-the filtered action available only under the authority); and the
-\emph{horizon} $\tau$ over which the evidence is claimed to bound behavior
-(finite evaluation window or permanent future).  A \emph{contract transition}
-$C_{\mathrm{train}}\to C_{\mathrm{deploy}}$ changes one or more of these
-components.  Evidence $E$ collected under $C_{\mathrm{train}}$ transfers to
-$C_{\mathrm{deploy}}$ only if each changed component is re-established under
-$C_{\mathrm{deploy}}$:
+The \emph{subject} $s$ is the raw policy $\pi_\theta$ or the assured
+composition $F\circ\pi_\theta$.  The \emph{authority} $a$ identifies the
+resident module that constrains applied actions, or its absence.  The
+\emph{provenance} $p$ records whether learning signals came from a trusted or
+adversarial update process.  The \emph{information} $i$ describes the state,
+observation, belief, or filtered action available at decision time.  The
+\emph{horizon} $\tau$ specifies the interval over which the evidence bounds
+behavior.
+
+A contract transition $C_{\mathrm{train}}\to C_{\mathrm{deploy}}$ may change
+one or more tuple components.  Evidence transfers only after every changed
+component is re-established under $C_{\mathrm{deploy}}$:
 
 \begin{itemize}
     \item \emph{subject}: evidence about the composition does not bound the
@@ -146,42 +133,24 @@ obligation is re-established under $C_{\mathrm{deploy}}$.
 \end{proposition}
 
 \begin{proof}
-Each component is a premise of the evidence's soundness: the object the
-evidence is about, the enforcement that governed collection, the provenance
-of the learning signals, the information available to the subject, and the
-horizon.  Removing or weakening a premise does not preserve conclusions
-drawn from the original premise set.  Permanent raw release, the contract defined above,
-changes all five components at once: subject from
-composition to raw policy, authority from resident to none, provenance from
-trusted to adversarial update log, information from masked action to
-deployment observation, and horizon from finite check to permanent future.
-Each change removes a premise of the finite reverse-switch evidence collected
-under resident authority, so that evidence cannot be reused unchanged.
+Each component is a premise of the assurance decision.  A conclusion derived
+from one premise set is not preserved after a premise is removed or weakened.
+In the evaluated permanent-release transition, the subject changes from the
+composition to the raw policy and resident authority is removed.  The update
+provenance becomes adversarial, the policy acts on deployment observations,
+and a finite check authorizes an unmonitored future.  The original evidence
+therefore cannot be reused without re-establishing these obligations.
 \end{proof}
 
-We present this proposition as a security model and evidence-transfer rule
-rather than a deep theorem: its value is to place the distinct roles of
-Hsu et al., Carr et al., Simplex, and our snapshot release on one axis, not
-to prove a new optimization fact.
-
-The related-work landscape and our experiments occupy distinct positions in
-this space.  Hsu et al.~\cite{hsu_sim_lab_real_2023} is the positive control:
-they precede authority removal with independent evidence about the raw policy
-in the deployment environment, re-establishing the changed components.
-Carr et al.~\cite{carr_partial_shielding_2023} define the lifecycle we attack,
-a shield bootstrap that later retires its authority.  It realizes the
-subject and authority transitions, but under trusted provenance
-and without an adversarial update log.  Simplex and its
-descendants~\cite{seto_simplex_1998,phan_neural_simplex_2020,damare_bb_simplex_2025}
-never change the authority component: the certified object is the resident
-composition.  Our snapshot release is authority removal under an adversarial
-update log; the third-party case study in Section~\ref{sec:third-party}
-instantiates the same transition on a published lifecycle, and the controlled
-study in Section~\ref{sec:study} isolates it with matched clean and poisoned
-runs.  The implication for defense is that each escape condition re-proves a
-different subset of the tuple, which is why the same attack shape must be
-re-verified against provenance, recomputation, resident authority, commit
-admission, and permanent filtering separately.
+The proposition supplies the security model used throughout the paper.
+Independent transfer evidence re-establishes obligations before authority
+removal~\cite{hsu_sim_lab_real_2023}.  Resident Simplex mechanisms preserve the
+authority component
+\cite{seto_simplex_1998,phan_neural_simplex_2020,damare_bb_simplex_2025}.
+Carr et al.'s lifecycle supplies a published transition from shielded
+bootstrap to raw-policy authority~\cite{carr_partial_shielding_2023}.  Our case
+study adds adversarial update provenance to that transition, and the
+controlled study isolates the resulting mechanism.
 
 \subsection{Integrity Assumptions and Escape Conditions}
 
@@ -195,17 +164,15 @@ operator feedback, or an external KPI unavailable to the runtime plane, the
 system instead needs a trusted producer, redundant validation, or a detector;
 a signature applied to an already malicious value is insufficient.
 
-These controls answer different questions.  Provenance and recomputation
-remove the upstream attack precondition.  A task-aware anomaly detector may
-reject suspicious batches but is distribution- and semantics-dependent.  A
-commit certificate does not sanitize the log; it limits which resulting
-snapshot can be released.  Resident predictive authority likewise does not
-detect corruption, but can contain its physical consequence.  Our frozen
-detection audit reports trusted recomputation at TPR/FPR $1.000/0$ and simple
-task-aware checks with TPR above 0.90 and FPR at most 0.036.  The supported
-attack is
-therefore effective under the exposed interface but not stealthy against the
-tested checks.
+These controls act at different boundaries.  Provenance and recomputation
+remove the upstream attack precondition.  A task-aware detector can reject
+suspicious batches, subject to its distributional and semantic assumptions.
+Commit admission restricts which learned snapshot can be released.  Resident
+predictive authority contains the physical consequence after deployment.  In
+the frozen audit, trusted recomputation achieved true-/false-positive rates
+(TPR/FPR) of $1.000/0$.  Simple task-aware checks achieved TPR above 0.90 and
+FPR at most 0.036, making the effective attack readily detectable under those
+assumptions.
 
 \subsection{Security and Availability Goals}
 
@@ -222,21 +189,19 @@ We separate four attacker or failure objectives:
     or redirects the update until sound learning must stop or re-anchor.
 \end{itemize}
 
-The defender additionally cares about availability: admitted state coverage,
-accepted update fraction, task reward, filter intervention and rejection,
-certificate latency, and trusted-anchor use.  Zero physical violations with
-no benefit over always-freeze is safe but does not establish useful learning.
+The defender also measures availability through admitted state coverage,
+accepted update fraction, task reward, filter intervention, rejection,
+certificate latency, and trusted-anchor use.  Useful learning requires paired
+task improvement over always-freeze in addition to physical safety.
 
-\subsection{Non-goals}
+\subsection{Scope Boundaries}
 
-We do not assume that every attack makes safety impossible. Existing
-severe-attack filters, secure estimators, and fault-tolerant CBF methods can
-preserve safety when their assumptions make $K_\Gamma(h_t)$
-nonempty~\cite{fawzi_secure_2014,tan_safety_2024,zhang_safe_2022}.  We do not
-claim to defeat a permanently sound runtime filter, to prove continuous-state
-invariance from a sampled certificate, or to establish vulnerability for all
-learner families.  The question is narrower: which certificate must cover an
-update, which escape conditions remain sound, and what coverage and
-availability costs follow?  We additionally do not claim a zero-day against a
-logging service, reward-monitor evasion, or persistence when authenticated
-trusted recomputation is available.
+Severe-attack filters, secure estimators, and fault-tolerant control-barrier
+function (CBF) methods can preserve safety when their assumptions keep
+$K_\Gamma(h_t)$ nonempty
+\cite{fawzi_secure_2014,tan_safety_2024,zhang_safe_2022}.  This study examines
+certificate coverage for learner updates and the costs of sound deployment
+contracts.  Its empirical claims concern sampled finite-horizon certificates,
+not continuous-state invariance or population-wide learner-family generality.
+The evaluation begins after bounded reward-record access and excludes service
+exploitation, reward-monitor evasion, and compromise of trusted recomputation.

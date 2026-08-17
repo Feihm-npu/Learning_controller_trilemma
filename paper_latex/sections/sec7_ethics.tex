@@ -1,49 +1,33 @@
 \section*{Ethics Considerations}
 
-This paper studies an attack on safety-critical learning-enabled control, so we
-state its scope and safeguards explicitly.  All experiments run in simulation
-(Safe-Control-Gym with PyBullet dynamics); no physical plant, vehicle, or
-deployed industrial system was involved, and no human subjects or personal data
-were used.  The reported ``failures'' are simulated constraint violations used
-to compare deployment contracts, not incidents on any real system.
+This paper studies an attack on safety-critical learning-enabled control.  All
+experiments run in simulation using Safe-Control-Gym with PyBullet dynamics.
+No physical plant, vehicle, deployed industrial system, human subject, or
+personal data was involved.  Reported failures are simulated constraint
+violations used to compare deployment contracts.
 
-The evaluated threat begins \emph{after} a reward-ingestion principal in the
-asynchronous learning-data plane has been compromised, and grants the attacker
-only bounded scalar writes to reward records.  We deliberately do not
-demonstrate, and do not provide, any capability to obtain that foothold: we
-present no exploit against a historian, broker, replay service, or reward
-producer, and no technique to evade log-integrity controls.  The contribution
-is thus not a new intrusion capability but a characterization of what a
-\emph{known} least-privilege data-integrity gap implies for certificate
-inheritance at raw-policy release.
+The evaluated threat begins \emph{after} compromise of a reward-ingestion
+principal in the asynchronous learning-data plane and grants only bounded
+scalar writes to reward records.  Initial access, product-specific
+exploitation, and evasion of log-integrity controls fall outside the artifact
+and evaluation.  The experiments characterize the consequence of a
+least-privilege data-integrity gap for evidence inheritance at raw-policy
+release.
 
-We judge the disclosure to be net beneficial.  The same study that exposes the
-assurance-contract gap also identifies concrete, deployable countermeasures and
-measures their cost: origin-bound append-only reward records and trusted
-recomputation remove the upstream precondition entirely (recomputation blocks
-every evaluated edit), while resident predictive authority, commit admission,
-and permanent runtime filtering contain the downstream physical consequence.
-The effective attack is also readily detectable by simple task-aware reward
-checks.  Surfacing this contract distinction, together with its defenses, before
-learning-enabled controllers are widely promoted from protected adaptation to
-unmonitored release reduces rather than increases real-world risk.  We do not
-claim a fielded vendor vulnerability.  Shield-retirement itself is not
-hypothetical: Carr et al. independently proposed and evaluated sudden and
-smooth shield removal as part of a published learning-to-deployment workflow,
-and we use that published lifecycle as a third-party case study rather than
-claiming a vulnerability in their system.  We are not aware of a specific
-fielded industrial system exhibiting this exact pipeline, so no vendor
-disclosure was applicable; operators adopting protected-adaptation-then-release
-workflows are the intended audience for the mitigations.
+The study evaluates countermeasures at both sides of the authority transition.
+Origin-bound reward records and trusted recomputation remove the upstream
+precondition.  Resident predictive authority, commit admission, and permanent
+filtering contain the downstream physical consequence.  Simple task-aware
+reward checks also detected the effective fixed attack.  Carr et al.'s
+published workflow supplies a third-party lifecycle case study; no fielded
+vendor or product is evaluated.
 
 \section*{Open Science}
 
-We support the NDSS open-science policy.  The artifact includes row-level result
-CSVs, the exact commands and seed namespaces to reproduce every table and
-figure, upstream revisions and model files, dependency versions, source-linked
-generated tables, and SHA-256 checksums for all locked files, together with an
-automated audit that checks table provenance, claim locks, and format.  We
-intend to release the code and data required to reproduce the paper's results
-under an open license upon publication.  It retains the full anchor, coverage,
-timing, PPO, and utility boundaries; none authorizes post-hoc protocol
-changes.
+We support the NDSS open-science policy.  The artifact includes row-level
+result files, exact commands and run namespaces, upstream revisions, model
+files, dependency versions, source-linked tables, and SHA-256 checksums for
+locked files.  Automated checks audit table provenance, claim locks, and
+format.  We intend to release the code and data required to reproduce the
+results under an open license upon publication.  The artifact retains the
+anchor, coverage, timing, PPO, utility, and protocol-chronology boundaries.

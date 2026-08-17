@@ -8,41 +8,60 @@ We consider a discrete-time cyber-physical system
     x_{t+1}=f(x_t,u_t,w_t), \qquad
     \widetilde y_t=h(x_t)+a_t,
 \end{equation}
-where $x_t$ is the physical state, $u_t$ is the control input, $w_t\in\mathcal W$ is ordinary process uncertainty, and $a_t$ is an FDI signal applied to the measurement channel. The controller observes an attacked history
+where $x_t$ is the physical state, $u_t$ is the control input, and
+$w_t\in\mathcal W$ is ordinary process uncertainty.  The term $a_t$ denotes a
+false-data injection (FDI) signal applied to the measurement channel.  The
+controller observes the attacked history
 \begin{equation}
     h_t=(\widetilde y_{0:t},u_{0:t-1},\widetilde\ell_{0:t}),
 \end{equation}
-where $\widetilde\ell_t=\ell_t+b_t$ denotes rewards, logs, or auxiliary
-signals used by the learning rule and $b_t$ is update-data corruption.  The
-two channels need not both be present.  Sensor FDI $a_t$ creates uncertainty
-about the physical state; log corruption $b_t$ can redirect an update even
-when the state is trusted.  Both matter to the certificate lifecycle because
-the update rule consumes $h_t$.
+where $\widetilde\ell_t=\ell_t+b_t$ denotes a learning signal modified by
+update-data corruption $b_t$.  The general model includes rewards, logs, and
+auxiliary learning signals.  The end-to-end experiments specialize this
+channel to bounded scalar reward-record edits.  Sensor FDI creates uncertainty
+about the physical state, whereas update-data corruption can redirect learning
+with trusted state observations.  Either channel can change the action map
+produced from $h_t$.
 
-Following severe sensor-attack safety work~\cite{tan_safety_2024}, we do not assume that $h_t$ identifies a unique physical state. For an attack family $\mathcal A$, define the plausible-state set
+Following severe sensor-attack safety work~\cite{tan_safety_2024}, an attacked
+history may correspond to multiple physical states.  For an attack family
+$\mathcal A$, define the plausible-state set
 \begin{equation}
     X_{\mathcal A}(h_t)=\{x:\exists E\in\mathcal A,\; H_t(E)=h_t,\; x_t(E)=x\}.
 \end{equation}
-This set is the semantic object over which any strategic-FDI-sound certificate must range. If a certificate is sound only for a nominal estimate $\hat x(h_t)$, but $X_{\mathcal A}(h_t)$ contains another compatible state, the certificate is not sound against the attack family.
+This set defines the state semantics of a certificate under strategic FDI.  A
+certificate evaluated only at a nominal estimate $\hat x(h_t)$ does not cover
+another compatible state in $X_{\mathcal A}(h_t)$.
 
 \subsection{Online-Updated Controllers}
 
-The controller is a history-dependent policy $\pi_{\theta_t}$ with parameters $\theta_t$. It selects actions as $u_t=\pi_{\theta_t}(h_t)$ and updates according to
+The controller is a history-dependent policy $\pi_{\theta_t}$ with parameters
+$\theta_t$.  It selects $u_t=\pi_{\theta_t}(h_t)$ and updates according to
 \begin{equation}
     \theta_{t+1}=U(\theta_t,h_t).
 \end{equation}
-We call an update nontrivial if it changes the controller's action map on some reachable or admissible history. Parameter changes that leave all actions unchanged are behaviorally trivial and do not count as learning in this paper.
+An update is \emph{nontrivial} when it changes the controller's action map on a
+reachable or admissible history.  Parameter changes that preserve the action
+map are behaviorally trivial under this definition.
 
 \subsection{Certificates and Certified Kernels}
 
-Let $\Gamma$ denote a certificate type. In this paper, $\Gamma$ can be an invariant set, a barrier certificate, a reachability certificate, or a runtime shield. For a history $h$, the certificate induces a set of actions that are certified for every plausible state:
+Let $\Gamma$ denote an invariant-set, barrier, reachability, or runtime-shield
+certificate.  At history $h$, the certificate induces actions that are valid
+for every plausible state:
 \begin{equation}
     K_\Gamma(h)=\{u\in\mathcal U: u \text{ satisfies } \Gamma \text{ for all } x\in X_{\mathcal A}(h)\}.
 \end{equation}
-We call $K_\Gamma(h)$ the \emph{certified kernel}. Existing severe-attack safety filters can be viewed as mechanisms for constructing and acting within such kernels for fixed controllers. Our focus is the additional gate required when $U$ changes $\pi_\theta$ after deployment.
+We call $K_\Gamma(h)$ the \emph{certified kernel}.  Severe-attack safety
+filters construct or act within such kernels for fixed controllers.  Online
+learning additionally requires admission of the updated action map produced by
+$U$.
 
 \begin{definition}[Certified online learning]
-A mechanism is a certified online learner at history $h$ if it accepts a certificate for the updated controller $\pi_{\theta_{t+1}}$, where $\theta_{t+1}=U(\theta_t,h)$, and claims that the next certified action is sound for every state in $X_{\mathcal A}(h)$.
+A mechanism is a certified online learner at history $h$ if it accepts a
+certificate for $\pi_{\theta_{t+1}}$, where
+$\theta_{t+1}=U(\theta_t,h)$.  The accepted certificate asserts that the next
+certified action is sound for every state in $X_{\mathcal A}(h)$.
 \end{definition}
 
 \begin{definition}[Learning-freeze frontier]
