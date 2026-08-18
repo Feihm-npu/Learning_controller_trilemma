@@ -343,6 +343,6 @@ cd paper_latex && latexmk -pdf -interaction=nonstopmode -halt-on-error usenix_se
 
 ## Integrity inventory
 
-`results/tdsc_artifact_checksums.csv` contains SHA-256 digests for 265 locked source, raw-result, generated, upstream-model, figure, and submission files. `results/tdsc_environment_versions.csv` is the machine-readable environment table.
+`results/tdsc_artifact_checksums.csv` contains SHA-256 digests for 267 locked source, raw-result, generated, upstream-model, figure, and submission files. `results/tdsc_environment_versions.csv` is the machine-readable environment table.
 
 The invalid pre-clip benign calibration is intentionally retained as an audit narrative in `benign_utility_protocol.md`; it is not included as confirmatory result data.

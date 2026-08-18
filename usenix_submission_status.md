@@ -161,3 +161,172 @@ release 检查 ≠ 保留的 runtime authority**——recomputation 从"反驳"�
 contract gap，reward 通道是其中一个放大器"→ 提交；读起来仍是"我们做了个 reward
 攻击"→ 撤回注册，投 Cycle 2（2027-01-19 注册），把 5 个月投入
 experience/curriculum-selection 第二通道。
+
+
+## 9. 模拟审稿回应（同日第二轮，已执行）
+
+模拟审稿给 6–6.5/10 Weak Accept，指出五个提交前必修项。全部已改，无新实验。
+
+**最关键的一项已核实为真**：Könighofer et al., *Online shielding for
+reinforcement learning*（ISSE 2022, doi 10.1007/s11334-022-00480-4）结论逐字为
+"the final learned policies inflict more safety violations than conventionally
+learned policies, when executed in unshielded environments. Hence, to guarantee
+safety of control policies obtained through shielded (or unshielded) RL,
+shielding needs to be applied during execution in the field."（从 arXiv:2212.01861
+PDF 提取原文核对）。这是本文 non-adversarial claim 的最近先验，原 bib 里没有。
+
+| # | 改动 |
+|---|---|
+| 1 | 新增 `konighofer_online_shielding_2022` 引用；§7 开出专门段落**主动承认**该现象已知，并给两条 delta：(a) 他们的结论"execution 时必须保留 shield"在本文测量中**必要但不充分**——one-step resident kernel 就是 execution 时保留的，仍 14/71 失败，真正要保住的是 switching lead time；(b) 本文对象是 retirement **decision** 本身（repeated recoverability trigger ≠ one-time release credential）+ 对抗性 provenance |
+| 2 | Intro 在 "Existing mechanisms" 段点名该先验并写出"我们问的是不同问题" |
+| 3 | 摘要与 Intro 的 evidence tuple 对齐 Prop 1 的"may change one or more components"：hero transition 改变的是 **authority + horizon**，poisoning 再加 **provenance**，composition→raw 才动 **subject**。同一 over-claim 另外出现在 §8 Discussion 与 Appendix A 的 Prop 1 证明里，一并修正（模拟审稿只点了摘要/Intro） |
+| 4 | 删除普遍性措辞："commonly commissioned" → "are commissioned"；"ordinary engineering practice retire..." → "Published learning-enabled control workflows study retirement of..."；"the standard way" → "a standard way" |
+| 5 | `sec4_evaluation.tex:4` "located the authority-transition **vulnerability** in an independently published lifecycle" → "located the **authority transition** in..."，与 §7 "not the soundness of their original claims" 一致 |
+
+页面代价：新的 closest-prior 段约 22 栏行。用真正重复的内容抵：§8 的 defense
+taxonomy（§9 已完整重述一遍）、§8.1 里 reward-influence scope 那句（§4.2 已有且
+locked 串在那边）、Conclusion 的 conditionality 从句（§8 已有）。最终仍
+13.0 pp、0 overfull、0 undefined、26 页、claim-lock 19/19。
+
+
+## 10. 模拟审稿第三轮（同日，已执行）
+
+模拟审稿反对第 9 节里"我们证否了 Könighofer 的结论"这种措辞。**核实后该反对成立**：
+原文 §4 讨论里已有
+
+> "the safety of actions is only analysed within a finite horizon k. Therefore,
+> the agent might end up in situations where any available action induces a
+> high probability of violating the specification. It is therefore important to
+> pick a finite horizon k large enough… there is a natural trade-off between
+> the computational overhead… and the number of safety violations…"
+
+也就是说"有限 horizon 太短会走进所有动作都不安全的状态"他们已经写了——本文那 41 次
+empty kernel 正是这个情形的实例。necessary-but-insufficient 的说法会被同一批
+reviewer 直接反杀，已撤回。
+
+改成的口径（§7 + Intro）：
+
+- §7 **同时承认他们的两个观察**（shielded learning ≠ 安全 raw policy；有限 horizon
+  需要足够 lookahead），明说 **"We claim neither observation"**，并主动把 41 次
+  empty kernel 写成对他们那条 caveat 的印证；
+- delta 定位在两点：(i) 对象是 **retirement decision** 本身（同一个有限预测，一次性
+  花掉当 release credential ≠ 保留为逐步复评的 recoverability trigger）；
+  (ii) horizon sweep 量化的第二根轴是 **release admission**，而他们的 trade-off 另一端
+  是 **computational overhead**——不是同一个代价。这一句也写进了 §6 正文图旁。
+- Intro 改成 retain-vs-retire 的文献张力：Könighofer 建议保留，Carr/Hsu 的 workflow
+  选择退役，未解决的问题因此不是"shield 有没有用"，而是"什么证据能正当化把 action
+  authority 交给 raw policy"。
+- 摘要最后一处普遍性措辞也软化："are commissioned" → "can be commissioned"，
+  "Deployments then retire" → "A deployment can then retire"（199 词，仍在 200 内）。
+
+**新图（正文 Fig. 3）**：`make_fig_horizon_contract.py` →
+`paper_latex/figures/fig10_horizon_contract.pdf`，从
+`results/cartpole_horizon_contract_sweep_summary.csv` 的 pooled 行读数（不硬编码），
+一张单栏图同时给三条曲线：release admission 72/72/72/57/49、median switching lead
+0/2/4/9、resident failures 12/0/0/0/0，阴影标出满足预声明分离条件的 horizon。
+脚本与图都已登记进 manifest（267 文件）。
+
+**图位交换**：susceptibility scatter（`fig9_mechanism_divergence`，原正文 Fig. 3）
+移入 Appendix F。两张都留会把正文推到 14 页；论文的 intellectual center 已经变成
+"release test ≠ runtime authority"，horizon 图直接对应标题，susceptibility 图是
+attack characterization，且附录已有 `fig8_2x2_susceptibility` 承载同类证据。
+§5 正文文字（11/11 低分歧、0/32 高分歧、AUC 0.953）全部保留并指向附录图。
+
+交换腾出的空间用来把第 9 节里**纯为版面砍掉**的内容加回去：§8 的完整 defense
+taxonomy、§8.1 的 reward-influence scope 句、Conclusion 的 conditionality 从句。
+
+当前：正文约 12.3 页（Ethics 起于 p13），0 overfull、0 undefined、PDF 27 页、
+claim-lock 19/19。**正文还剩约 0.7 页余量**。
+
+
+## 11. 全文一致性审计 + 空间投放（同日第四轮，已执行）
+
+### 11.1 修掉的一致性缺陷（11 处）
+
+| # | 问题 | 位置 |
+|---|---|---|
+| 1 | §2 第四种失效模式仍是攻击者优先叙述（"shield 保住每个 transition **while corrupted reward records influence the learner**"），与 §1 的"gap 先于 attack surface"直接矛盾 | `sec2_background.tex` |
+| 2–4 | **三个正文浮动体从未被正文引用**：Table 4（跨系统）、Table 6（delta 表）、Fig. 2（Carr 隔离） | eval / related / case study |
+| 5 | 附录表当正文表引（"Table 10 and Fig. 4 show…"），而紧邻一句却写了规范的 "Table 7 in Appendix E" | `sec4_evaluation.tex` |
+| 6 | "the same **integrity boundary**" / "exposes an **integrity boundary**" 把攻击者语汇挂在 Carr lifecycle 上，与 §7 的 "not the soundness of their original claims" 打架 | `sec6_third_party_case_study.tex` |
+| 7 | §4.3 → §6 的前向指针在压版面时丢失 | `sec3_methodology.tex` |
+| 8–9 | 附录两图（dose-response、matrix-parameter-gate）无引用 | 附录 |
+| 10 | 覆盖审计附录**没有 `\label`**，无法被引用 | `sec8_appendix.tex` → `sec:appendix-coverage` |
+| 11 | 正文 `LifecycleGate` 3 次中的 2 次（§6.6 benign 审计）改为 "the certificate-gated learner"——该段紧接着就说它 improves no paired rollout over freeze，产品名在此承担负面工作 | `sec4_evaluation.tex` |
+
+现在 dangling ref = 0，orphan float = 0。
+
+### 11.2 正文空间投放（A → B → C）
+
+**A. 新增 §6.6 "Sizing a Release Gate"**（正文缺的"so what"）。此前 Prop 1 给了"改变了哪些前提就要重建哪些证据"，horizon sweep 给了"lookahead 下界由 backup 恢复时间决定"，**两者从未在正文接上**。新小节把它们接上，分两条：
+
+- *Retiring authority*：需重建 Prop 1 中被改变的前提；本文契约里是 **authority + horizon**；再跑一次同样的检查两个义务都不解除。
+- *Retaining authority*：lookahead 有下界（backup 恢复所需 lead time：h=1 零 lead 仍留 12 次失败；h=3–10 提前 2–9 步、零失败）和上界（可承受的 admission 损失：5→10、5→20 分别多拒 15 和 23 / 72）。**两个边界都能在部署方自己的 backup 和候选池上用同一套 sweep 测出来，不需要攻击模型。**
+
+**B. 1728-pair 覆盖审计进 §6.7**：certified 1293 中零 PyBullet 违反；poisoned raw 违反 403/432、覆盖 0.062（informative rejection 而非空洞证据）；零 guard 时 horizon 20/50/100 各有 1/2/1 次 false acceptance，任意锁定正 guard 清零 false acceptance 但抬高 false rejection。结论句：**guard margin 是 horizon 之外的第二个可测旋钮，且它是对模型失配标定的，不是对攻击者标定的。**
+
+**C. 跨系统结果接主线**：quadrotor `0/72 → 68/72` 不再只是报数，明写"每一次失败都延迟到适应期之后，所以受保护阶段对它们一无所报——分离跟随的是 authority transition 而不是平台"。
+
+### 11.3 版面账
+
+A 单独就吃掉了全部 ~91 行余量（浮动体重排）。B、C 靠删真冗余买单：§6.5 的三位小数延迟值与逐机制 reward 值（附录 I 已有表）、commit 可用性细节（附录 E 已有）、§8 第三次重述 defense taxonomy（§6.6 与 §9 已各有一次）、§5 两处同义重复句。
+
+**期间 claim-lock 抓到一个我自己的错误**：我把 §6.4 结尾 "This gate therefore implements the measured detectability boundary" 当冗余删了，实际它是 U3 的锁定限定语（防止把 in-loop gate 读成通用防御）。已恢复被锁的那半句。这正是这套 claim-lock 存在的意义。
+
+最终：正文 **13.0 页整**（p14 首块即 Ethical Considerations），0 overfull、0 undefined、PDF 27 页、claim-lock 19/19、manifest 267 文件。
+
+
+## 12. 提交前自检（同日第五轮）
+
+### 12.1 通过项
+
+| 检查 | 结果 |
+|---|---|
+| 正文页数 | **13 / 13**（p14 首块即 Ethical Considerations） |
+| 版心 / 字号 / 行距 | 612×792pt US Letter，7.0×9.0in，10pt/12.0pt，未手改 |
+| overfull box / undefined ref / undefined cite | 0 / 0 / 0 |
+| 匿名性 | `\author{}` 空；正文与附录无致谢、基金、机构、个人名、artifact URL；**PDF 元数据 Title/Author 均为空** |
+| 必需附录 | Ethical Considerations + Open Science 均在，且顺序为 Ethics → Open Science → References → 附录 A–I |
+| 引用完整性 | 39 条参考文献，**0 个 `[?]`/`??` 断引** |
+| 图表引用 | dangling ref 0，**orphan float 0** |
+| 草稿残留 | 无 TODO/FIXME/TBD/placeholder；无 NDSS/TDSC 残留 |
+| 数字一致性 | 摘要 / Intro / §6 / §9 的 2-120、27-120、14/71、3.6、1.6 全部一致 |
+| 字体嵌入 | 全部嵌入（子集化） |
+| PDF 体积 | 0.48 MB |
+| claim-lock | 19/19 |
+
+### 12.2 自检中修掉的两个真问题
+
+1. **正文图存在 Type 3 字体**（page 9 新增的 horizon 图、page 12 的 Fig. 4）。仓库里
+   `carr_victim_experiment/make_fig6.py` 早有 `pdf.fonttype: 42` 的惯例，但
+   `make_fig_horizon_contract.py` 与 `generate_tdsc_frontier_artifacts.py` 没跟。
+   两个脚本都已补上并重新生成。重跑 frontier 生成器前先备份了它的 5 个锁定产物
+   （2 个 `generated/*.tex` + 3 个 `results/*.csv`），**重跑后逐字节相同**，只有图变了。
+   现在**正文 0 页含 Type 3**。
+
+2. **`.venv-safe-control` 的 editable 安装指向仓库搬迁前的旧路径**
+   （`.../research_brainstorm/directions/07_foundational_ai_security/...`），
+   导致 `safe_control_gym` 无法 import、5 个测试模块收集失败。已把
+   `site-packages/safe_control_gym.pth` 改为当前路径。修复后
+   `.venv-safe-control/bin/python -m pytest` = **50 passed**。
+
+### 12.3 未处理项（已知、有意保留）
+
+- **附录图仍含 Type 3**（p20–22、24–27）。它们由
+  `generate_benchmark_artifacts.py` 等**会重跑基准**的脚本产出，重新生成有让锁定
+  CSV 漂移的风险，而 USENIX 的格式检查不查 Type 3。判断：收益（附录图文字可选中）
+  低于风险，保持现状。若要修：给这些脚本加同样两行 rcParams，按上面的
+  备份-重跑-逐字节比对流程操作。
+- **`test_lifecycle_gate_semantics.py` 仍无法收集**：`.venv-safe-control` 里没有
+  `torch`（系统环境有 2.9.0）。该模块导入 quadrotor PPO 实验模块。装 torch 是
+  ~GB 级下载且会改动环境，未擅自执行。
+
+### 12.4 提交前仍需你做的事（非论文缺陷）
+
+1. 作者名单 + 每人 ORCID（注册时固定，不可改）。
+2. topics 选择（建议 CPS / embedded & control security 为主、ML security 为次）。
+3. **按 Open Science 附录的承诺，实际通过提交系统上传匿名化 artifact 归档**——
+   附录写的是"submitted as an anonymized archive through the submission system"，
+   这句话必须兑现，且包内不能有作者信息。
+4. 上传前最后跑一次：`cd paper_latex && latexmk -pdf usenix_sec2027.tex` →
+   `python3 generate_tdsc_reproducibility_manifest.py` → `pytest test_tdsc_submission_artifacts.py`。

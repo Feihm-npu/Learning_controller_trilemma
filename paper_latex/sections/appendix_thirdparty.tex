@@ -74,6 +74,7 @@ configuration also entered a different trajectory mode ($0.776$ rather than
 $0.232$ at retirement).  Dose comparisons are therefore confined to the
 locked local batch.  The independent batch shows that attackability follows
 the realized retirement state more closely than the nominal seed identifier.
+Figure~\ref{fig:dose-response} summarizes both panels.
 
 \begin{figure*}[t]
 \centering
@@ -109,6 +110,20 @@ cross-tabulation summarized in Section~\ref{sec:third-party}: across 53
 locked paired runs spanning both scopes, all three learner families, and
 both domains, 12 of 20 runs with clean at-retirement violation below $0.5$
 were positive, whereas none of 33 ceiling runs was positive.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.72\textwidth]{fig9_mechanism_divergence.pdf}
+\caption{Clean at-retirement raw-policy/shield disagreement marks an
+opportunity region across the obstacle corpus (both scopes, all three learner
+families).  Each point is one paired clean/poisoned run; filled markers meet
+the positive-outcome rule, and hollow markers do not.
+Filled markers all have clean disagreement $\le0.047$; the dashed lines mark
+the fixed low/high disagreement bands ($<0.06$ and $\ge0.09$).  No
+high-disagreement run is positive, while seven of 18 low-disagreement runs are
+non-positive.}
+\label{fig:mechanism}
+\end{figure*}
 
 \begin{figure*}[t]
 \centering

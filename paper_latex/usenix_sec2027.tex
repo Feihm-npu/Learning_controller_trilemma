@@ -85,24 +85,23 @@
 \maketitle
 
 \begin{abstract}
-Learned controllers are commonly commissioned behind runtime assurance: a
+Learning-enabled controllers can be commissioned behind runtime assurance: a
 trusted shield or safety filter holds action authority while the policy
-adapts, so every training transition satisfies the safety certificate.
-Deployments then retire that authority and release the raw policy after a
+adapts, so every training transition satisfies the safety certificate.  A
+deployment can then retire that authority and release the raw policy after a
 finite check.  We show that the check does not transfer across this
-retirement.  Evidence collected under one authority is reused to authorize a
-different subject over a longer horizon, a flaw we call evidence reuse across
-an authority transition.
+retirement.  Evidence collected under a retained authority is reused to
+authorize execution without it, over a longer horizon, a flaw we call evidence
+reuse across an authority transition.
 
 The gap does not require an adversary.  In a controlled Safe-Control-Gym
 study, snapshots that passed a five-step release check failed on 2 of 120
-snapshot--state pairs once released raw, whereas the same prediction retained
-at runtime failed on none; a one-step filter did not suffice.  An upstream
+pairs once released raw, whereas the same prediction retained at runtime
+failed on none; a one-step filter did not suffice.  An upstream
 attacker amplifies the gap rather than creating it: an adversary holding only
 bounded write access to reward records raised raw-release failures to 27 of
-120 with no training-time violation, and raised raw-policy violations at
-retirement by factors of 3.6 and 1.6 on a
-published third-party shield-retirement lifecycle.  Retained predictive
+120 with no training-time violation, and raised violations at retirement by
+factors of 3.6 and 1.6 on a published third-party lifecycle.  Retained predictive
 authority switched before all 27 failures.  Trusted recomputation closes this
 channel; it does not close the contract gap the channel exploits.
 \end{abstract}

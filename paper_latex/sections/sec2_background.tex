@@ -88,11 +88,13 @@ attacked history falls outside the accepted certificate lifecycle.
 
 The fourth mode is the subject of this paper.  Under \emph{protected
 adaptation with unsafe deployment}, an adaptation shield keeps every
-data-collection transition safe while corrupted reward records influence the
-learner.  The trusted update rule then produces an unsafe raw policy without
-any physical failure during adaptation.  Releasing that policy after shield
-retirement exposes the delayed effect, so raw release requires evidence for
-the policy that receives action authority.
+data-collection transition safe, so no observation made during adaptation
+reports on the raw policy that will later act alone.  Releasing that policy on
+finite evidence collected under the shield exposes the delayed effect, and raw
+release therefore requires evidence for the subject that receives action
+authority.  Corrupted reward records are not needed to reach this mode; they
+widen it, steering the trusted update rule toward a raw policy that fails
+after retirement while every protected transition stays safe.
 
 These modes require separate metrics: accepted certificates whose applied
 action is unsafe for some plausible state, accepted certificates for which the

@@ -1,15 +1,15 @@
 \section{Introduction}
 
-Runtime assurance is the standard way to let a controller learn without
-letting it crash the plant.  A Simplex decision module, a runtime shield, or a
+Runtime assurance is a standard way to let a controller learn without letting
+it crash the plant.  A Simplex decision module, a runtime shield, or a
 model-predictive safety filter holds action authority during adaptation: it
 replaces unsafe policy proposals with actions from a trusted baseline, so
 every transition collected while the policy trains satisfies the safety
 certificate~\cite{seto_simplex_1998,alshiekh_shielding_2018,
-wabersich_linear_mpsc_2018}.  Deployments do not keep that machinery forever.
-Published lifecycles and ordinary engineering practice retire the protective
-authority once commissioning succeeds and promote the raw policy snapshot to a
-lower-latency control target, which removes permanent computation,
+wabersich_linear_mpsc_2018}.  Deployments need not keep that machinery
+forever.  Published learning-enabled control workflows study retirement of the
+protective authority once commissioning succeeds, promoting the raw policy
+snapshot to a lower-latency control target and removing permanent computation,
 intervention, and dependence on a backup
 service~\cite{carr_partial_shielding_2023,hsu_sim_lab_real_2023}.  A finite
 release check --- a bounded-horizon prediction, a certified rollout, a
@@ -18,12 +18,16 @@ commissioning test --- authorizes that promotion.
 We show that the release check does not transfer across the retirement it
 authorizes.  Protection makes the executed composition safe; it does not make
 the raw policy safe.  The same finite check is sound while it retains
-authority and unsound once it is spent at release, because release changes the
-subject being authorized, the authority enforcing the decision, and the
-horizon over which the evidence must hold.  We call the underlying flaw
-\emph{evidence reuse across an authority transition}: evidence collected
-during protected adaptation is reused to authorize a different subject, under
-a different authority, with different provenance, information, and horizon.
+authority and unsound once it is spent at release, because release removes the
+authority that made the evidence actionable and extends the horizon over which
+it must hold.  We call the underlying flaw \emph{evidence reuse across an
+authority transition}: evidence produced under one deployment contract is
+reused under another that has changed at least one of its premises --- the
+certified subject, the resident authority, the update provenance, the
+information available at decision time, or the horizon.  In the controlled
+release experiment below the changed premises are authority and horizon;
+adversarial reward provenance violates a third, and composition-to-raw
+handoffs additionally change the certified subject.
 
 \begin{figure}[t]
 \centering
@@ -84,10 +88,14 @@ barrier-based successors keep a decision module resident
 Policy repair and safe projection constrain a learned policy before deployment
 \cite{zhou_runtime_policy_repair_2020,lu_repair_preservation_2024,
 chow_safe_policy_2021}.  Reward-poisoning work studies how adversarial
-learning signals redirect updates, but not behind a shield.  None treats the
-release decision itself as the object of study: the unresolved composition is
-a transition in which evidence produced under retained authority is spent
-once, at release, to authorize a raw policy that will run without it.
+learning signals redirect updates, but not behind a shield.  The literature
+has reached both sides of the deployment decision: shielded-learning studies
+find that a shielded learner need not become intrinsically safe and recommend
+retaining the shield during execution~\cite{konighofer_online_shielding_2022},
+while published workflows bootstrap behind a shield and then retire
+it~\cite{carr_partial_shielding_2023,hsu_sim_lab_real_2023}.  The open
+question is therefore not whether shielding helps, but what evidence justifies
+handing action authority to the raw policy.  That decision is what we study.
 
 \subsection{Evidence and Contributions}
 

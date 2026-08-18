@@ -1,8 +1,8 @@
 \section{Controlled Mechanism Study}
 \label{sec:study}
 
-The case study located the authority-transition vulnerability in an
-independently published lifecycle; this section isolates its mechanism in
+The case study located the authority transition in an independently published
+lifecycle; this section isolates its mechanism in
 Safe-Control-Gym~\cite{yuan_safe_control_gym_2022}.  A prospective
 contract-separation audit first tests whether finite release evidence supports
 both permanent raw release and resident predictive authority, with and without
@@ -105,7 +105,23 @@ separation condition for insufficient lookahead; horizon 20 failed it from the
 opposite side, rejecting so many candidates that none of the 49 admitted pairs
 retained a poisoned failure to separate.  The usable lookahead is an interval,
 and its lower edge is set by the lead time the trusted baseline needs, not by
-the accuracy of the prediction.
+the accuracy of the prediction.  Figure~\ref{fig:horizon-contract} plots the
+three curves.  Shielding work already observes that a finite-horizon shield
+needs enough lookahead or the agent reaches states where every action is
+unsafe~\cite{konighofer_online_shielding_2022}; the upper edge measured here
+is a different cost, paid in release admission rather than in computation.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\columnwidth]{fig10_horizon_contract.pdf}
+\caption{The retained check's horizon defines a usable interval rather than a
+threshold.  Pooled V3 cohort, 72 snapshot--state pairs, with attack,
+snapshots, and deployment states fixed; shading marks the horizons meeting the
+predeclared separation condition.  At horizon 1 the retained check switches
+with zero lead and still leaves 12 failures; at horizon 20 the release check
+rejects so many candidates that no poisoned failure remains to separate.}
+\label{fig:horizon-contract}
+\end{figure}
 
 In the independent audit, permanent raw release failed on 6/24,
 3/23, and 10/24 accepted pairs.  Resident predictive authority repeats the
@@ -113,9 +129,8 @@ same five-step raw-policy prediction at every physical step and switches on
 exactly those 19 paired states, four steps before failure; no physical failure
 remained.  In contrast, the one-step resident kernel failed on 14 pairs despite
 79 interventions and reached an empty kernel 41 times.  Repeated five-step
-prediction therefore provided an effective recoverability trigger in this
-study.  One-time authorization and one-step filtering did not provide the same
-protection.
+prediction therefore provided an effective recoverability trigger; one-time
+authorization and one-step filtering did not.
 
 \subsection{Reward-Influence Geometry and Optimizer Boundary}
 
@@ -157,20 +172,23 @@ are descriptive, not utility comparisons.}
 \input{generated/tdsc_core_results}
 \end{table*}
 
+Table~\ref{tab:end-to-end} reports the paired outcomes for both systems.
 On cartpole, the clean learner violates 1/188 admitted rollouts and the
 poisoned action-only learner violates 38/188.  There are 37 paired poison-only
 failures and no clean-only failures (two-sided exact paired
 $p=1.455\times 10^{-11}$).  Both commit admission and always-freeze have zero
 observed violations.
 
-On two-dimensional quadrotor, clean learning has 0/72 violations, while
+On two-dimensional quadrotor, clean learning has 0/72 violations while
 reward-only poisoning causes 68/72, all delayed, across all three training
-realizations.
-The paired discordance is 68 poison-only to zero clean-only (two-sided exact
-$p=6.776\times10^{-21}$).  Commit admission and always-freeze again have zero
-observed violations.  The gate retains nonzero fractions $0.55$, $0.40$, and
-$0.70$ of the three poisoned pending updates.  These fractions establish
-update availability under attack, not benign learning utility.
+realizations (68 poison-only, zero clean-only, two-sided exact
+$p=6.776\times10^{-21}$).  Every one of those failures is delayed past
+adaptation, so protected execution reports nothing about any of them: the
+separation follows the authority transition rather than the platform.  Commit
+admission and always-freeze again have zero observed violations, and the gate
+retains $0.55$, $0.40$, and $0.70$ of the poisoned pending updates, which
+establishes update availability under attack rather than benign learning
+utility.
 
 \emph{Learned-baseline variant.}  Replacing REINFORCE's constant batch-mean
 baseline with a learned per-state linear value baseline, under a protocol
@@ -247,9 +265,8 @@ failures from 39/126 to 0/126 and froze 35 of 36 poisoned batches.  The paired
 defended-versus-undefended test gave $p=3.6\times10^{-12}$.  The gate froze no
 clean batch but approached always-freeze availability under attack.  It detects
 the sign-violating effective attack, while the sign-respecting variants evade
-the check and independently caused no deployment harm.  This gate therefore
-implements the measured detectability boundary; provenance and recomputation
-provide the broader upstream controls.
+the check and independently caused no deployment harm.  This gate implements
+the measured detectability boundary.
 
 \subsection{Runtime Escape Conditions and Their Cost}
 
@@ -257,11 +274,11 @@ Permanent runtime filtering provides a second architectural response.  Its
 certificate covers the composed policy $F\circ\pi$, allowing the filter to
 contain raw-policy failure before physical execution.  We compared permanent
 and snapshot contracts on a result-independent pool of 144 states from three
-disjoint run indices.  For each training realization, the common operating set
-contained states certified for both freeze and the committed snapshot at
-horizon 100 and guard 0.003.  Eight order-spanning states were evaluated from
-identical state/reset pairs.  Each mechanism therefore had 24 paired rollouts
-and 2400 possible steps.
+disjoint run indices.  For each training realization the common operating set
+held states certified for both freeze and the committed snapshot at horizon
+100 and guard 0.003, and eight order-spanning states were evaluated from
+identical state/reset pairs, giving each mechanism 24 paired rollouts and 2400
+possible steps.
 
 
 \begin{figure*}[t]
@@ -276,43 +293,64 @@ freeze mechanisms overlap near 0.026 ms and zero intervention.}
 \label{fig:unified-frontier}
 \end{figure*}
 
-Table~\ref{tab:unified-frontier} and
-Fig.~\ref{fig:unified-frontier} show the resulting separation.  The poisoned
+Table~\ref{tab:unified-frontier} in
+Appendix~\ref{sec:appendix-frontier} and Fig.~\ref{fig:unified-frontier} show
+the resulting separation.  The poisoned
 raw snapshots violate 23/24 rollouts and complete only one.  Clean, commit,
 freeze, the permanent five-step backup shield, and Safe-Control-Gym's
 official linear model predictive safety certification (MPSC) mechanism all
 have zero observed failures and complete 24/24.
 The shield intervenes on 511/2400 steps with no rejection, while MPSC
-intervenes on 2400/2400 with no infeasible solve.  Median/p95 online latency
-is 221.925/238.216 ms for the shield and 59.657/76.055 ms for MPSC, compared
-with 0.026--0.027/0.028--0.029 ms for raw snapshot evaluation.  These values
-are single-process wall-clock measurements rather than worst-case
-execution-time guarantees.
+intervenes on 2400/2400 with no infeasible solve, at median online latencies
+of 222 and 60 ms against 0.026 ms for raw snapshot evaluation.  These are
+single-process wall-clock measurements, not worst-case execution-time
+guarantees.
 
-The safe mechanisms differ in utility.  Mean reward was $-0.023$ for freeze,
-$-0.024$ for clean, $-0.056$ for commit, $-0.195$ for the shield, and $-0.457$
-for MPSC; paired rollout deltas relative to freeze were $-0.00096$,
-$-0.03350$, $-0.17208$, and $-0.43393$, with paired-block bootstrap 95\%
-intervals excluding zero in every case and no improvement over freeze in any
-of 24 blocks.  These values characterize the attack-evaluation frontier; the
-benign adaptation audit below evaluates learning utility separately.
+The safe mechanisms differ in utility.  Mean reward ordered freeze, clean,
+commit, shield, MPSC from $-0.023$ to $-0.457$; every paired rollout delta
+relative to freeze had a bootstrap 95\% interval excluding zero, and no
+mechanism improved on freeze in any of the 24 blocks.  These values
+characterize the attack-evaluation frontier; the benign adaptation audit below
+evaluates learning utility separately.
 
 
 
 Table~\ref{tab:commit-availability} in
 Appendix~\ref{sec:appendix-boundaries} makes the snapshot-admission cost
-explicit: common operating-set coverage is 99.3\%, 100.0\%, and 90.3\% for the
-training runs indexed by 2040--2042, and reconstructing trusted-state
-admission with 21-point contiguous backtracking took 8.49--9.32\,s per run,
-exactly reproducing the locked commit fractions 0.55, 0.40, and 0.70.  Offline
-commit therefore avoids permanent per-action computation but pays finite
-certificate coverage and update latency.  The comparison distinguishes three
+explicit: common operating-set coverage is 99.3\%, 100.0\%, and 90.3\% across
+the three training runs, and trusted-state admission took 8.49--9.32\,s per
+run.  Offline commit therefore avoids permanent per-action computation but
+pays finite certificate coverage and update latency.  The comparison distinguishes three
 contracts: certify a snapshot before raw deployment, retain a filter
 permanently, or stop adapting.
 
+\subsection{Sizing a Release Gate}
+
+The measurements above support a contract-specific rule.  Two decisions are
+made at the authority transition, and each has a measurable input.
+
+\emph{Retiring authority.}  The release evidence must re-establish every
+premise the transition changes (Proposition~\ref{prop:transfer}).  Here those
+premises are authority and horizon: the accepted check bounds the raw policy
+for five steps, and only while it can still hand control back.  Re-running the
+same check discharges neither obligation, which is why permanent raw release
+failed on states it had accepted, with and without an attacker.
+
+\emph{Retaining authority.}  The lookahead then has a lower and an upper edge,
+and both are measurable on the deploying system without knowing the attack.
+The lower edge is the lead time the trusted baseline needs to recover: at
+horizon 1 the retained check switched with zero lead and still left 12
+failures, whereas horizons 3 to 10 switched 2 to 9 steps early and left none.
+The upper edge is the admission the operator can afford to lose: raising the
+horizon from 5 to 10 and to 20 rejected 15 and 23 of the 72 candidates the
+shorter checks admitted.  Both edges come from the sweep of
+Fig.~\ref{fig:horizon-contract} applied to the deployer's own baseline and
+candidate pool, so the gate can be sized from the recovery dynamics of the
+backup rather than from an attack model.
+
 \subsection{Boundaries and Validity}
 
-Three locked audits bound the result.  A trusted state anchor shrinks
+Four locked audits bound the result.  A trusted state anchor shrinks
 certificate uncertainty without sanitizing the reward record: every anchor
 period retains all 16 certificate centers, has 0/24 violations on new paired
 blocks, and improves no reward over freeze.  Against the official pretrained
@@ -320,10 +358,23 @@ PPO policy, which is safe on 72/72 held-out rollouts, the locked
 $L_\infty\le0.5$ budget produced 1/24 poisoned failures at one checkpoint and
 0/24 at another, so the audit showed checkpoint-level update redirection
 without a stable deep-PPO unsafe-policy effect.  Under a benign $0.003$\,N
-differential actuator bias, freeze, clean adaptation, and LifecycleGate were
-all violation-free, and LifecycleGate accepted a nonzero update in 11/12
-batches but improves no paired rollout over freeze, so certificate acceptance
-did not establish useful adaptation.  The CasADi gates use fixed finite state
+differential actuator bias, freeze, clean adaptation, and the
+certificate-gated learner were all violation-free; the gate accepted a nonzero
+update in 11/12 batches but improves no paired rollout over freeze, so
+certificate acceptance did not establish useful adaptation.  A fourth audit bounds how far the finite certificate transfers.  On 1728
+snapshot--state pairs at the pre-existing 100-step, 0.003-guard configuration,
+CasADi certified 1293, none of which violated the PyBullet state box within
+100 steps, while the poisoned raw snapshots violated 403/432 pairs at
+certificate coverage 0.062 --- informative rejection rather than vacuous
+evidence.  The guard margin is what separates the two regimes:
+without it the poisoned snapshots produced 1, 2, and 1 false acceptances at
+horizons 20, 50, and 100, and every locked positive guard removed the observed
+false acceptances while rejecting more physically safe pairs
+(Appendix~\ref{sec:appendix-coverage}).  The gate therefore has a second
+measurable knob beyond horizon, calibrated against model mismatch rather than
+against an attacker.
+
+The CasADi gates use fixed finite state
 sets while physical outcomes use independent PyBullet rollouts; they are
 sampled finite-horizon certificates, not continuous-state invariant-set
 proofs.  Realized state violations and pre-clip saturation are reported

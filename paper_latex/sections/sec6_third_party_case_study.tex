@@ -1,7 +1,7 @@
 \section{Third-Party Shield-Retirement Case Study}
 \label{sec:third-party}
 
-This section examines the same integrity boundary in an independently
+This section examines the same evidence boundary in an independently
 published lifecycle that retires runtime authority.  Carr et
 al.~\cite{carr_partial_shielding_2023} (AAAI 2023) train a policy-gradient
 agent behind a Storm belief-support shield in a partially observable
@@ -64,11 +64,12 @@ clean endpoint and is excluded from paired inference.
 \end{table}
 
 Two of the three provenance-complete pairs had higher raw-policy violation
-rates at retirement under poisoning, by factors of $3.6$ and $1.6$.  The fresh
+rates at retirement under poisoning, by factors of $3.6$ and $1.6$
+(Fig.~\ref{fig:carr-isolation}).  The fresh
 third pair was unchanged ($0.241\rightarrow0.242$).  Physical violations
 remained zero throughout protected execution.  The positive outcomes located
-latent policy damage before unshielded learning.  The fresh pair showed that
-the fixed attack can fail in a low-disagreement retirement state.  After 4000
+latent policy damage before unshielded learning, and the fresh pair showed the
+fixed attack can also fail in a low-disagreement retirement state.  After 4000
 episodes of clean post-retirement learning, one positive pair recovered
 ($0.235$ vs.\ clean $0.236$), one remained worse
 ($0.751$ vs.\ $0.234$), and the fresh non-positive pair reversed
@@ -106,16 +107,14 @@ Under the same full-scope poisoning used in the full-phase battery, a retained
 shield kept physical violations at zero before and after training in all three
 paired runs.  The corresponding sudden-retirement runs exposed final violation
 fractions of $0.490$, $0.752$, and $0.744$ after removal.  Resident authority
-therefore contained the downstream
-consequence of full-scope contamination; removing it exposes the same
-consequence as an unsafe released policy.
+therefore contained the downstream consequence of full-scope contamination.
 
 \paragraph{Interpretation.}
 Carr et al.'s workflow supplies the lifecycle component: protected bootstrap
 followed by retirement of the shield's action authority, evaluated under
 unpoisoned learning.  The controlled study in Section~\ref{sec:study} supplies
-the adversarial-provenance mechanism.  Their composition exposes an integrity
-boundary at the authority transition.  Absolute rates differ across
+the adversarial-provenance mechanism.  Their composition exposes the evidence
+boundary at that authority transition.  Absolute rates differ across
 instrumented and non-instrumented code versions because the
 unmasked-disagreement probe requires an independent belief tracker; all
 clean-vs-poisoned comparisons are paired within a locked code version and are
@@ -154,22 +153,10 @@ strong exclusion condition in this corpus, whereas low disagreement defined an
 opportunity region: eleven of 18 low-band corpus runs were positive, and the
 fresh pair, analyzed separately from the 50 disjoint namespaces, gave an
 additional low-band non-positive realization.  Appendix~\ref{sec:appendix-thirdparty}
-gives the family-stratified counts and the band chronology.  Because
+plots the corpus (Fig.~\ref{fig:mechanism}) and gives the family-stratified
+counts and the band chronology.  Because
 $D_{\mathrm{ret}}$ is measured after the shielded bootstrap, it characterizes
 a realized retirement state rather than an attacker-side trigger, and the
 AUC describes discrimination within the locked corpus rather than external
 classifier validation.
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.72\textwidth]{fig9_mechanism_divergence.pdf}
-\caption{Clean at-retirement raw-policy/shield disagreement marks an
-opportunity region across the obstacle corpus (both scopes, all three learner
-families).  Each point is one paired clean/poisoned run; filled markers meet
-the positive-outcome rule, and hollow markers do not.
-Filled markers all have clean disagreement $\le0.047$; the dashed lines mark
-the fixed low/high disagreement bands ($<0.06$ and $\ge0.09$).  No
-high-disagreement run is positive, while seven of 18 low-disagreement runs are
-non-positive.}
-\label{fig:mechanism}
-\end{figure*}

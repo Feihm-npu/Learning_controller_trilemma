@@ -90,6 +90,11 @@ Y.~Chow, O.~Nachum, A.~Faust, E.~Due{\~n}ez-Guzman, and M.~Ghavamzadeh, ``Safe
   [Online]. Available: \url{https://proceedings.mlr.press/v155/chow21a.html}
 \BIBentrySTDinterwordspacing
 
+\bibitem{konighofer_online_shielding_2022}
+B.~K{\"o}nighofer, J.~Rudolf, A.~Palmisano, M.~Tappler, and R.~Bloem, ``Online
+  shielding for reinforcement learning,'' \emph{Innovations in Systems and
+  Software Engineering}, 2022.
+
 \bibitem{tan_safety_2024}
 \BIBentryALTinterwordspacing
 X.~Tan, P.~Ong, P.~Tabuada, and A.~D. Ames, ``Safety of linear systems under
