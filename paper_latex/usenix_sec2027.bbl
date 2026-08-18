@@ -26,6 +26,37 @@ D.~Seto, B.~Krogh, L.~Sha, and A.~Chutinan, ``The simplex architecture for safe
   on-line control system upgrades,'' in \emph{Proceedings of the 1998 American
   Control Conference}, vol.~6, 1998, pp. 3504--3508.
 
+\bibitem{alshiekh_shielding_2018}
+M.~Alshiekh, R.~Bloem, R.~Ehlers, B.~K{\"o}nighofer, S.~Niekum, and U.~Topcu,
+  ``Safe reinforcement learning via shielding,'' in \emph{Proceedings of the
+  AAAI Conference on Artificial Intelligence}, vol.~32, no.~1, 2018.
+
+\bibitem{wabersich_linear_mpsc_2018}
+K.~P. Wabersich and M.~N. Zeilinger, ``Linear model predictive safety
+  certification for learning-based control,'' in \emph{2018 IEEE Conference on
+  Decision and Control}, 2018, pp. 7130--7135.
+
+\bibitem{carr_partial_shielding_2023}
+S.~Carr, N.~Jansen, S.~Junges, and U.~Topcu, ``Safe reinforcement learning via
+  shielding under partial observability,'' in \emph{Proceedings of the AAAI
+  Conference on Artificial Intelligence}, vol.~37, no.~12, 2023, pp.
+  14\,748--14\,756.
+
+\bibitem{hsu_sim_lab_real_2023}
+K.-C. Hsu, A.~Z. Ren, D.~P. Nguyen, A.~Majumdar, and J.~F. Fisac,
+  ``Sim-to-lab-to-real: Safe reinforcement learning with shielding and
+  generalization guarantees,'' \emph{Artificial Intelligence}, p. 103811, 2023.
+
+\bibitem{nist_ot_security_2023}
+K.~Stouffer, M.~Pease, C.~Tang, T.~Zimmerman, V.~Pillitteri, S.~Lightman,
+  A.~Hahn, S.~Saravia, A.~Sherule, and M.~Thompson, ``Guide to operational
+  technology ({OT}) security,'' National Institute of Standards and Technology,
+  Tech. Rep. Special Publication 800-82 Revision 3, 2023.
+
+\bibitem{mitre_data_historian}
+{MITRE ATT\&CK}, ``Data historian, asset a0006,''
+  \url{https://attack.mitre.org/assets/A0006/}, 2023, accessed 2026-08-05.
+
 \bibitem{phan_neural_simplex_2020}
 D.~T. Phan, R.~Grosu, N.~Jansen, N.~Paoletti, S.~A. Smolka, and S.~D. Stoller,
   ``Neural simplex architecture,'' in \emph{NASA Formal Methods}, ser. Lecture
@@ -59,33 +90,12 @@ Y.~Chow, O.~Nachum, A.~Faust, E.~Due{\~n}ez-Guzman, and M.~Ghavamzadeh, ``Safe
   [Online]. Available: \url{https://proceedings.mlr.press/v155/chow21a.html}
 \BIBentrySTDinterwordspacing
 
-\bibitem{nist_ot_security_2023}
-K.~Stouffer, M.~Pease, C.~Tang, T.~Zimmerman, V.~Pillitteri, S.~Lightman,
-  A.~Hahn, S.~Saravia, A.~Sherule, and M.~Thompson, ``Guide to operational
-  technology ({OT}) security,'' National Institute of Standards and Technology,
-  Tech. Rep. Special Publication 800-82 Revision 3, 2023.
-
-\bibitem{mitre_data_historian}
-{MITRE ATT\&CK}, ``Data historian, asset a0006,''
-  \url{https://attack.mitre.org/assets/A0006/}, 2023, accessed 2026-08-05.
-
-\bibitem{carr_partial_shielding_2023}
-S.~Carr, N.~Jansen, S.~Junges, and U.~Topcu, ``Safe reinforcement learning via
-  shielding under partial observability,'' in \emph{Proceedings of the AAAI
-  Conference on Artificial Intelligence}, vol.~37, no.~12, 2023, pp.
-  14\,748--14\,756.
-
 \bibitem{tan_safety_2024}
 \BIBentryALTinterwordspacing
 X.~Tan, P.~Ong, P.~Tabuada, and A.~D. Ames, ``Safety of linear systems under
   severe sensor attacks,'' 2024. [Online]. Available:
   \url{https://arxiv.org/abs/2409.08413}
 \BIBentrySTDinterwordspacing
-
-\bibitem{hsu_sim_lab_real_2023}
-K.-C. Hsu, A.~Z. Ren, D.~P. Nguyen, A.~Majumdar, and J.~F. Fisac,
-  ``Sim-to-lab-to-real: Safe reinforcement learning with shielding and
-  generalization guarantees,'' \emph{Artificial Intelligence}, p. 103811, 2023.
 
 \bibitem{fawzi_secure_2014}
 H.~Fawzi, P.~Tabuada, and S.~Diggavi, ``Secure estimation and control for
@@ -99,44 +109,16 @@ H.~Zhang, Z.~Li, and A.~Clark, ``Safe control for nonlinear systems under
   Available: \url{https://arxiv.org/abs/2207.05146}
 \BIBentrySTDinterwordspacing
 
-\bibitem{schaible_fractional_duality_1976}
-S.~Schaible, ``Duality in fractional programming: A unified approach,''
-  \emph{Operations Research}, vol.~24, no.~3, pp. 452--461, 1976.
-
-\bibitem{bauschke_homogenization_2023}
-H.~H. Bauschke, T.~Bendit, and H.~Wang, ``The homogenization cone: Polar cone
-  and projection,'' \emph{Set-Valued and Variational Analysis}, vol.~31, no.~3,
-  2023.
-
-\bibitem{belloni_soc_feasibility_2008}
-A.~Belloni and R.~M. Freund, ``On the second-order feasibility cone:
-  Primal-dual representation and efficient projection,'' \emph{SIAM Journal on
-  Optimization}, vol.~19, no.~3, pp. 1073--1092, 2008.
-
-\bibitem{agrawal_dqcp_2020}
-A.~Agrawal and S.~Boyd, ``Disciplined quasiconvex programming,''
-  \emph{Optimization Letters}, vol.~14, no.~7, pp. 1643--1657, 2020.
-
 \bibitem{yuan_safe_control_gym_2022}
 Z.~Yuan, A.~W. Hall, S.~Zhou, L.~Brunke, M.~Greeff, J.~Panerati, and A.~P.
   Schoellig, ``Safe-control-gym: A unified benchmark suite for safe
   learning-based control and reinforcement learning in robotics,'' \emph{IEEE
   Robotics and Automation Letters}, vol.~7, no.~4, pp. 11\,142--11\,149, 2022.
 
-\bibitem{wabersich_linear_mpsc_2018}
-K.~P. Wabersich and M.~N. Zeilinger, ``Linear model predictive safety
-  certification for learning-based control,'' in \emph{2018 IEEE Conference on
-  Decision and Control}, 2018, pp. 7130--7135.
-
 \bibitem{didier_adaptive_mpsc_2021}
 A.~Didier, K.~P. Wabersich, and M.~N. Zeilinger, ``Adaptive model predictive
   safety certification for learning-based control,'' in \emph{2021 60th IEEE
   Conference on Decision and Control}, 2021, pp. 809--815.
-
-\bibitem{alshiekh_shielding_2018}
-M.~Alshiekh, R.~Bloem, R.~Ehlers, B.~K{\"o}nighofer, S.~Niekum, and U.~Topcu,
-  ``Safe reinforcement learning via shielding,'' in \emph{Proceedings of the
-  AAAI Conference on Artificial Intelligence}, vol.~32, no.~1, 2018.
 
 \bibitem{yu_certificate_repair_2025}
 E.~Yu, D.~{\v Z}ikeli{\'c}, and T.~A. Henzinger, ``Neural control and
@@ -277,5 +259,23 @@ A.~Nika, A.~Singla, and G.~Radanovic, ``Online defense strategies for
   vol. 206.\hskip 1em plus 0.5em minus 0.4em\relax PMLR, 2023, pp. 335--358.
   [Online]. Available: \url{https://proceedings.mlr.press/v206/nika23a.html}
 \BIBentrySTDinterwordspacing
+
+\bibitem{schaible_fractional_duality_1976}
+S.~Schaible, ``Duality in fractional programming: A unified approach,''
+  \emph{Operations Research}, vol.~24, no.~3, pp. 452--461, 1976.
+
+\bibitem{agrawal_dqcp_2020}
+A.~Agrawal and S.~Boyd, ``Disciplined quasiconvex programming,''
+  \emph{Optimization Letters}, vol.~14, no.~7, pp. 1643--1657, 2020.
+
+\bibitem{bauschke_homogenization_2023}
+H.~H. Bauschke, T.~Bendit, and H.~Wang, ``The homogenization cone: Polar cone
+  and projection,'' \emph{Set-Valued and Variational Analysis}, vol.~31, no.~3,
+  2023.
+
+\bibitem{belloni_soc_feasibility_2008}
+A.~Belloni and R.~M. Freund, ``On the second-order feasibility cone:
+  Primal-dual representation and efficient projection,'' \emph{SIAM Journal on
+  Optimization}, vol.~19, no.~3, pp. 1073--1092, 2008.
 
 \end{thebibliography}

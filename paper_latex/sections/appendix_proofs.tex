@@ -1,0 +1,72 @@
+\section{Deferred Proofs}
+\label{sec:appendix-proofs}
+
+\begin{proof}[Proof of Proposition~\ref{prop:transfer}]
+Each component is a premise of the assurance decision.  A conclusion derived
+from one premise set is not preserved after a premise is removed or weakened.
+In the evaluated permanent-release transition, the subject changes from the
+composition to the raw policy and resident authority is removed.  The update
+provenance becomes adversarial, the policy acts on deployment observations,
+and a finite check authorizes an unmonitored future.  The original evidence
+therefore cannot be reused without re-establishing these obligations.
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:current-gate}]
+The certified action must satisfy the certificate for every state compatible
+with the attacked history.  These states form $X_{\mathcal A}(h)$, and their
+common certified actions form $K_\Gamma(h)$.  Continued certified operation
+therefore requires $\pi_{\theta_{t+1}}(h)\in K_\Gamma(h)$.  An empty kernel
+requires rejection, freeze, rollback, or trusted information that changes the
+plausible-state set.
+\end{proof}
+
+\begin{proposition}[Action filtering is not update certification]
+\label{prop:action-filter-insufficient}
+Let $F(v,h)$ be an action filter that returns an applied input in
+$K_\Gamma(h)$ whenever the kernel is nonempty.  Consider a mechanism that
+first computes $\theta^+=U(\theta_t,h)$ and then applies
+\begin{equation}
+    u_t=F(\pi_{\theta^+}(h),h),
+\end{equation}
+The mechanism accepts the update without constraining the raw updated policy
+$\pi_{\theta^+}$.  If $\pi_{\theta^+}(h)\notin K_\Gamma(h)$, the applied input
+can be certified while the updated learner remains uncertified.  Action-only
+filtering therefore does not imply Lemma~\ref{lem:current-gate}.
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop:action-filter-insufficient}]
+The filter property gives $u_t\in K_\Gamma(h)$, so the current actuator input
+can satisfy the certificate.  Lemma~\ref{lem:current-gate} instead constrains
+the updated controller through
+$\pi_{\theta^+}(h)\in K_\Gamma(h)$.  When this membership fails, the
+certificate covers only the filtered actuator channel.  Accepting the update
+under that certificate creates a stale certified policy.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:gate}]
+A lifecycle certificate covers every attacked history reachable under the
+updated controller and admissible attack family.  Applying
+Lemma~\ref{lem:current-gate} pointwise gives
+$\pi_{\theta^+}(h')\in K_\Gamma(h')$ for each such history.  This is the
+definition of $\theta^+\in\Theta_\Gamma(h)$.  A failed membership leaves the
+updated action map uncertified at that history.  An empty kernel additionally
+requires a changed information set or rejection of certified operation.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:parameter-gate}]
+For fixed $z$, membership $\pi_\theta(z)\in[\ell_z,u_z]$ is equivalent to the
+two inequalities above.  Enforcing them for every $z\in\mathcal Z$ implements
+the lifecycle gate on the abstraction.  Parameter box constraints preserve
+convexity.  A feasible or projected candidate satisfies every certified
+interval kernel in the abstraction.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:normalized-reward-influence}]
+The standardized advantage vector is
+$y/\sqrt{T^{-1}\|y\|_2^2}=\sqrt T\,y/\|y\|_2$.  Substitution into the usual
+mean score-function gradient
+$T^{-1}J^\top(\sqrt T\,y/\|y\|_2)$ gives
+\eqref{eq:normalized-update}.  Equation~\eqref{eq:centered-return} is affine
+in the reward-box variable, but division by its Euclidean norm is not;
+hence the normalized image is generally non-affine.
+\end{proof}

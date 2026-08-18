@@ -1,0 +1,186 @@
+\section{Continuous Lift, Kernel Instantiation, and a Minimal Counterexample}
+\label{sec:appendix-lift}
+
+\subsection{A Margin-Robust Finite-Abstraction Lift}
+
+Proposition~\ref{prop:parameter-gate} is exact on its listed grid.  Lifting
+that result to continuous reachable histories requires coverage and regularity
+assumptions.  Let $z=\psi(h')$ be a finite-dimensional representation on
+which the updated policy depends.  Suppose the fixed-controller certificate
+can be written as finitely many obligations
+\begin{equation}
+ c_j(x,u,w,x^+)\le 0,\qquad j=1,\ldots,m,
+\label{eq:certificate-obligation}
+\end{equation}
+where $x^+=f(x,u,w)$.  Invariant, discrete-time barrier, and bounded-horizon
+reachability checks can be written in this form after augmenting the state
+with time or certificate memory.
+
+\begin{theorem}[Margin-robust finite-abstraction sufficiency]
+\label{thm:finite-lift}
+Fix a candidate snapshot $\pi_\theta$ and a future-history horizon.  Let
+$\{(z_i,x_{iq},w_{ir})\}$ be a finite set such that, for every reachable
+attacked history $h'$, every $x\in X_{\mathcal A}(h')$, and every
+$w\in\mathcal W$, some sampled triple satisfies
+\begin{equation}
+\|z-z_i\|\le\delta_z,\quad
+\|x-x_{iq}\|\le\delta_x,\quad
+\|w-w_{ir}\|\le\delta_w,
+\label{eq:joint-cover}
+\end{equation}
+where $z=\psi(h')$.  Assume:
+
+\begin{enumerate}
+    \item $\pi_\theta(z)\in\mathcal U$ and
+    $\|\pi_\theta(z)-\pi_\theta(z')\|\le L_\pi\|z-z'\|$;
+    \item the certificate model $\widehat f$ has uniform error
+    $\|f(x,u,w)-\widehat f(x,u,w)\|\le\varepsilon_f$;
+    \item $\widehat f$ is separately Lipschitz with constants
+    $L_f^x,L_f^u,L_f^w$; and
+    \item each $c_j$ is separately Lipschitz in
+    $(x,u,w,x^+)$ with constants
+    $L_j^x,L_j^u,L_j^w,L_j^+$.
+\end{enumerate}
+
+Define
+\begin{equation}
+\begin{split}
+\eta_j={}&(L_j^x+L_j^+L_f^x)\delta_x\\
+&+(L_j^u+L_j^+L_f^u)L_\pi\delta_z\\
+&+(L_j^w+L_j^+L_f^w)\delta_w+L_j^+\varepsilon_f .
+\end{split}
+\label{eq:lift-margin}
+\end{equation}
+If every sampled triple satisfies
+\begin{equation}
+c_j\!\left(x_{iq},\pi_\theta(z_i),w_{ir},
+\widehat f(x_{iq},\pi_\theta(z_i),w_{ir})\right)
+\le-\eta_j
+\label{eq:tightened-obligation}
+\end{equation}
+for all $j$, then $\pi_\theta(\psi(h'))\in K_\Gamma(h')$ for every reachable
+attacked history $h'$ in the horizon.  Hence the snapshot satisfies the
+continuous future-history lifecycle condition of
+Theorem~\ref{thm:gate}.
+\end{theorem}
+
+\begin{proof}
+Fix $h'$, $x\in X_{\mathcal A}(h')$, and $w\in\mathcal W$, and select a
+sampled triple using~\eqref{eq:joint-cover}.  Write
+$u=\pi_\theta(z)$ and $u_i=\pi_\theta(z_i)$.  Policy regularity gives
+$\|u-u_i\|\le L_\pi\delta_z$.  The model-error and Lipschitz assumptions give
+\begin{equation}
+\begin{split}
+\|f(x,u,w)-\widehat f(x_{iq},u_i,w_{ir})\|
+\le{}&\varepsilon_f+L_f^x\delta_x\\
+&+L_f^uL_\pi\delta_z+L_f^w\delta_w .
+\end{split}
+\end{equation}
+Applying the four Lipschitz bounds of $c_j$ and collecting terms yields
+\begin{equation}
+\begin{split}
+c_j(x,u,w,f(x,u,w))
+\le{}&c_j(x_{iq},u_i,w_{ir},\\
+&\widehat f(x_{iq},u_i,w_{ir}))+\eta_j\\
+\le{}&0.
+\end{split}
+\end{equation}
+The argument holds for every plausible state, disturbance, certificate
+obligation, and reachable attacked history, which is precisely membership in
+the corresponding kernels over the stated horizon.
+\end{proof}
+
+Theorem~\ref{thm:finite-lift} converts a justified joint cover into a
+verification result.  Establishing that cover remains a separate obligation;
+a finite rollout sample is insufficient.  The coverage audit in
+Appendix~\ref{sec:coverage-appendix} provides empirical evidence about this
+premise without constituting a cover proof.
+
+\begin{proposition}[Plausible-set and freeze-frontier monotonicity]
+\label{prop:plausible-monotonicity}
+Fix a history domain $\mathcal H$, dynamics, certificate obligations, and
+policy class.  If two information contracts satisfy
+$X_1(h)\subseteq X_2(h)$ for every $h\in\mathcal H$, let
+$K_{\Gamma,k}$ be the kernel induced by $X_k$ and let
+$\Theta_{\Gamma,k}=\{\theta:\pi_\theta(h)\in K_{\Gamma,k}(h),
+\ \forall h\in\mathcal H\}$.  Then
+\begin{equation}
+K_{\Gamma,2}(h)\subseteq K_{\Gamma,1}(h)
+\quad\text{and}\quad
+\Theta_{\Gamma,2}\subseteq\Theta_{\Gamma,1}.
+\end{equation}
+Consequently, for a nested ambiguity family
+$X_{\rho_1}(h)\subseteq X_{\rho_2}(h)$ whenever $\rho_1\le\rho_2$, certified
+update feasibility is non-increasing in $\rho$: once the certified parameter
+set is empty, it remains empty at larger ambiguity.  Conversely, a trusted
+anchor that pointwise shrinks the plausible-state sets can only weakly enlarge
+the kernels and certified parameter set.
+\end{proposition}
+
+\begin{proof}
+An action certified for every state in the larger set $X_2(h)$ is certified
+for every state in its subset $X_1(h)$, proving kernel inclusion.  Requiring a
+policy action to lie in the smaller kernel $K_{\Gamma,2}(h)$ for every
+$h\in\mathcal H$ is at least as restrictive as requiring membership in
+$K_{\Gamma,1}(h)$, proving parameter-set inclusion.  The frontier and anchor
+statements follow by applying these inclusions to nested families.
+\end{proof}
+
+The monotonicity comparison holds on a fixed history domain and certificate
+contract.  If an anchor changes which histories are reachable, or if two
+sampled plausible sets are not nested, neither conclusion follows
+automatically.  The P3 anchor audit therefore constructs nested samples
+explicitly.
+
+The three results have distinct scopes.  The future-history theorem states a
+necessary certificate condition.  Proposition~\ref{prop:parameter-gate} is
+exact on its finite abstraction.  Theorem~\ref{thm:finite-lift} supplies a
+sufficient lift under its cover, regularity, and margin assumptions.
+
+\subsection{Instantiating the Kernel}
+
+For an invariant certificate $I\subseteq S$, the kernel is
+\begin{equation}
+\begin{aligned}
+K_I(h)=\{u\in\mathcal U:\;&\forall x\in X_{\mathcal A}(h),
+\forall w\in\mathcal W,\\
+& f(x,u,w)\in I\}.
+\end{aligned}
+\end{equation}
+For a barrier certificate $B(x)\ge 0$ with safe set
+$C=\{x:B(x)\ge 0\}$, the corresponding kernel is
+\begin{equation}
+\begin{aligned}
+K_B(h)=\{u\in\mathcal U:\;&\forall x\in X_{\mathcal A}(h),
+\forall w\in\mathcal W,\\
+& B(f(x,u,w))\ge 0\}.
+\end{aligned}
+\end{equation}
+A reachability certificate starts from $X_{\mathcal A}(h)$ rather than a
+nominal state estimate.  A runtime shield must select an action in
+$K_\Gamma(h)$.  An empty kernel requires rejection, fail-safe operation, or a
+trusted state anchor.
+
+\subsection{A Minimal Counterexample}
+
+Consider
+\begin{equation}
+    x_{t+1}=\lambda x_t+u_t,\qquad |u_t|\le u_{\max},\qquad S=[-1,1].
+\end{equation}
+Suppose FDI makes the same history compatible with $x_t=r$ and $x_t=-r$,
+where $r\in(0,1]$.  The one-step safe action set for state $x$ is
+\begin{equation}
+\mathcal U_{\mathrm{safe}}(x)=[-u_{\max},u_{\max}]\cap[-1-\lambda x,1-\lambda x].
+\end{equation}
+For $x=r$ and $x=-r$, these sets are individually nonempty but disjoint whenever
+\begin{equation}
+    1<\lambda r<1+u_{\max}.
+\end{equation}
+The strict upper bound makes each known state individually controllable.  FDI
+creates indistinguishability, so no single history-dependent action certifies
+both states.
+
+This example distinguishes fixed filtering from certified learning.  A fixed
+severe-attack filter can reject when the common kernel is empty.  A certified
+online learner must also prevent updates under a certificate with no feasible
+kernel.

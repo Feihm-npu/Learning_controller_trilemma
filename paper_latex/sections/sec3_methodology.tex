@@ -3,10 +3,12 @@
 
 This section develops the update conditions used by the empirical studies.
 The current- and future-history gates distinguish action filtering from
-certified learning.  The reward-influence analysis then characterizes how a
-bounded reward edit can change a linear release-gate margin within one policy-
-gradient batch.  The evaluated multi-batch attack remains the fixed
-target-shaping rule described in Section~\ref{sec:study}.
+certified learning, and the same conditions state what a deployment contract
+must re-establish when it stops applying them.  A reward-influence summary
+then records how a bounded reward edit can move a linear release-gate margin
+within one policy-gradient batch; the evaluated multi-batch attack remains the
+fixed target-shaping rule described in Section~\ref{sec:study}.  All proofs
+are deferred to Appendix~\ref{sec:appendix-proofs}.
 
 \subsection{Current- and Future-History Gates}
 
@@ -27,47 +29,19 @@ $\pi_{\theta_{t+1}}$, where $\theta_{t+1}=U(\theta_t,h)$, then
 Consequently, if $K_\Gamma(h)=\emptyset$, then $M$ cannot both accept the certificate and allow a nontrivial online update at $h$.
 \end{lemma}
 
-\begin{proof}
-The certified action must satisfy the certificate for every state compatible
-with the attacked history.  These states form $X_{\mathcal A}(h)$, and their
-common certified actions form $K_\Gamma(h)$.  Continued certified operation
-therefore requires $\pi_{\theta_{t+1}}(h)\in K_\Gamma(h)$.  An empty kernel
-requires rejection, freeze, rollback, or trusted information that changes the
-plausible-state set.
-\end{proof}
+An action filter that returns a certified input at $h$ does not certify the
+update that produced it.  The filtered actuator channel can satisfy the
+certificate while $\pi_{\theta^+}(h)\notin K_\Gamma(h)$, so the updated
+learner remains uncertified; Appendix~\ref{sec:appendix-proofs} states this as
+Proposition~\ref{prop:action-filter-insufficient}.
 
-\begin{proposition}[Action filtering is not update certification]
-\label{prop:action-filter-insufficient}
-Let $F(v,h)$ be an action filter that returns an applied input in
-$K_\Gamma(h)$ whenever the kernel is nonempty.  Consider a mechanism that
-first computes $\theta^+=U(\theta_t,h)$ and then applies
-\begin{equation}
-    u_t=F(\pi_{\theta^+}(h),h),
-\end{equation}
-The mechanism accepts the update without constraining the raw updated policy
-$\pi_{\theta^+}$.  If $\pi_{\theta^+}(h)\notin K_\Gamma(h)$, the applied input
-can be certified while the updated learner remains uncertified.  Action-only
-filtering therefore does not imply Lemma~\ref{lem:current-gate}.
-\end{proposition}
-
-\begin{proof}
-The filter property gives $u_t\in K_\Gamma(h)$, so the current actuator input
-can satisfy the certificate.  Lemma~\ref{lem:current-gate} instead constrains
-the updated controller through
-$\pi_{\theta^+}(h)\in K_\Gamma(h)$.  When this membership fails, the
-certificate covers only the filtered actuator channel.  Accepting the update
-under that certificate creates a stale certified policy.
-\end{proof}
-
-The lemma and proposition define local gates.  A policy update also determines
-actions at future histories.  Let $\mathcal H_{\mathcal A}(h,\theta^+)$ denote
-the attacked histories reachable after $h$ under $\pi_{\theta^+}$ and attack
-family $\mathcal A$.  Define the certified parameter set
-\begin{equation}
-\Theta_\Gamma(h)=
-\{\theta:\forall h'\in\mathcal H_{\mathcal A}(h,\theta),
-\pi_\theta(h')\in K_\Gamma(h')\}.
-\end{equation}
+These gates are local, but a policy update also determines actions at future
+histories.  Let
+$\mathcal H_{\mathcal A}(h,\theta^+)$ denote the attacked histories reachable
+after $h$ under $\pi_{\theta^+}$ and attack family $\mathcal A$, and define
+the certified parameter set
+$\Theta_\Gamma(h)=\{\theta:\forall h'\in\mathcal H_{\mathcal A}(h,\theta),\
+\pi_\theta(h')\in K_\Gamma(h')\}$.
 
 \begin{theorem}[Future-history lifecycle gate]
 \label{thm:gate}
@@ -83,20 +57,10 @@ equivalently,
     \pi_{\theta^+}(h')\in K_\Gamma(h').
 \end{equation}
 If membership fails for a reachable $h'$, accepting the update creates a
-stale certified policy.  If $K_\Gamma(h')=\emptyset$, certified learning must
+stale certified policy; if $K_\Gamma(h')=\emptyset$, certified learning must
 reject, freeze, roll back, or obtain trusted information that changes
 $X_{\mathcal A}(h')$.
 \end{theorem}
-
-\begin{proof}
-A lifecycle certificate covers every attacked history reachable under the
-updated controller and admissible attack family.  Applying
-Lemma~\ref{lem:current-gate} pointwise gives
-$\pi_{\theta^+}(h')\in K_\Gamma(h')$ for each such history.  This is the
-definition of $\theta^+\in\Theta_\Gamma(h)$.  A failed membership leaves the
-updated action map uncertified at that history.  An empty kernel additionally
-requires a changed information set or rejection of certified operation.
-\end{proof}
 
 \begin{proposition}[Linear-policy parameter gate]
 \label{prop:parameter-gate}
@@ -115,318 +79,61 @@ candidates outside this set, or projecting onto it, is sound for the finite
 abstraction.
 \end{proposition}
 
-\begin{proof}
-For fixed $z$, membership $\pi_\theta(z)\in[\ell_z,u_z]$ is equivalent to the
-two inequalities above.  Enforcing them for every $z\in\mathcal Z$ implements
-the lifecycle gate on the abstraction.  Parameter box constraints preserve
-convexity.  A feasible or projected candidate satisfies every certified
-interval kernel in the abstraction.
-\end{proof}
+Proposition~\ref{prop:parameter-gate} is exact only on its listed grid.
+Appendix~\ref{sec:appendix-lift} states the coverage, regularity, model-error,
+and margin assumptions under which it lifts to continuous reachable histories,
+together with a plausible-set monotonicity result, the kernel instantiations
+for invariant and barrier certificates, and a minimal counterexample
+separating fixed filtering from certified learning.
 
-\subsection{Normalized Reward Influence on a Release Gate}
+\subsection{Reward Influence on a Release Gate}
 \label{sec:reward-geometry}
 
-We now connect the reward-record attacker to the halfspaces above.  Consider a
-fixed on-policy batch of length $T$.  Let $J\in\mathbb R^{T\times d}$ contain
-the policy-score row vectors, let $r\in\mathbb R^T$ be the logged rewards, and
-let $H_{ij}=\mathbf 1[j\ge i]$ be the reward-to-go operator.  Define the
-centering matrix
-\begin{equation}
-C=I-\frac{1}{T}\mathbf 1\mathbf 1^\top
-\end{equation}
-and let the attacker choose
-$\delta\in[-\epsilon,\epsilon]^T$.  The centered return vector is
-\begin{equation}
-y(\delta)=CH(r+\delta).
-\label{eq:centered-return}
-\end{equation}
-The fixed-batch assumption is appropriate for a reward-record-only attacker:
-changing a reward after collection does not change the states, actions, or
-score rows already in the batch.
+The upstream channel of Section~\ref{sec:threat} reaches these halfspaces
+through a single policy-gradient batch: editing a reward after collection
+leaves the states, actions, and score rows of that batch unchanged, so a
+bounded edit produces gate-directed parameter motion within the batch.
+Appendix~\ref{sec:appendix-support} makes this exact, reducing the positive
+support of an admissible reward edit against a linear release halfspace to a
+monotone family of second-order-cone feasibility problems, valid under global
+Euclidean gradient-norm clipping; if that support does not exceed the current
+margin, no admissible edit can cross the halfspace in the batch.  The result
+is confined to one batch and does not explain the multi-batch attack we
+evaluate, which is the fixed target-shaping rule of Section~\ref{sec:study}.
+Coordinatewise parameter clipping remains outside the exact support
+computation.
 
-\begin{proposition}[Standardized reward-influence set]
-\label{prop:normalized-reward-influence}
-Suppose the learner standardizes the centered reward-to-go advantages with
-population standard deviation whenever $\|y(\delta)\|_2>0$.  Before optimizer
-clipping, a gradient-ascent proposal of size $\alpha$ is
-\begin{equation}
-\widetilde\theta^+(\delta)=\theta+
-\frac{\alpha}{\sqrt T}J^\top
-\frac{y(\delta)}{\|y(\delta)\|_2}.
-\label{eq:normalized-update}
-\end{equation}
-Consequently, the raw one-batch proposal set is the image of the centered
-reward-to-go zonotope under normalization and the policy-score map; in general,
-it is not a parameter-space zonotope.
-\end{proposition}
-
-\begin{proof}
-The standardized advantage vector is
-$y/\sqrt{T^{-1}\|y\|_2^2}=\sqrt T\,y/\|y\|_2$.  Substitution into the usual
-mean score-function gradient
-$T^{-1}J^\top(\sqrt T\,y/\|y\|_2)$ gives
-\eqref{eq:normalized-update}.  Equation~\eqref{eq:centered-return} is affine
-in the reward-box variable, but division by its Euclidean norm is not;
-hence the normalized image is generally non-affine.
-\end{proof}
-
-\begin{theorem}[Positive support under global gradient clipping]
-\label{thm:reward-halfspace-support}
-Let $B=J^\top/\sqrt T$, let the learner cap the global gradient norm at
-$G>0$, and assume coordinatewise parameter clipping is inactive over the
-reward box.  The post-cap update before parameter clipping is
-\begin{equation}
- \theta_G^+(y)=\theta+
- \frac{\alpha By}{\max\{\|y\|_2,\|By\|_2/G\}}.
-\end{equation}
-For a release halfspace $a^\top P\theta\le b$, define
-$q=\alpha B^\top P^\top a$, $y_0=CHr$, and $M=CH$.  For any fixed $t>0$, a
-reward perturbation whose gate-coordinate increment is at least $t$ exists if
-and only if the following second-order-cone problem is feasible:
-\begin{equation}
-\begin{split}
- \lambda&\ge0,\qquad
- -\epsilon\lambda\mathbf1\le v\le\epsilon\lambda\mathbf1,\\
- \bar y&=\lambda y_0+Mv,\qquad q^\top\bar y=1,\\
- t\|\bar y\|_2&\le1,\qquad
- (t/G)\|B\bar y\|_2\le1.
-\end{split}
-\label{eq:soc-support-feasibility}
-\end{equation}
-Feasibility is monotone in $t$, so bisection on
-$[0,\min\{\|q\|_2,\alpha G\|P^\top a\|_2\}]$ computes the exact positive
-support
-\begin{equation}
-\max\left\{0,\sup_{\|\delta\|_\infty\le\epsilon}
-\frac{q^\top y(\delta)}
-{\max\{\|y(\delta)\|_2,\|By(\delta)\|_2/G\}}\right\}.
-\end{equation}
-The construction remains valid when the centered-return zonotope contains the
-origin; if $G=\infty$, the second norm constraint is omitted.  If this support
-does not exceed the current halfspace margin, no admissible reward edit can
-cross that halfspace in the batch.
-\end{theorem}
-
-\begin{proof}
-Global norm clipping gives the stated maximum in the denominator.  The ratio
-is positively homogeneous, so optimization over the zonotope
-$Z=\{y_0+M\delta:\|\delta\|_\infty\le\epsilon\}$ is equivalent to optimization
-over its conic hull.  The first line of~\eqref{eq:soc-support-feasibility} is
-the perspective representation of that hull: $v=\lambda\delta$.  This is the
-standard homogenization used in fractional and conic
-optimization~\cite{schaible_fractional_duality_1976,bauschke_homogenization_2023}.
-
-If a positive ratio reaches $t$, rescale its conic representative until
-$q^\top\bar y=1$; its two denominator branches are then exactly the last line
-of~\eqref{eq:soc-support-feasibility}.  Conversely, any feasible $\bar y$ is
-nonzero because of the unit-numerator equality and recovers a reward-box ray
-whose ratio reaches $t$.  Thus the origin cannot create the degenerate
-feasibility present in a direct zonotope formulation.  Each fixed-$t$ problem
-is a second-order feasibility-cone problem~\cite{belloni_soc_feasibility_2008};
-monotonicity permits quasiconvex bisection~\cite{agrawal_dqcp_2020}.
-Cauchy--Schwarz supplies both stated upper bounds.  The margin result follows
-by adding the maximum increment to the current gate coordinate.
-\end{proof}
-
-The theorem applies to one fixed batch.  Later batches change $J$, $r$, and
-the visited states, producing a sequence of state-dependent normalized
-updates.  The result covers global Euclidean gradient clipping.  Coordinatewise
-parameter clipping remains outside the exact support computation.  The
-implementation also skips standardization below a numerical tolerance, so
-each reported cone witness must remain above that threshold.
-
-\subsection{A Margin-Robust Finite-Abstraction Lift}
-
-Proposition~\ref{prop:parameter-gate} is exact on its listed grid.  Lifting
-that result to continuous reachable histories requires coverage and regularity
-assumptions.  Let $z=\psi(h')$ be a finite-dimensional representation on
-which the updated policy depends.  Suppose the fixed-controller certificate
-can be written as finitely many obligations
-\begin{equation}
- c_j(x,u,w,x^+)\le 0,\qquad j=1,\ldots,m,
-\label{eq:certificate-obligation}
-\end{equation}
-where $x^+=f(x,u,w)$.  Invariant, discrete-time barrier, and bounded-horizon
-reachability checks can be written in this form after augmenting the state
-with time or certificate memory.
-
-\begin{theorem}[Margin-robust finite-abstraction sufficiency]
-\label{thm:finite-lift}
-Fix a candidate snapshot $\pi_\theta$ and a future-history horizon.  Let
-$\{(z_i,x_{iq},w_{ir})\}$ be a finite set such that, for every reachable
-attacked history $h'$, every $x\in X_{\mathcal A}(h')$, and every
-$w\in\mathcal W$, some sampled triple satisfies
-\begin{equation}
-\|z-z_i\|\le\delta_z,\quad
-\|x-x_{iq}\|\le\delta_x,\quad
-\|w-w_{ir}\|\le\delta_w,
-\label{eq:joint-cover}
-\end{equation}
-where $z=\psi(h')$.  Assume:
-
-\begin{enumerate}
-    \item $\pi_\theta(z)\in\mathcal U$ and
-    $\|\pi_\theta(z)-\pi_\theta(z')\|\le L_\pi\|z-z'\|$;
-    \item the certificate model $\widehat f$ has uniform error
-    $\|f(x,u,w)-\widehat f(x,u,w)\|\le\varepsilon_f$;
-    \item $\widehat f$ is separately Lipschitz with constants
-    $L_f^x,L_f^u,L_f^w$; and
-    \item each $c_j$ is separately Lipschitz in
-    $(x,u,w,x^+)$ with constants
-    $L_j^x,L_j^u,L_j^w,L_j^+$.
-\end{enumerate}
-
-Define
-\begin{equation}
-\begin{split}
-\eta_j={}&(L_j^x+L_j^+L_f^x)\delta_x\\
-&+(L_j^u+L_j^+L_f^u)L_\pi\delta_z\\
-&+(L_j^w+L_j^+L_f^w)\delta_w+L_j^+\varepsilon_f .
-\end{split}
-\label{eq:lift-margin}
-\end{equation}
-If every sampled triple satisfies
-\begin{equation}
-c_j\!\left(x_{iq},\pi_\theta(z_i),w_{ir},
-\widehat f(x_{iq},\pi_\theta(z_i),w_{ir})\right)
-\le-\eta_j
-\label{eq:tightened-obligation}
-\end{equation}
-for all $j$, then $\pi_\theta(\psi(h'))\in K_\Gamma(h')$ for every reachable
-attacked history $h'$ in the horizon.  Hence the snapshot satisfies the
-continuous future-history lifecycle condition of
-Theorem~\ref{thm:gate}.
-\end{theorem}
-
-\begin{proof}
-Fix $h'$, $x\in X_{\mathcal A}(h')$, and $w\in\mathcal W$, and select a
-sampled triple using~\eqref{eq:joint-cover}.  Write
-$u=\pi_\theta(z)$ and $u_i=\pi_\theta(z_i)$.  Policy regularity gives
-$\|u-u_i\|\le L_\pi\delta_z$.  The model-error and Lipschitz assumptions give
-\begin{equation}
-\begin{split}
-\|f(x,u,w)-\widehat f(x_{iq},u_i,w_{ir})\|
-\le{}&\varepsilon_f+L_f^x\delta_x\\
-&+L_f^uL_\pi\delta_z+L_f^w\delta_w .
-\end{split}
-\end{equation}
-Applying the four Lipschitz bounds of $c_j$ and collecting terms yields
-\begin{equation}
-\begin{split}
-c_j(x,u,w,f(x,u,w))
-\le{}&c_j(x_{iq},u_i,w_{ir},\\
-&\widehat f(x_{iq},u_i,w_{ir}))+\eta_j\\
-\le{}&0.
-\end{split}
-\end{equation}
-The argument holds for every plausible state, disturbance, certificate
-obligation, and reachable attacked history, which is precisely membership in
-the corresponding kernels over the stated horizon.
-\end{proof}
-
-Theorem~\ref{thm:finite-lift} converts a justified joint cover into a
-verification result.  Establishing that cover remains a separate obligation;
-a finite rollout sample is insufficient.  The coverage audit in
-Section~\ref{sec:study} provides empirical evidence about this premise without
-constituting a cover proof.
-
-\begin{proposition}[Plausible-set and freeze-frontier monotonicity]
-\label{prop:plausible-monotonicity}
-Fix a history domain $\mathcal H$, dynamics, certificate obligations, and
-policy class.  If two information contracts satisfy
-$X_1(h)\subseteq X_2(h)$ for every $h\in\mathcal H$, let
-$K_{\Gamma,k}$ be the kernel induced by $X_k$ and let
-$\Theta_{\Gamma,k}=\{\theta:\pi_\theta(h)\in K_{\Gamma,k}(h),
-\ \forall h\in\mathcal H\}$.  Then
-\begin{equation}
-K_{\Gamma,2}(h)\subseteq K_{\Gamma,1}(h)
-\quad\text{and}\quad
-\Theta_{\Gamma,2}\subseteq\Theta_{\Gamma,1}.
-\end{equation}
-Consequently, for a nested ambiguity family
-$X_{\rho_1}(h)\subseteq X_{\rho_2}(h)$ whenever $\rho_1\le\rho_2$, certified
-update feasibility is non-increasing in $\rho$: once the certified parameter
-set is empty, it remains empty at larger ambiguity.  Conversely, a trusted
-anchor that pointwise shrinks the plausible-state sets can only weakly enlarge
-the kernels and certified parameter set.
-\end{proposition}
-
-\begin{proof}
-An action certified for every state in the larger set $X_2(h)$ is certified
-for every state in its subset $X_1(h)$, proving kernel inclusion.  Requiring a
-policy action to lie in the smaller kernel $K_{\Gamma,2}(h)$ for every
-$h\in\mathcal H$ is at least as restrictive as requiring membership in
-$K_{\Gamma,1}(h)$, proving parameter-set inclusion.  The frontier and anchor
-statements follow by applying these inclusions to nested families.
-\end{proof}
-
-The monotonicity comparison holds on a fixed history domain and certificate
-contract.  If an anchor changes which histories are reachable, or if two
-sampled plausible sets are not nested, neither conclusion follows
-automatically.  The P3 anchor audit therefore constructs nested samples
-explicitly.
-
-The three results have distinct scopes.  The future-history theorem states a
-necessary certificate condition.  Proposition~\ref{prop:parameter-gate} is
-exact on its finite abstraction.  Theorem~\ref{thm:finite-lift} supplies a
-sufficient lift under its cover, regularity, and margin assumptions.
-
-\subsection{Instantiating the Kernel}
-
-For an invariant certificate $I\subseteq S$, the kernel is
-\begin{equation}
-\begin{aligned}
-K_I(h)=\{u\in\mathcal U:\;&\forall x\in X_{\mathcal A}(h),
-\forall w\in\mathcal W,\\
-& f(x,u,w)\in I\}.
-\end{aligned}
-\end{equation}
-For a barrier certificate $B(x)\ge 0$ with safe set
-$C=\{x:B(x)\ge 0\}$, the corresponding kernel is
-\begin{equation}
-\begin{aligned}
-K_B(h)=\{u\in\mathcal U:\;&\forall x\in X_{\mathcal A}(h),
-\forall w\in\mathcal W,\\
-& B(f(x,u,w))\ge 0\}.
-\end{aligned}
-\end{equation}
-A reachability certificate starts from $X_{\mathcal A}(h)$ rather than a
-nominal state estimate.  A runtime shield must select an action in
-$K_\Gamma(h)$.  An empty kernel requires rejection, fail-safe operation, or a
-trusted state anchor.
-
-\subsection{A Minimal Counterexample}
-
-Consider
-\begin{equation}
-    x_{t+1}=\lambda x_t+u_t,\qquad |u_t|\le u_{\max},\qquad S=[-1,1].
-\end{equation}
-Suppose FDI makes the same history compatible with $x_t=r$ and $x_t=-r$,
-where $r\in(0,1]$.  The one-step safe action set for state $x$ is
-\begin{equation}
-\mathcal U_{\mathrm{safe}}(x)=[-u_{\max},u_{\max}]\cap[-1-\lambda x,1-\lambda x].
-\end{equation}
-For $x=r$ and $x=-r$, these sets are individually nonempty but disjoint whenever
-\begin{equation}
-    1<\lambda r<1+u_{\max}.
-\end{equation}
-The strict upper bound makes each known state individually controllable.  FDI
-creates indistinguishability, so no single history-dependent action certifies
-both states.
-
-This example distinguishes fixed filtering from certified learning.  A fixed
-severe-attack filter can reject when the common kernel is empty.  A certified
-online learner must also prevent updates under a certificate with no feasible
-kernel.
-
-\subsection{Certificate-Gated Update}
+\subsection{Certificate-Gated Update and Deployment Contracts}
+\label{sec:lifecyclegate}
 
 The resulting update rule first obtains $X_{\mathcal A}(h)$ from a
-severe-attack-aware estimator or safety filter.  It then computes
-$K_\Gamma(h)$.  An empty kernel rejects the certificate and freezes the
-update.  Otherwise, the mechanism accepts, projects, constrains, or rejects the
-candidate according to the updated action's kernel membership.
+severe-attack-aware estimator or safety filter and computes $K_\Gamma(h)$.  An
+empty kernel rejects the certificate and freezes the update.  Otherwise the
+mechanism accepts, projects, constrains, or rejects the candidate according to
+the updated action's kernel membership.  For linear policies the admission
+test is the convex halfspace system of
+Proposition~\ref{prop:parameter-gate}; a grid certifies only its listed points
+unless the cover, regularity, and model-error premises of
+Appendix~\ref{sec:appendix-lift} justify a robust margin.  We call this
+enforcement layer LifecycleGate.
 
-This rule separates fixed-controller safety from the lifecycle condition for
-a controller that learns from attacked histories.  The underlying certificate
-continues to supply the controller-synthesis and safety obligations.
+The layer realizes the deployment contracts of Section~\ref{sec:threat}.
+They differ in \emph{when} the admission test is applied, not in what it
+tests: a one-time release contract evaluates Theorem~\ref{thm:gate} once, at
+$h$, and then executes $\pi_{\theta^+}$ untested, whereas a resident contract
+re-evaluates it at every subsequent history.  The two agree exactly when the
+finite abstraction used at $h$ covers every history the released policy later
+reaches --- the premise Appendix~\ref{sec:appendix-lift} isolates, and one
+that release-time evidence cannot establish on its own.
+Commit admission certifies a candidate on a declared state set and horizon,
+backtracking along the connected segment from the last admitted snapshot to
+exclude disconnected safe islands, at the cost of coverage and
+model-mismatch risk; resident mechanisms instead pay intervention, rejection,
+and online cost.  An empty plausible-state kernel, an uncertified snapshot,
+model failure, or solver failure triggers a fail-closed freeze or rollback,
+and a trusted anchor can resume learning by changing the justified
+plausible-state set at an explicit infrastructure cost.  Because membership is
+enforced independently of the task objective, a safe update may be neutral or
+harmful: accepted parameter distance measures update availability, whereas
+paired task outcomes against always-freeze measure learning utility under
+benign change.

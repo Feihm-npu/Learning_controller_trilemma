@@ -1,0 +1,142 @@
+%% usenix_sec2027.tex
+%% USENIX Security 2027 submission build.
+%%
+%% Format contract (checked by the HotCRP auto-format checker):
+%%   - two-column, 10pt body font on 12pt leading
+%%   - 7.0in x 9.0in text block (set by usenix.sty; do not override)
+%%   - up to 13 pages of body text; references and appendices are unlimited
+%%     in the initial submission
+%%   - an "Open Science" appendix is mandatory at submission
+%%   - an "Ethical Considerations" appendix is strongly recommended
+%%
+%% Do not change \textwidth, \textheight, \columnsep, font size, or leading.
+
+\documentclass[letterpaper,twocolumn,10pt]{article}
+
+% amsmath/amssymb/amsthm are loaded before usenix.sty so that hyperref
+% (loaded inside usenix.sty) is initialised last.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\usepackage{usenix}
+
+\usepackage{booktabs}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+
+% Captions at 9pt: allowed by USENIX (the 10pt/12pt requirement applies to
+% body text) and standard practice in the proceedings.
+\usepackage[font=small,labelfont=bf]{caption}
+
+% article's default float parameters are much stricter than IEEEtran's and
+% push floats to the end of the document.  These values keep floats near
+% their first reference without changing the text block.
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+\setcounter{dbltopnumber}{3}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.7}
+\renewcommand{\dbltopfraction}{0.92}
+\renewcommand{\dblfloatpagefraction}{0.7}
+
+% Float and display separations.  These affect white space around floats and
+% equations only; body font size (10pt) and leading (12pt) are untouched.
+\setlength{\textfloatsep}{10pt plus 3pt minus 2pt}
+\setlength{\dbltextfloatsep}{10pt plus 3pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\AtBeginDocument{%
+  \setlength{\abovedisplayskip}{5pt plus 2pt minus 2pt}%
+  \setlength{\belowdisplayskip}{5pt plus 2pt minus 2pt}%
+  \setlength{\abovedisplayshortskip}{3pt plus 1pt minus 1pt}%
+  \setlength{\belowdisplayshortskip}{4pt plus 2pt minus 2pt}%
+}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+
+\begin{document}
+
+% no date on USENIX titles
+\date{}
+
+% Title registered for USENIX Security '27 Cycle 1 (fixed at registration,
+% 2026-08-18).  Earlier candidates, no longer usable: "Trained Behind a
+% Shield, Unsafe Without It: Reward Poisoning at Runtime-Assurance Authority
+% Transitions"; "Reward Poisoning at Runtime-Assurance Authority Transitions".
+\title{\Large \bf A Release Test Is Not Runtime Authority:\\
+  Evidence Reuse at Runtime-Assurance Authority Transitions}
+
+% Anonymous submission: do not add author names, affiliations, funding
+% acknowledgments, or self-identifying artifact URLs before acceptance.
+\author{}
+
+\maketitle
+
+\begin{abstract}
+Learned controllers are commonly commissioned behind runtime assurance: a
+trusted shield or safety filter holds action authority while the policy
+adapts, so every training transition satisfies the safety certificate.
+Deployments then retire that authority and release the raw policy after a
+finite check.  We show that the check does not transfer across this
+retirement.  Evidence collected under one authority is reused to authorize a
+different subject over a longer horizon, a flaw we call evidence reuse across
+an authority transition.
+
+The gap does not require an adversary.  In a controlled Safe-Control-Gym
+study, snapshots that passed a five-step release check failed on 2 of 120
+snapshot--state pairs once released raw, whereas the same prediction retained
+at runtime failed on none; a one-step filter did not suffice.  An upstream
+attacker amplifies the gap rather than creating it: an adversary holding only
+bounded write access to reward records raised raw-release failures to 27 of
+120 with no training-time violation, and raised raw-policy violations at
+retirement by factors of 3.6 and 1.6 on a
+published third-party shield-retirement lifecycle.  Retained predictive
+authority switched before all 27 failures.  Trusted recomputation closes this
+channel; it does not close the contract gap the channel exploits.
+\end{abstract}
+
+\input{sections/sec1_introduction}
+\input{sections/sec2_background}
+\input{sections/sec3_threat_model}
+\input{sections/sec3_methodology}
+\input{sections/sec6_third_party_case_study}
+\input{sections/sec4_evaluation}
+\input{sections/sec5_related_work}
+\input{sections/sec6_conclusion}
+
+% Acknowledgments are omitted from the anonymous submission.
+
+% Ethical Considerations and Open Science are USENIX appendices and are
+% excluded from the 13-page body limit.
+\input{sections/sec7_ethics_usenix}
+
+{\footnotesize
+\bibliographystyle{IEEEtran}
+\bibliography{reference}
+}
+
+% Technical appendices follow the references and are excluded from the
+% 13-page body limit for the initial submission.
+\appendix
+\input{sections/appendix_proofs}
+\input{sections/appendix_lift}
+\input{sections/appendix_support}
+\input{sections/appendix_influence}
+\input{sections/appendix_boundaries}
+\input{sections/appendix_thirdparty}
+\input{sections/appendix_benchmarks}
+\input{sections/sec8_appendix}
+
+\end{document}

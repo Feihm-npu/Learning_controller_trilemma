@@ -1,0 +1,45 @@
+\section{Additional Boundaries and Validity Checks}
+\label{sec:appendix-boundaries}
+
+This appendix expands the boundary audits summarized in
+Section~\ref{sec:study}.
+
+\begin{table}[t]
+\centering
+\caption{Commit availability and offline computation on the independent
+144-state candidate pool.  Common admission requires both freeze and the
+committed snapshot to pass the 100-step, 0.003-guard certificate.}
+\label{tab:commit-availability}
+\input{generated/tdsc_frontier_admission}
+\end{table}
+
+\emph{Trusted-state-anchor infrastructure.}  A trusted state anchor shrinks
+certificate uncertainty but does not sanitize the reward record.  Varying the
+anchor period $P\in\{1,3,6,12\}$ (12, 4, 2, or 1 calls over 12 updates), every
+condition retains all 16 certificate centers, has 0/24 violations on new
+paired blocks, and improves no reward over freeze; retained fractions stay at
+0.55/0.40/0.70 for $P\le6$ and become 0.50/0.40/0.65 at $P=12$.  Hardware
+latency, energy, authentication, and monetary cost are not measured.
+
+\emph{Official PPO.}  The official pretrained PPO policy is safe on 72/72 held-out rollouts, while
+a separately constructed malicious target is unsafe on 72/72.  Under the
+locked $L_\infty\le0.5$ reward budget, the 16-batch checkpoint has 0/24 clean
+and 1/24 poisoned failures; at 24 batches both have 0/24.  The pre-specified
+physical and two-checkpoint margin conditions failed, so the planned
+multi-run extension was not executed.  The audit showed checkpoint-level
+update redirection without a stable deep-PPO unsafe-policy effect.
+
+\emph{Benign adaptation utility.}  In the locked benign-utility audit under a $0.003$ N differential actuator
+bias, freeze, clean adaptation, and LifecycleGate all have 0/12 violations and
+mean rewards $-0.03617$, $-0.04714$, and $-0.08097$.  LifecycleGate accepts a
+nonzero update in 11/12 batches (mean fraction 0.8208) but improves no paired
+rollout over freeze.  This met the preregistered stopping criterion, so the
+planned three-run extension was not executed.  Parameter motion and
+certificate acceptance did not establish useful adaptation in this setting.
+
+\emph{Measurement.}  The CasADi gates use fixed finite state sets; physical outcomes use independent
+PyBullet rollouts.  They are sampled finite-horizon certificates, not
+continuous-state invariant-set proofs.  For the benign shift, maximum action
+implementation error is $2.61\times10^{-11}$ N.  A corrected calibration
+metric left run indices, states, bias grid, and threshold unchanged.  Realized
+state violations and pre-clip saturation are reported separately.

@@ -1,0 +1,106 @@
+\section{Exact Positive Support Under Gradient Clipping}
+\label{sec:appendix-support}
+
+This appendix states and proves the one-batch reward-influence results
+summarized in Section~\ref{sec:reward-geometry}.
+
+\subsection{Normalized One-Batch Proposal Set}
+
+This subsection connects the reward-record attacker to the release halfspaces
+of Proposition~\ref{prop:parameter-gate}.  For a
+fixed on-policy batch of length $T$, let $J\in\mathbb R^{T\times d}$ contain
+the policy-score row vectors, let $r\in\mathbb R^T$ be the logged rewards, let
+$H_{ij}=\mathbf 1[j\ge i]$ be the reward-to-go operator, and let
+$C=I-T^{-1}\mathbf 1\mathbf 1^\top$ be the centering matrix.  An attacker
+choosing $\delta\in[-\epsilon,\epsilon]^T$ produces the centered return
+vector
+\begin{equation}
+y(\delta)=CH(r+\delta).
+\label{eq:centered-return}
+\end{equation}
+The fixed-batch assumption is appropriate for a reward-record-only attacker:
+changing a reward after collection does not change the states, actions, or
+score rows already in the batch.
+
+\begin{proposition}[Standardized reward-influence set]
+\label{prop:normalized-reward-influence}
+Suppose the learner standardizes the centered reward-to-go advantages with
+population standard deviation whenever $\|y(\delta)\|_2>0$.  Before optimizer
+clipping, a gradient-ascent proposal of size $\alpha$ is
+\begin{equation}
+\widetilde\theta^+(\delta)=\theta+
+\frac{\alpha}{\sqrt T}J^\top
+\frac{y(\delta)}{\|y(\delta)\|_2}.
+\label{eq:normalized-update}
+\end{equation}
+Consequently, the raw one-batch proposal set is the image of the centered
+reward-to-go zonotope under normalization and the policy-score map; in general,
+it is not a parameter-space zonotope.
+\end{proposition}
+
+Normalization is why a bounded reward box does not induce a bounded
+parameter-space zonotope, and it is also what makes the influence question
+tractable.  The support characterization below applies to one fixed batch;
+later batches change $J$, $r$, and the visited states.  The implementation
+skips standardization below a numerical tolerance, so each reported cone
+witness must remain above that threshold.
+
+\subsection{Exact Positive Support}
+
+\begin{theorem}[Positive support under global gradient clipping]
+\label{thm:reward-halfspace-support}
+Let $B=J^\top/\sqrt T$, let the learner cap the global gradient norm at
+$G>0$, and assume coordinatewise parameter clipping is inactive over the
+reward box.  The post-cap update before parameter clipping is
+\begin{equation}
+ \theta_G^+(y)=\theta+
+ \frac{\alpha By}{\max\{\|y\|_2,\|By\|_2/G\}}.
+\end{equation}
+For a release halfspace $a^\top P\theta\le b$, define
+$q=\alpha B^\top P^\top a$, $y_0=CHr$, and $M=CH$.  For any fixed $t>0$, a
+reward perturbation whose gate-coordinate increment is at least $t$ exists if
+and only if the following second-order-cone problem is feasible:
+\begin{equation}
+\begin{split}
+ \lambda&\ge0,\qquad
+ -\epsilon\lambda\mathbf1\le v\le\epsilon\lambda\mathbf1,\\
+ \bar y&=\lambda y_0+Mv,\qquad q^\top\bar y=1,\\
+ t\|\bar y\|_2&\le1,\qquad
+ (t/G)\|B\bar y\|_2\le1.
+\end{split}
+\label{eq:soc-support-feasibility}
+\end{equation}
+Feasibility is monotone in $t$, so bisection on
+$[0,\min\{\|q\|_2,\alpha G\|P^\top a\|_2\}]$ computes the exact positive
+support
+\begin{equation}
+\max\left\{0,\sup_{\|\delta\|_\infty\le\epsilon}
+\frac{q^\top y(\delta)}
+{\max\{\|y(\delta)\|_2,\|By(\delta)\|_2/G\}}\right\}.
+\end{equation}
+The construction remains valid when the centered-return zonotope contains the
+origin; if $G=\infty$, the second norm constraint is omitted.  If this support
+does not exceed the current halfspace margin, no admissible reward edit can
+cross that halfspace in the batch.
+\end{theorem}
+
+\begin{proof}
+Global norm clipping gives the stated maximum in the denominator.  The ratio
+is positively homogeneous, so optimization over the zonotope
+$Z=\{y_0+M\delta:\|\delta\|_\infty\le\epsilon\}$ is equivalent to optimization
+over its conic hull.  The first line of~\eqref{eq:soc-support-feasibility} is
+the perspective representation of that hull: $v=\lambda\delta$.  This is the
+standard homogenization used in fractional and conic
+optimization~\cite{schaible_fractional_duality_1976,bauschke_homogenization_2023}.
+
+If a positive ratio reaches $t$, rescale its conic representative until
+$q^\top\bar y=1$; its two denominator branches are then exactly the last line
+of~\eqref{eq:soc-support-feasibility}.  Conversely, any feasible $\bar y$ is
+nonzero because of the unit-numerator equality and recovers a reward-box ray
+whose ratio reaches $t$.  Thus the origin cannot create the degenerate
+feasibility present in a direct zonotope formulation.  Each fixed-$t$ problem
+is a second-order feasibility-cone problem~\cite{belloni_soc_feasibility_2008};
+monotonicity permits quasiconvex bisection~\cite{agrawal_dqcp_2020}.
+Cauchy--Schwarz supplies both stated upper bounds.  The margin result follows
+by adding the maximum increment to the current gate coordinate.
+\end{proof}

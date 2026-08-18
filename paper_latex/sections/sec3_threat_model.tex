@@ -4,33 +4,24 @@
 \subsection{System Roles and Deployment Contracts}
 
 The defender deploys an online-updated controller $\pi_{\theta_t}$ and a
-certificate mechanism.  A severe-attack-aware estimator or filter can return
-a plausible-state set $X_{\mathcal A}(h_t)$ and certified action kernel
-$K_\Gamma(h_t)$.  The defender may also possess a trusted state anchor,
-backup controller, or external fail-safe, but each is an explicit
-architectural assumption and cost.
+certificate mechanism; a severe-attack-aware estimator or filter returns a
+plausible-state set $X_{\mathcal A}(h_t)$ and certified action kernel
+$K_\Gamma(h_t)$.  A trusted state anchor, backup controller, or external
+fail-safe may also be available, but each is an explicit architectural
+assumption and cost.
 
-We distinguish two deployment families.  Under \emph{raw-policy deployment},
-a safety layer protects adaptation before a raw policy snapshot
-$\pi_{\theta^+}$ receives action authority.  Under \emph{permanently filtered
-deployment}, a sound filter $F$ remains online and certifies the composition
-$F\circ\pi_{\theta^+}$.
-
-The evaluation instantiates four contracts within these families.
-\emph{Permanent raw release} removes runtime authority after a one-time
-five-step check.  \emph{Commit admission} certifies a candidate snapshot on a
-declared state set and horizon before raw release.  \emph{Resident predictive
-authority} repeats the five-step check online and can transfer control to the
-trusted baseline.  The \emph{one-step resident kernel} applies a current-state
-action filter and serves as a negative control.  Each name denotes a distinct
-evidence scope and authority contract.
-
-Permanent raw release is an intentional handoff.  Examples include protected
-commissioning followed by snapshot export and promotion to a lower-latency
-control target without the training-time predictor.  The handoff avoids
-permanent computation, intervention, or dependence on a backup service.
-Section~\ref{sec:study} measures these tradeoffs.  Resident authority instead
-contains raw-policy failure within the assured composition.
+The evaluation instantiates four contracts.  \emph{Permanent raw release}
+removes runtime authority after a one-time five-step check: protected
+commissioning is followed by snapshot export and promotion to a lower-latency
+control target, which avoids permanent computation, intervention, and
+dependence on a backup service.  \emph{Commit admission} certifies a candidate
+snapshot on a declared state set and horizon before raw release.
+\emph{Resident predictive authority} repeats the five-step check online and
+can transfer control to the trusted baseline.  The \emph{one-step resident
+kernel} applies a current-state action filter and serves as a negative
+control.  A sound filter that remains online instead certifies the composition
+$F\circ\pi_{\theta^+}$.  Each name denotes a distinct evidence scope and
+authority contract, and Section~\ref{sec:study} measures their tradeoffs.
 
 \subsection{Split-Trust Learning Pipeline}
 
@@ -64,11 +55,30 @@ Held-out states and release rule & Fixed, honest evaluation & No write or select
 \end{tabular}
 \end{table}
 
-The evaluated attack begins after compromise of a principal with bounded
-reward-field write access.  This access permits post-computation,
-pre-update mutation by a replay writer or broker.  A compromised reward
-producer is equivalent when it has the same bounded output authority.  In
-that case, source authentication establishes origin but not reward semantics.
+Table~\ref{tab:trust-boundary} states the evaluated write boundary.  The
+attack begins after compromise of a principal with bounded reward-field write
+access, which permits post-computation, pre-update mutation by a replay writer
+or broker.  A compromised reward producer is equivalent when it has the same
+bounded output authority; in that case source authentication establishes
+origin but not reward semantics.
+
+\emph{Applicability condition.}  The learning-data plane is deliberately
+reachable: historians, ingestion brokers, replay buffers, and KPI services
+exist so that offline consumers can read and enrich operational records, and
+OT guidance treats cross-zone historian exchange as an expected data
+flow~\cite{nist_ot_security_2023,mitre_data_historian}.  A principal on that
+path holds bounded write authority over a scalar field long before it holds
+any authority over the control path, which is why we grant the attacker
+nothing else.  The channel is only interesting when the runtime plane cannot
+recompute the reward from authenticated transitions.  That is the case when
+reward depends on delayed quality labels, operator feedback, manual
+disposition codes, or an external KPI the runtime plane does not observe.  It
+is not the case for rewards that are deterministic functions of authenticated
+state and action: there, trusted recomputation removes the channel outright,
+as our frozen integrity audit confirms (Section~\ref{sec:study}).  We
+therefore state applicability as a requirement rather than an assumption.
+This attack surface exists exactly where reward semantics cannot be
+reconstructed inside the high-integrity plane.
 
 \subsection{Attack Channels and Capabilities}
 
@@ -106,22 +116,17 @@ observation, belief, or filtered action available at decision time.  The
 behavior.
 
 A contract transition $C_{\mathrm{train}}\to C_{\mathrm{deploy}}$ may change
-one or more tuple components.  Evidence transfers only after every changed
-component is re-established under $C_{\mathrm{deploy}}$:
-
-\begin{itemize}
-    \item \emph{subject}: evidence about the composition does not bound the
-    raw policy, and a raw-policy audit does not certify the composition;
-    \item \emph{authority}: evidence collected while a resident module masked
-    unsafe proposals describes the masked process, not the raw policy after
-    the module is removed;
-    \item \emph{provenance}: a policy trained on an adversarial update log is
-    not the output of the trusted process the evidence was computed on;
-    \item \emph{information}: behavior under the authority's information set
-    does not determine behavior under the deployment observation;
-    \item \emph{horizon}: a finite evaluation pass does not bound an
-    unbounded future.
-\end{itemize}
+one or more components, and evidence transfers only after every changed
+component is re-established under $C_{\mathrm{deploy}}$.  Evidence about the
+composition does not bound the raw policy, and a raw-policy audit does not
+certify the composition (\emph{subject}).  Evidence collected while a resident
+module masked unsafe proposals describes the masked process, not the raw
+policy after the module is removed (\emph{authority}).  A policy trained on an
+adversarial update log is not the output of the trusted process the evidence
+was computed on (\emph{provenance}).  Behavior under the authority's
+information set does not determine behavior under the deployment observation
+(\emph{information}).  A finite evaluation pass does not bound an unbounded
+future (\emph{horizon}).
 
 \begin{proposition}[Transfer obligation]
 \label{prop:transfer}
@@ -131,16 +136,6 @@ subset of the components of the evidence tuple.  Acceptance under
 $C_{\mathrm{deploy}}$ is unsound unless each changed component's evidence
 obligation is re-established under $C_{\mathrm{deploy}}$.
 \end{proposition}
-
-\begin{proof}
-Each component is a premise of the assurance decision.  A conclusion derived
-from one premise set is not preserved after a premise is removed or weakened.
-In the evaluated permanent-release transition, the subject changes from the
-composition to the raw policy and resident authority is removed.  The update
-provenance becomes adversarial, the policy acts on deployment observations,
-and a finite check authorizes an unmonitored future.  The original evidence
-therefore cannot be reused without re-establishing these obligations.
-\end{proof}
 
 The proposition supplies the security model used throughout the paper.
 Independent transfer evidence re-establishes obligations before authority
@@ -157,51 +152,41 @@ controlled study isolates the resulting mechanism.
 The vulnerable configuration supplies neither origin integrity for the reward
 record nor trusted reward recomputation.  Binding a reward, transition,
 action, producer identity, and time to an authenticated append-only record
-blocks post-ingestion mutation.  If reward is a deterministic function of
-authenticated transitions, recomputation by a trusted principal completely
-blocks the evaluated channel.  If reward depends on delayed quality labels,
-operator feedback, or an external KPI unavailable to the runtime plane, the
-system instead needs a trusted producer, redundant validation, or a detector;
-a signature applied to an already malicious value is insufficient.
+blocks post-ingestion mutation, and recomputation by a trusted principal
+completely blocks the evaluated channel whenever reward is a deterministic
+function of authenticated transitions.  Under the applicability condition
+above, the system instead needs a trusted producer, redundant validation, or a
+detector; a signature applied to an already malicious value is insufficient.
 
-These controls act at different boundaries.  Provenance and recomputation
-remove the upstream attack precondition.  A task-aware detector can reject
-suspicious batches, subject to its distributional and semantic assumptions.
-Commit admission restricts which learned snapshot can be released.  Resident
-predictive authority contains the physical consequence after deployment.  In
-the frozen audit, trusted recomputation achieved true-/false-positive rates
-(TPR/FPR) of $1.000/0$.  Simple task-aware checks achieved TPR above 0.90 and
-FPR at most 0.036, making the effective attack readily detectable under those
+These controls act at different boundaries: provenance and recomputation
+remove the upstream precondition, a task-aware detector can reject suspicious
+batches under its distributional and semantic assumptions, commit admission
+restricts which learned snapshot can be released, and resident predictive
+authority contains the physical consequence after deployment.  In the frozen
+audit, trusted recomputation achieved true-/false-positive rates (TPR/FPR) of
+$1.000/0$ and simple task-aware checks achieved TPR above 0.90 and FPR at most
+0.036, making the effective attack readily detectable under those
 assumptions.
 
 \subsection{Security and Availability Goals}
 
-We separate four attacker or failure objectives:
-
-\begin{itemize}
-    \item an \emph{unsafe certified action}, where the mechanism accepts an
-    applied input that is unsafe for some state in $X_{\mathcal A}(h_t)$;
-    \item a \emph{stale certified policy}, where the current applied input is
-    filtered but the accepted raw updated action map leaves the kernel;
-    \item \emph{uncertified learning}, where a nontrivial update continues
-    after certificate rejection; and
-    \item \emph{forced freeze}, where the attacker expands the plausible set
-    or redirects the update until sound learning must stop or re-anchor.
-\end{itemize}
-
-The defender also measures availability through admitted state coverage,
-accepted update fraction, task reward, filter intervention, rejection,
-certificate latency, and trusted-anchor use.  Useful learning requires paired
-task improvement over always-freeze in addition to physical safety.
-
-\subsection{Scope Boundaries}
+We separate four attacker or failure objectives.  An \emph{unsafe certified
+action} occurs when the mechanism accepts an applied input that is unsafe for
+some state in $X_{\mathcal A}(h_t)$.  A \emph{stale certified policy} occurs
+when the current applied input is filtered but the accepted raw updated action
+map leaves the kernel.  \emph{Uncertified learning} occurs when a nontrivial
+update continues after certificate rejection.  \emph{Forced freeze} occurs
+when the attacker expands the plausible set or redirects the update until
+sound learning must stop or re-anchor.  The defender also measures
+availability through admitted state coverage, accepted update fraction, task
+reward, filter intervention, rejection, certificate latency, and
+trusted-anchor use; useful learning requires paired task improvement over
+always-freeze in addition to physical safety.
 
 Severe-attack filters, secure estimators, and fault-tolerant control-barrier
 function (CBF) methods can preserve safety when their assumptions keep
 $K_\Gamma(h_t)$ nonempty
-\cite{fawzi_secure_2014,tan_safety_2024,zhang_safe_2022}.  This study examines
-certificate coverage for learner updates and the costs of sound deployment
-contracts.  Its empirical claims concern sampled finite-horizon certificates,
-not continuous-state invariance or population-wide learner-family generality.
-The evaluation begins after bounded reward-record access and excludes service
-exploitation, reward-monitor evasion, and compromise of trusted recomputation.
+\cite{fawzi_secure_2014,tan_safety_2024,zhang_safe_2022}.  Out of scope are
+service exploitation, reward-monitor evasion, and compromise of trusted
+recomputation; Section~\ref{sec:limits} states the remaining validity
+boundaries.

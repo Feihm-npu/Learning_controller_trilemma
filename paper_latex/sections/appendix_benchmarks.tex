@@ -1,0 +1,217 @@
+\section{LifecycleGate Semantic Benchmarks}
+\label{sec:appendix-benchmarks}
+
+This appendix contains the low-dimensional semantic benchmarks that
+distinguish current-action filtering from update admission.  They instantiate
+the certificate semantics of Section~\ref{sec:gate} rather than the
+authority-transition attack evaluated in Section~\ref{sec:study}.
+
+\subsection{Setup}
+
+We instantiated the linear system of Appendix~\ref{sec:appendix-lift} with
+$\lambda=1.2$,
+$u_{\max}=0.2$, and $S=[-1,1]$.  FDI induced the ambiguity set
+$X_{\mathcal A}(h)=[-\rho,\rho]$.  The common certified kernel for invariant
+certificate $I=S$ is
+\begin{equation}
+    K(\rho)=[-u_{\max},u_{\max}]\cap[-1+\lambda\rho,1-\lambda\rho].
+\end{equation}
+The kernel is nonempty exactly when $\lambda\rho\le 1$.
+
+\subsection{Learning-Freeze Frontier}
+
+The frontier occurs at $\rho=1/\lambda=0.833$. Table~\ref{tab:frontier} shows the exact kernel values for representative ambiguity radii.
+
+\begin{table}[t]
+\centering
+\caption{Certified kernel for the one-dimensional ambiguity set.}
+\label{tab:frontier}
+\begin{tabular}{cccc}
+\toprule
+$\rho$ & $\lambda\rho$ & $K(\rho)$ & Gate \\
+\midrule
+0.600 & 0.720 & $[-0.200,0.200]$ & allow \\
+0.800 & 0.960 & $[-0.040,0.040]$ & constrain \\
+0.833 & 1.000 & $\{0\}$ & boundary \\
+0.900 & 1.080 & $\emptyset$ & freeze/reject \\
+1.000 & 1.200 & $\emptyset$ & freeze/reject \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At $\rho=0.9$, states $+0.9$ and $-0.9$ are individually controllable when
+their sign is trusted.  Their safe intervals are $[-0.2,-0.08]$ and
+$[0.08,0.2]$, respectively.  The empty intersection prevents a common
+history-dependent action from being certified.
+
+\subsection{Trusted Anchors and Learning-Aware FDI}
+
+A trusted state anchor can restore learning by shrinking the plausible-state
+set.  At $\rho=0.9$, a trusted sign anchor reduces the set to $[0,0.9]$ or
+$[-0.9,0]$.  The corresponding kernels, $[-0.2,-0.08]$ and $[0.08,0.2]$,
+are nonempty.
+
+Learning-aware FDI creates the complementary failure mode.  For a candidate
+action $u=0.1$, the gate allows the update at $\rho=0.6$, projects it to
+$0.04$ at $\rho=0.8$, and rejects it at $\rho=0.9$.  The attacked history
+therefore determines whether the same candidate is allowed, constrained, or
+rejected.
+
+\subsection{Lifecycle Benchmark Results}
+
+We compared five mechanisms over five update steps: an ungated learner, a
+nominal action filter, a robust action filter, always-freeze, and LifecycleGate
+with projection.  The one-dimensional benchmark used the system above.  The
+linear tank benchmark used the level-deviation model
+\begin{equation}
+    x_{t+1}=Ax_t+Bu_t,
+    \quad
+    A=\begin{bmatrix}1.08&0.04\\0.02&1.03\end{bmatrix},
+    \quad
+    B=\begin{bmatrix}1\\0.1\end{bmatrix},
+\end{equation}
+with $|u_t|\le 0.15$ and $x_t\in[-1,1]^2$. The nonlinear tank benchmark uses square-root inter-tank and drain flows,
+\begin{equation}
+\begin{aligned}
+h_{1,t+1} &= h_{1,t}+\Delta t(q_0+u_t-q_{12}(h_t)-d_1(h_{1,t})),\\
+h_{2,t+1} &= h_{2,t}+\Delta t(q_{12}(h_t)-d_2(h_{2,t})),
+\end{aligned}
+\end{equation}
+where $q_{12}$ and $d_i$ are square-root flow terms.  Its interval observer
+returned a box around the nominal attacked history.  The one-step kernel was
+computed over a grid within that box.  In all benchmarks, learning-aware FDI
+pushed the learner toward a larger positive action parameter.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{lifecycle_gate_summary.pdf}
+\caption{Lifecycle-gate benchmark results.  Increasing ambiguity shrinks the
+certified kernels of the one-dimensional, linear-tank, and nonlinear-tank
+models.  LifecycleGate constrains or freezes updates when action-only filters
+would leave the updated policy outside the kernel.}
+\label{fig:lifecycle-benchmarks}
+\end{figure*}
+
+Figure~\ref{fig:lifecycle-benchmarks} separates current-action filtering from
+update certification.  At $\rho=0.8$, the nominal filter had unsafe certified
+rate $1.0$.  The robust action filter had stale-policy rate $1.0$ because the
+learner parameter left $K(\rho)$ after action projection.  LifecycleGate had
+zero unsafe or stale operation and retained one of five updates.  At
+$\rho=0.9$, the kernel was empty and LifecycleGate froze learning.
+
+The linear tank benchmark reproduced the same pattern.  At $\rho=0.8$,
+nominal filtering had unsafe certified rate $0.8$, and robust action filtering
+had stale-policy rate $0.8$.  LifecycleGate kept both rates at zero and allowed
+two of five updates.  It allowed one constrained update at $\rho=0.85$ and
+froze at the empty-kernel point $\rho=0.92$.
+
+The nonlinear tank benchmark preserved the separation with kernels computed
+from sampled nonlinear dynamics.  At $\rho=0.2$, nominal filtering was unsafe
+in four of five steps, and robust filtering was stale in four.  LifecycleGate
+kept both rates at zero while allowing two constrained updates.  At
+$\rho=0.45$, the interval-observer box admitted no common safe action and
+LifecycleGate froze the update.
+
+\subsection{Parameter-Level Update Gate}
+
+We also instantiated the gate at the parameter level for linear policy
+$u=kz+b$.  Each future attacked observation $z$ induced a safe-action kernel
+over ambiguity interval $[z-\rho,z+\rho]$.  Requiring $kz+b$ to lie in every
+kernel produced linear halfspace constraints on $(k,b)$.  The parameter gate
+projected poisoned candidates onto this certified set.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{parameter_gate_summary.pdf}
+\caption{Parameter-level gate for linear policy $u=kz+b$.  Current-action
+filtering leaves the future action map stale, whereas projection onto the
+certified halfspace set constrains the full update.}
+\label{fig:parameter-gate}
+\end{figure}
+
+Figure~\ref{fig:parameter-gate} shows the parameter-level frontier.  At
+$\rho=0.7$, current-action filtering had stale-policy rate $1.0$.  The
+parameter gate kept the rate at zero and permitted two of five updates.  It
+permitted one constrained update at $\rho=0.8$ and froze at $\rho=0.85$.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{matrix_parameter_gate_summary.pdf}
+\caption{Parameter-level gate for the two-dimensional linear tank policy.  The
+certified set intersects future-history halfspaces, and the gate projects the
+poisoned update into that set.}
+\label{fig:matrix-parameter-gate}
+\end{figure}
+
+We applied the same construction to policy $u=k_1z_1+k_2z_2+b$.  Each grid
+observation induced a plausible-state box and a one-step safe-action interval.
+These intervals produced halfspaces in $(k_1,k_2,b)$.  At $\rho=0.5$,
+current-action filtering had stale-policy rate $1.0$.  The parameter gate kept
+the rate at zero and admitted all five projected updates.
+
+\subsection{Adaptive Attacker Stress Test}
+
+We next allow a finite-search white-box attacker to select among poisoned
+update directions.  Its objectives maximize stale-policy, unsafe-action, or
+forced-freeze outcomes.  For forced freeze, the attacker also selects the
+budget-feasible ambiguity radius that most reduces the certified set.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\columnwidth]{adaptive_attack_summary.pdf}
+\caption{Finite-search attacker against the scalar parameter gate.  The
+attacker selects update directions or ambiguity radii for three objectives.
+LifecycleGate freezes when the certified kernel is empty.}
+\label{fig:adaptive-attacker}
+\end{figure}
+
+Figure~\ref{fig:adaptive-attacker} preserves the lifecycle separation under
+adaptive direction search.  At high ambiguity, the robust action filter
+protected the applied action but left the raw policy stale.  LifecycleGate
+kept unsafe, stale, and uncertified-learning rates at zero while allowing
+feasible projected updates.  At $\rho=0.84$, the forced-freeze objective made
+the common kernel empty.  The robust filter recorded five uncertified learner
+updates, whereas LifecycleGate performed none.
+
+\subsection{Safe-Control-Gym Cartpole Semantics}
+
+We next instantiate the lifecycle condition in the Safe-Control-Gym cartpole
+benchmark.  The official linear-quadratic regulator (LQR) is augmented with a
+two-parameter linear residual learner.  The attacker injects continuous
+observation FDI and optimizes a cross-entropy-method (CEM) objective over
+stale-policy, unsafe-action, and forced-freeze margins.  The attacked
+observation $z$ and radius $\rho$ induce the plausible box
+$X_{\mathcal A}(z)=\{x:\|x-z\|_\infty\le \rho\}$.  We sample this box and
+evaluate the official CasADi cartpole dynamics over an action grid to compute
+$K_\Gamma(z)$.  A reference run uses the official cartpole CBF and its sampled
+Lie-derivative condition.
+
+This experiment is a direct semantic implementation of
+Theorem~\ref{thm:gate} and Proposition~\ref{prop:parameter-gate}. The
+future-history abstraction $\mathcal Z$ is a local grid of future attacked
+observations around the current attacked observation. For each
+$z'\in\mathcal Z$, the robust kernel produces an interval
+$K_\Gamma(z')=[\ell_{z'},u_{z'}]$. The LQR term is fixed, while the residual
+learner is linear in $(\theta_{\mathrm{gain}},\theta_{\mathrm{bias}})$, so
+requiring the updated residual policy to stay inside all future kernels yields
+the halfspace constraints used by LifecycleGate.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{safe_control_gym_paper_mini_summary.pdf}
+\caption{Safe-Control-Gym cartpole lifecycle evidence from a two-run sweep.
+The panels compare the CasADi robust kernel, an Euler attack-search surrogate,
+and a sampled CBF reference.  At $\rho=0.03$, LifecycleGate eliminated stale
+and uncertified updates while retaining update availability.  The kernel became
+empty as ambiguity increased.}
+\label{fig:safe-control-gym}
+\end{figure*}
+
+Figure~\ref{fig:safe-control-gym} separates three effects.  Action filtering
+removed current constraint violations without certifying the updated residual
+policy.  Always-freeze avoided stale certification but admitted no learning.
+LifecycleGate projected feasible poisoned updates into the future-history
+halfspace set, preserving update availability before the freeze frontier.  At
+larger ambiguity radii, the kernel became empty and LifecycleGate froze the
+update.  These results instantiate the certificate semantics in a standard
+control benchmark; the evaluation does not represent an industrial deployment.
