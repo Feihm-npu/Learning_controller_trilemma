@@ -192,7 +192,7 @@ def test_negative_boundaries_and_scope_caveats_remain_visible() -> None:
         "sampled finite-horizon certificates, not continuous-state invariant-set proofs",
         "official linear model predictive safety certification (MPSC) mechanism all",
         "pre-clip saturation are reported separately",
-        "baseline-handoff obligation",
+        "fallback-handoff obligation",
         "summarize within-snapshot discordance",
         "Development grids selected target",
         "fixed target and bounded attacker without establishing joint gate optimality",
@@ -218,8 +218,8 @@ def test_split_trust_and_reward_integrity_boundary_are_explicit() -> None:
         "Authentication and trusted reward recomputation therefore provide upstream controls",
         "84 clean and 84 poisoned batches",
         "That producer remains within the trusted computing base",
-        "limit claims about cross-architecture prevalence and deployment overhead",
-        "only trusted recomputation closes the channel",
+        "limiting claims about prevalence and alternate switching times",
+        "Only recomputation closes the evaluated channel",
     )
     for fragment in required_fragments:
         assert fragment in source
@@ -351,7 +351,7 @@ def test_carr_run_configuration_and_marker_corpora_are_distinct() -> None:
 
 def test_hero_table_and_evaluation_spine_are_locked() -> None:
     source = (PAPER / "sections" / "sec4_evaluation.tex").read_text()
-    hero = source.index(r"\subsection{Prospective Contract-Separation Audit}")
+    hero = source.index(r"\subsection{Prospective Contract Audit}")
     geometry = source.index(
         r"\subsection{Reward-Influence Geometry and Optimizer Boundary}"
     )
@@ -360,15 +360,15 @@ def test_hero_table_and_evaluation_spine_are_locked() -> None:
 
     required_rows = (
         "V5 clean cohort (480 pairs; 20 training runs)",
-        "Clean permanent raw release & 10/480",
-        "Clean resident predictive authority & 0/480 & 11 switches",
+        "Clean raw execution & 10/480",
+        "Clean lookahead switcher & 0/480 & 11 switches",
         "V4 fixed-attack confirmation (120 pairs; 5 runs)",
-        "Clean permanent raw release & 2/120",
-        "Poisoned permanent raw release & 27/120",
-        "Poisoned resident predictive authority & 0/120 & 27 switches",
+        "Clean raw execution & 2/120",
+        "Poisoned raw execution & 27/120",
+        "Poisoned lookahead switcher & 0/120 & 27 switches",
         "Independent audit (71 accepted states, poisoned snapshots)",
-        "One-step resident kernel & 14/71 & 79 int.; 41 empty",
-        "Resident predictive authority & 0/71 & 19 switches",
+        "One-step action filter & 14/71 & 79 int.; 41 empty",
+        "Lookahead switcher & 0/71 & 19 switches",
     )
     for row in required_rows:
         assert row in source
@@ -378,7 +378,7 @@ def test_clean_resident_arm_and_carr_corpora_are_reported() -> None:
     """The V4 harness check and the Carr corpus boundaries must stay visible."""
     source = " ".join(manuscript_text().split())
     for fragment in (
-        "Clean resident predictive authority & 0/120 & 2 switches",
+        "Clean lookahead switcher & 0/120 & 2 switches",
         "Twelve comparisons met the positive rule, 20 had a rate difference",
         "54-comparison obstacle-only configuration table",
         "those configurations reuse run indices",
@@ -529,17 +529,17 @@ def test_v6_duration_and_handoff_boundary_are_locked() -> None:
 
     source = " ".join(manuscript_text().split())
     for fragment in (
-        "46/116 failures under raw release and 34/116 under resident authority",
+        "raw-policy lookahead switcher failed on 34/116 constrained pairs",
         "no known-sign flags at any duration",
         "fewer than the 6/240 flags from clean training",
-        "All 34 resident failures occurred after",
+        "All 34 switcher failures occurred after",
         "median of one step and at most two",
         "27 pairs failed under both contracts",
-        "19 failed only under raw release",
-        "seven failed only under resident authority",
+        "19 failed only under raw execution",
+        "seven failed only under the switcher",
         "63 failed under neither",
         "two of the five independently trained controllers with 17 failures each",
-        "baseline-handoff obligation",
+        "fallback-handoff obligation",
     ):
         assert fragment in source, fragment
 
@@ -549,8 +549,8 @@ def test_release_contract_terminology_and_cohort_scope_are_normalized() -> None:
     assert "Before the sequential V3 audit, we fixed the target" in source
     assert "evaluated once on five new learner/evaluation pairs" in source
     assert "Permanent raw release" in source
-    assert "Resident predictive authority" in source
-    assert "One-step resident kernel" in source
+    assert "raw-policy lookahead switcher" in source
+    assert "One-step action filter" in source
     assert "Commit admission" in source
 
     legacy_aliases = (
@@ -562,6 +562,9 @@ def test_release_contract_terminology_and_cohort_scope_are_normalized() -> None:
         "detector therefore fired on time",
         "trusted baseline could no longer recover",
         "exhaust a trusted baseline's recovery",
+        "Resident predictive authority",
+        "resident predictive authority",
+        "One-step resident kernel",
     )
     for alias in legacy_aliases:
         assert alias not in source

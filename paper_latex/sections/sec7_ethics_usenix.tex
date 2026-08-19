@@ -13,22 +13,23 @@ scalar writes to reward records.  Initial access, product-specific
 exploitation, compromise of trusted recomputation, and attacks on runtime
 control assets fall outside the artifact and evaluation.  The experiments
 include evasion of calibrated task-aware checks and characterize the
-consequence of a least-privilege data-integrity gap for evidence inheritance at
-raw-policy release.  The artifact contains no access-acquisition or
+consequence of a write-constrained data-integrity gap at raw-policy release.
+The attacker nevertheless reads learner and optimizer state and is therefore
+not weak in every capability.  The artifact contains no access-acquisition or
 field-targeting mechanism.
 
 Stakeholders are operators of runtime-assured learning controllers, vendors of
 shielding and safety-filter tooling, the authors of the third-party lifecycle
 artifact we instrument, and the public exposed to the controlled plant.  The main foreseeable harm from publication is that an attacker who
 already holds reward-ingestion access learns that protected adaptation can
-leave latent policy damage and that a baseline handoff can be followed by a
+leave latent policy damage and that an LQR fallback handoff can be followed by a
 violation.  We judge the disclosure benefit to dominate: the exposure follows
 from documented assurance architectures, all experiments target public
-simulation artifacts, and the paper states countermeasures at both ends of the
-authority transition.  Origin-bound reward records and trusted recomputation
+simulation artifacts, and the paper separates controls for the learning-data
+and deployment boundaries.  Origin-bound reward records and trusted recomputation
 remove the upstream precondition; commit admission and permanent filtering
-limit downstream consequence; resident predictive authority does so only
-when its baseline handoff is independently supported.
+limit downstream consequence; a raw-policy lookahead switcher does so only
+when fallback recovery from the handoff state is independently supported.
 
 The third-party lifecycle we instrument is a published research artifact
 released under an open license by its authors, used unmodified except for

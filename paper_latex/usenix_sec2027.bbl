@@ -57,6 +57,11 @@ K.~Stouffer, M.~Pease, C.~Tang, T.~Zimmerman, V.~Pillitteri, S.~Lightman,
 {MITRE ATT\&CK}, ``Data historian, asset a0006,''
   \url{https://attack.mitre.org/assets/A0006/}, 2023, accessed 2026-08-05.
 
+\bibitem{konighofer_online_shielding_2022}
+B.~K{\"o}nighofer, J.~Rudolf, A.~Palmisano, M.~Tappler, and R.~Bloem, ``Online
+  shielding for reinforcement learning,'' \emph{Innovations in Systems and
+  Software Engineering}, 2022.
+
 \bibitem{phan_neural_simplex_2020}
 D.~T. Phan, R.~Grosu, N.~Jansen, N.~Paoletti, S.~A. Smolka, and S.~D. Stoller,
   ``Neural simplex architecture,'' in \emph{NASA Formal Methods}, ser. Lecture
@@ -68,32 +73,6 @@ A.~Damare, S.~Roy, R.~Sharma, K.~DSouza, S.~A. Smolka, and S.~D. Stoller, ``A
   barrier certificate-based simplex architecture for systems with approximate
   and hybrid dynamics,'' \emph{IEEE Access}, vol.~13, pp. 157\,742--157\,763,
   2025.
-
-\bibitem{zhou_runtime_policy_repair_2020}
-W.~Zhou, R.~Gao, B.~Kim, E.~Kang, and W.~Li, ``Runtime-safety-guided policy
-  repair,'' in \emph{Runtime Verification}, ser. Lecture Notes in Computer
-  Science, vol. 12399.\hskip 1em plus 0.5em minus 0.4em\relax Springer, 2020,
-  pp. 131--150.
-
-\bibitem{lu_repair_preservation_2024}
-P.~Lu, M.~Cleaveland, O.~Sokolsky, I.~Lee, and I.~Ruchkin, ``Repairing
-  learning-enabled controllers while preserving what works,'' in \emph{2024
-  ACM/IEEE 15th International Conference on Cyber-Physical Systems}.\hskip 1em
-  plus 0.5em minus 0.4em\relax IEEE, 2024, pp. 1--11.
-
-\bibitem{chow_safe_policy_2021}
-\BIBentryALTinterwordspacing
-Y.~Chow, O.~Nachum, A.~Faust, E.~Due{\~n}ez-Guzman, and M.~Ghavamzadeh, ``Safe
-  policy learning for continuous control,'' in \emph{Proceedings of the 2020
-  Conference on Robot Learning}, ser. Proceedings of Machine Learning Research,
-  vol. 155.\hskip 1em plus 0.5em minus 0.4em\relax PMLR, 2021, pp. 801--821.
-  [Online]. Available: \url{https://proceedings.mlr.press/v155/chow21a.html}
-\BIBentrySTDinterwordspacing
-
-\bibitem{konighofer_online_shielding_2022}
-B.~K{\"o}nighofer, J.~Rudolf, A.~Palmisano, M.~Tappler, and R.~Bloem, ``Online
-  shielding for reinforcement learning,'' \emph{Innovations in Systems and
-  Software Engineering}, 2022.
 
 \bibitem{tan_safety_2024}
 \BIBentryALTinterwordspacing
@@ -140,6 +119,27 @@ L.~Brunke, M.~Greeff, A.~W. Hall, Z.~Yuan, S.~Zhou, J.~Panerati, and A.~P.
 A.~Didier, K.~P. Wabersich, and M.~N. Zeilinger, ``Adaptive model predictive
   safety certification for learning-based control,'' in \emph{2021 60th IEEE
   Conference on Decision and Control}, 2021, pp. 809--815.
+
+\bibitem{zhou_runtime_policy_repair_2020}
+W.~Zhou, R.~Gao, B.~Kim, E.~Kang, and W.~Li, ``Runtime-safety-guided policy
+  repair,'' in \emph{Runtime Verification}, ser. Lecture Notes in Computer
+  Science, vol. 12399.\hskip 1em plus 0.5em minus 0.4em\relax Springer, 2020,
+  pp. 131--150.
+
+\bibitem{lu_repair_preservation_2024}
+P.~Lu, M.~Cleaveland, O.~Sokolsky, I.~Lee, and I.~Ruchkin, ``Repairing
+  learning-enabled controllers while preserving what works,'' in \emph{2024
+  ACM/IEEE 15th International Conference on Cyber-Physical Systems}.\hskip 1em
+  plus 0.5em minus 0.4em\relax IEEE, 2024, pp. 1--11.
+
+\bibitem{chow_safe_policy_2021}
+\BIBentryALTinterwordspacing
+Y.~Chow, O.~Nachum, A.~Faust, E.~Due{\~n}ez-Guzman, and M.~Ghavamzadeh, ``Safe
+  policy learning for continuous control,'' in \emph{Proceedings of the 2020
+  Conference on Robot Learning}, ser. Proceedings of Machine Learning Research,
+  vol. 155.\hskip 1em plus 0.5em minus 0.4em\relax PMLR, 2021, pp. 801--821.
+  [Online]. Available: \url{https://proceedings.mlr.press/v155/chow21a.html}
+\BIBentrySTDinterwordspacing
 
 \bibitem{yu_certificate_repair_2025}
 E.~Yu, D.~{\v Z}ikeli{\'c}, and T.~A. Henzinger, ``Neural control and

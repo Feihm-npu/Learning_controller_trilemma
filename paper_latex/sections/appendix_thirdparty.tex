@@ -4,6 +4,18 @@
 This appendix reports the learner-family, attack-budget, and second-environment
 batteries summarized in Section~\ref{sec:third-party}.
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig6_retirement_isolation_summary.pdf}
+\caption{Causal isolation on the third-party lifecycle (REINFORCE, obstacle,
+sudden, provenance-complete paired runs).  (a) At-retirement violation
+fraction of the raw policy; (b) at-retirement raw-policy/shield disagreement;
+(c) final violation fraction after clean post-retirement learning.  Poisoning
+is confined to the shielded bootstrap phase.  The run-index-3 bars show the
+fresh pair in Table~\ref{tab:carr-isolation}.}
+\label{fig:carr-isolation}
+\end{figure*}
+
 \subsection{Learner Boundary}
 
 The same contrast attack ($\delta{=}2$) was evaluated on the third-party PPO

@@ -1,15 +1,15 @@
 \section{Third-Party Shield-Retirement Case Study}
 \label{sec:third-party}
 
-This section examines the same evidence boundary in an independently
-published lifecycle that retires runtime authority.  Carr et
+This section examines an independently published lifecycle that retires
+runtime authority.  Carr et
 al.~\cite{carr_partial_shielding_2023} (AAAI 2023) train a policy-gradient
 agent behind a Storm belief-support shield in a partially observable
 gridworld, then remove the shield suddenly or smoothly and compare the
 released policy with retained-shield and no-shield controls.  We use the
 official public implementation and modify only learner-visible reward records:
 the attacker writes $r'=r+\xi$, with $|\xi|\le\delta$ per record, before the
-trusted update.  States, observations, shield semantics, dynamics, learner
+integrity-protected update.  States, observations, shield semantics, dynamics, learner
 code, hyperparameters, and evaluation follow upstream, and the artifact
 itemizes every instrumentation and attack patch.  REINFORCE training runs for
 5000 episodes with retirement at episode 1000; the TF-Agents proximal policy
@@ -25,7 +25,10 @@ ordering reported by Carr et al., establishing the lifecycle fidelity of the
 instrumented implementation.
 
 \emph{Causal isolation at the retirement boundary.}
-We use two locked poisoning scopes.  Under \emph{bootstrap-only} scope,
+We use two locked poisoning scopes.  Here and below, \emph{locked} means that
+the designated protocol was recorded before its confirmatory runs; dated
+amendments are appended rather than replacing the original specification.
+Under \emph{bootstrap-only} scope,
 reward-record mutation is active only while the shield enforces the action
 mask, stops at retirement, and all subsequent learning is clean.  Under
 \emph{full-phase} scope it stays active for the whole run, including
@@ -92,18 +95,12 @@ retirement by $D_{\mathrm{ret}}$.  In the two positive pairs,
 $D_{\mathrm{ret}}$ was $0.025$ and $0.047$ and rose to $0.113$ and $0.109$
 under poisoning.  The fresh non-positive pair also had low clean disagreement
 ($D_{\mathrm{ret}}=0.013$), separating available headroom from attack success.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{fig6_retirement_isolation_summary.pdf}
-\caption{Causal isolation on the third-party lifecycle (REINFORCE, obstacle,
-sudden, provenance-complete paired runs).  (a) At-retirement violation fraction of the raw
-policy; (b) at-retirement raw-policy/shield disagreement; (c) final
-violation fraction after clean post-retirement learning.  Poisoning is
-confined to the shielded bootstrap phase.  The run-index-3 bars show the fresh
-pair in Table~\ref{tab:carr-isolation}.}
-\label{fig:carr-isolation}
-\end{figure*}
+As a sensitivity check, pairing the regenerated clean endpoint with the
+excluded local poisoned endpoint would change row~3 to
+$0.241\rightarrow0.748$ and the headline count from two of three to three of
+three positive pairs.  The post-lock exclusion therefore weakens, rather than
+creates, the reported attack result; we retain it because a cross-host pair
+would violate the provenance rule.
 
 \emph{Learner and budget boundary.}
 The same contrast attack was also evaluated on the third-party PPO and
@@ -128,9 +125,12 @@ runs, so retained authority remained available.
 \emph{Interpretation.}
 Carr et al.'s workflow supplies the lifecycle component: protected bootstrap
 followed by retirement of the shield's action authority, evaluated under
-unpoisoned learning.  The controlled study in Section~\ref{sec:study} supplies
-the adversarial-provenance mechanism.  Their composition exposes the evidence
-boundary at that authority transition.  Absolute rates differ across
+unpoisoned learning.  It does not assert that a five-step release test supports
+permanent raw execution.  Our case study adds bounded bootstrap-only
+reward-record poisoning and measures whether it changes the policy exposed at
+retirement; the result is evidence of conditional attack susceptibility in a
+published lifecycle, not evidence that its authors reused the controlled
+study's release contract.  Absolute rates differ across
 instrumented and non-instrumented code versions because the
 unmasked-disagreement probe requires an independent belief tracker.  Each
 clean/poisoned comparison is paired within one locked code version.
@@ -164,6 +164,13 @@ stratum, the corresponding counts were 12, 3, and 5; all 33 ceiling
 comparisons were protective or unchanged.  Effects were therefore not
 uniformly harmful over the run-level corpus, while positive outcomes were
 confined to the sub-ceiling stratum.
+
+Episode-level exact tests describe within-pair differences conditional on a
+trained policy; they are not treated as 53 independent population-level tests
+of attack success.  Accordingly, no conclusion relies on pooling their
+$p$-values or on a single significance crossing.  The training-level evidence
+is the complete run accounting above, including protective and unchanged
+outcomes.
 
 The artifact also retains a 54-comparison obstacle-only configuration table.
 It replaces the three avoid-domain pairs with four exploratory full-phase

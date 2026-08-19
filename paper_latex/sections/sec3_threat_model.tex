@@ -6,31 +6,35 @@
 The defender deploys an online-updated controller $\pi_{\theta_t}$ and a
 certificate mechanism; a severe-attack-aware estimator or filter returns a
 plausible-state set $X_{\mathcal A}(h_t)$ and certified action kernel
-$K_\Gamma(h_t)$.  A trusted state anchor, backup controller, or external
-fail-safe may also be available, but each is an explicit architectural
+$K_\Gamma(h_t)$.  A trusted state anchor, integrity-protected fallback
+controller, or external fail-safe may also be available, but each is an explicit architectural
 assumption and cost.
+Unless a formal safety result is stated, \emph{trusted} and
+\emph{integrity-protected} mean outside the attacker's write authority; they do
+not mean that a controller or handoff is verified safe.
 
 The evaluation instantiates four contracts.  \emph{Permanent raw release}
-removes runtime authority after a one-time five-step check: protected
+removes runtime authority after a one-time five-step raw-policy test: protected
 commissioning is followed by snapshot export and promotion to a lower-latency
 control target, which avoids permanent computation, intervention, and
 dependence on a backup service.  \emph{Commit admission} certifies a candidate
 snapshot on a declared state set and horizon before raw release.
-\emph{Resident predictive authority} repeats the raw-policy check online and
-can transfer control to the trusted baseline.  The check supplies evidence
-about the raw policy, not about the baseline response from the handoff state;
-the latter is a separate baseline-handoff obligation.  The \emph{one-step resident
-kernel} applies a current-state action filter and serves as a negative
+The \emph{raw-policy lookahead switcher} repeats the same check online and can
+transfer control to an integrity-protected LQR fallback.  The check supplies
+evidence about the raw policy, not about LQR recovery from the handoff state;
+the latter is a separate handoff obligation.  The \emph{one-step action
+filter} applies a current-state action filter and serves as a negative
 control.  A sound filter that remains online instead certifies the composition
 $F\circ\pi_{\theta^+}$.  Each name denotes a distinct evidence scope and
-authority contract, and Section~\ref{sec:study} measures their tradeoffs.
+authority contract, and Section~\ref{sec:study} measures their tradeoffs;
+Appendix~\ref{sec:appendix-delta} gives a contract taxonomy.
 
 \subsection{Split-Trust Learning Pipeline}
 
-The least-privilege model separates a high-integrity runtime-assurance plane
+The split-trust model separates a high-integrity runtime-assurance plane
 from an asynchronous learning-data plane.  The runtime plane owns the
-authenticated plant state, action selector, actuator interface, trusted
-baseline, and certificate outcome.  The learning plane consumes recorded
+authenticated plant state, action selector, actuator interface,
+integrity-protected fallback, and certificate outcome.  The learning plane consumes recorded
 transitions and scalar rewards through telemetry, a historian, a replay
 buffer, or an external key-performance-indicator (KPI) interface.  OT guidance
 recognizes this separation and the exchange of historian data across zones
@@ -40,8 +44,8 @@ resulting interface without assuming a particular product.
 \begin{table}[t]
 \centering
 \caption{Evaluated write boundary and the read authority the evaluated attack
-consumes.  ``Trusted'' means outside attacker write authority, not formally
-verified.}
+consumes.  ``Integrity-protected'' means outside attacker write authority, not
+formally verified or certified safe.}
 \label{tab:trust-boundary}
 \footnotesize
 \begin{tabular}{@{}L{0.23\columnwidth}L{0.26\columnwidth}L{0.19\columnwidth}L{0.13\columnwidth}@{}}
@@ -49,8 +53,8 @@ verified.}
 Object & Defender assumption & Write access & Read access\\
 \midrule
 Runtime state, action, plant & Authenticated control path & No write & Logged copy\\
-Baseline, selector, certificate & Trusted runtime code/state & No write & No read\\
-Transitions and learner code & Trusted after collection & No write & Read\\
+Fallback, selector, certificate & Integrity-protected runtime code/state & No write & No read\\
+Transitions and learner code & Integrity-protected after collection & No write & Read\\
 Reward record at ingestion & No origin/semantic check & Bounded scalar write & Read\\
 Parameters and optimizer state & Written only by updater & No write & Read\\
 Held-out states and release rule & Fixed, honest evaluation & No write or selection & No read\\
@@ -61,7 +65,8 @@ Held-out states and release rule & Fixed, honest evaluation & No write or select
 Table~\ref{tab:trust-boundary} states the evaluated boundary in both
 directions.  The split-trust argument constrains write authority; the read
 column records what the evaluated attack rule consumes, including the learner
-state its edits are computed against, which is stronger than writes alone
+state against which its edits are computed.  The attacker is therefore
+write-narrow but knowledge-rich, rather than weak in every capability
 (Section~\ref{sec:limits}).  The attack begins
 after compromise of a principal with bounded reward-field write access, which permits post-computation, pre-update mutation by a replay writer
 or broker.  A compromised reward producer is equivalent when it has the same
@@ -106,64 +111,53 @@ Table~\ref{tab:trust-boundary}.  The adaptation
 selector observes each proposed action before the plant step and retains
 physical authority during data collection.
 
-\subsection{Evidence Transfer Across Authority Transitions}
+\subsection{Dependency-Aware Handoff Evidence}
 \label{sec:evidence-transfer}
 
-The contracts above differ in their evidence obligations.  We represent the
-evidence used by an assurance decision as
+The contracts above differ in their evidence obligations.  We record an
+evidence item as
 \begin{equation}
-    E=(s,a,p,i,\tau).
+    E=(\varphi,\mathcal D; s,a,p,i,\tau).
 \end{equation}
-Here $s$, the \emph{subject}, is the raw policy $\pi_\theta$ or the assured
-composition $F\circ\pi_\theta$; $a$, the \emph{authority}, identifies the
-resident module that constrains applied actions, or its absence; $p$, the
-\emph{provenance}, records whether learning signals came from a trusted or an
-adversarial update process; $i$, the \emph{information}, describes the state,
-observation, belief, or filtered action available at decision time; and
-$\tau$, the \emph{horizon}, is the interval over which the evidence bounds
-behavior.
+Here $\varphi$ is the claim supported by the evidence and $\mathcal D$ is the
+set of premises on which that support depends.  The remaining fields describe
+scope.  The \emph{subject} $s$ is the raw policy $\pi_\theta$ or the assured
+composition $F\circ\pi_\theta$.  The \emph{authority} $a$ identifies the
+resident module that constrains applied actions, or its absence.  The
+\emph{provenance} $p$ records the process that supplied learning inputs.  The
+\emph{information} $i$ describes the state, observation, belief, or filtered
+action available at decision time.  The \emph{horizon} $\tau$ is the interval
+over which the evidence bounds behavior.
 
-A contract transition $C_{\mathrm{train}}\to C_{\mathrm{deploy}}$ may change
-one or more components, and evidence transfers only after every changed
-component is re-established under $C_{\mathrm{deploy}}$.  Evidence about the
-composition does not bound the raw policy, and a raw-policy audit does not
-certify the composition (\emph{subject}).  When a resident module masked
-unsafe proposals, what was collected describes the masked process, not the raw
-policy that acts after the module is removed (\emph{authority}).  An
-adversarial update log breaks the identification between the trained policy
-and the trusted process the evidence was computed on (\emph{provenance}).
-Deployment observations differ from the authority's information set, so
-behavior under one does not determine behavior under the other
-(\emph{information}).  Finally, a finite evaluation pass leaves the remaining
-horizon untested (\emph{horizon}).
+The record is an audit device, not a proof calculus.  A changed field prompts
+reassessment but does not automatically invalidate evidence.  Evidence $E$
+is insufficient for a post-handoff contract when that contract no longer
+entails some premise in $\mathcal D$.  Conversely, a field outside
+$\mathcal D$ may change without affecting the claim.  For example, a direct
+verification of the final raw snapshot can remain valid even if its derivation
+does not assume trusted training provenance.  By contrast, a training trace of
+the shielded composition does not establish raw-policy behavior, and a finite
+raw-policy test does not establish behavior beyond its declared horizon.
 
-The evaluated contracts contain two authority transitions.  Permanent raw
-release transfers control from the assured composition to the raw policy, so
-it changes subject, authority, and horizon.  Resident predictive authority
-retains the monitor but may later transfer control from the raw policy to the
-trusted baseline.  Its trigger observes predicted raw-policy behaviour; it
-does not establish that the baseline satisfies the safety property from the
-handoff state.  This second transition changes the certified subject and
-requires evidence for the baseline handoff.
+The controlled study contains two handoffs with different missing premises.
+Protected adaptation followed by raw execution changes the acting composition.
+The five-step raw-policy test supplies new evidence for the released policy and
+the absence of runtime intervention, but only over five steps.  Extending that
+evidence to 120-step execution changes the required horizon.  The clean cohort
+therefore measures horizon extrapolation after release.  The raw-policy
+lookahead switcher creates a later handoff from the monitored policy to the LQR
+fallback.  Its trigger predicts raw-policy behavior but does not establish LQR
+recovery from the transfer state.
 
-\begin{proposition}[Transfer obligation]
-\label{prop:transfer}
-Let $E$ be evidence collected under contract $C_{\mathrm{train}}$, and let
-the transition $C_{\mathrm{train}}\to C_{\mathrm{deploy}}$ change a nonempty
-subset of the components of the evidence tuple.  Evidence $E$ does not by
-itself establish sound acceptance under $C_{\mathrm{deploy}}$; each changed
-component's obligation must be re-established for that contract.
-\end{proposition}
-
-The proposition supplies the security model used throughout the paper.
-Independent transfer evidence re-establishes obligations before authority
-removal~\cite{hsu_sim_lab_real_2023}.  Resident Simplex mechanisms preserve the
-authority component
+Prior systems illustrate both sides of this audit.  Independent transfer
+evidence can discharge changed premises before deployment
+\cite{hsu_sim_lab_real_2023}; Simplex mechanisms retain a decision module and
+use controller-specific switching conditions
 \cite{seto_simplex_1998,phan_neural_simplex_2020,damare_bb_simplex_2025}.
-Carr et al.'s lifecycle supplies a published transition from shielded
-bootstrap to raw-policy authority~\cite{carr_partial_shielding_2023}.  Our case
-study adds adversarial update provenance to that transition, and the
-controlled study isolates the resulting mechanism.
+Carr et al. supply a published transition from shielded bootstrap to raw-policy
+authority, but not the five-step release contract used in our controlled
+study~\cite{carr_partial_shielding_2023}.  Our case study adds adversarial
+learning-input provenance to their retirement lifecycle.
 
 \subsection{Integrity Assumptions and Escape Conditions}
 
@@ -179,14 +173,14 @@ detector; a signature applied to an already malicious value is insufficient.
 These controls act at different boundaries: provenance and recomputation
 remove the upstream precondition, a task-aware detector can reject suspicious
 batches under its distributional and semantic assumptions, commit admission
-restricts which learned snapshot can be released, and resident predictive
-authority adds a downstream handoff whose safety depends on the trusted
-baseline and the state at which it receives control.  In the frozen
+restricts which learned snapshot can be released, and the raw-policy lookahead
+switcher adds a downstream handoff whose safety depends on the LQR fallback and
+the state at which it receives control.  In the frozen
 audit, trusted recomputation achieved true- and false-positive rates (TPR/FPR) of
 1.000/0 and simple task-aware checks achieved TPR above 0.90 and FPR at most
 0.036 against the attack rule we first evaluated.  Only recomputation closes
 the evaluated channel: an attacker that respects the task-aware predicates by
-construction retains deployment harm, and the resident handoff can still be
+construction retains deployment harm, and the fallback handoff can still be
 followed by a violation (Section~\ref{sec:constrained}).  Those checks bound one
 attack rule rather than the channel or the downstream handoff.
 
@@ -209,5 +203,5 @@ function (CBF) methods can preserve safety when their assumptions keep
 $K_\Gamma(h_t)$ nonempty
 \cite{fawzi_secure_2014,tan_safety_2024,zhang_safe_2022}.  Out of scope are
 service exploitation, compromise of trusted recomputation, and attacks on the
-authenticated runtime state or baseline controller; Section~\ref{sec:limits}
+authenticated runtime state or fallback controller; Section~\ref{sec:limits}
 states the remaining validity boundaries.

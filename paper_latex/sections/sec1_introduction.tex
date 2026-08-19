@@ -1,86 +1,89 @@
 \section{Introduction}
 
-Runtime assurance is a standard way to let a controller learn without letting
-it crash the plant.  A Simplex decision module, a runtime shield, or a
-model-predictive safety filter holds action authority during adaptation: it
-replaces unsafe policy proposals with actions from a trusted baseline.  In our
-reported adaptation runs, every executed transition satisfied the measured
-safety constraints~\cite{seto_simplex_1998,alshiekh_shielding_2018,
-wabersich_linear_mpsc_2018}.  Deployments need not keep that machinery
-forever.  Published learning-enabled control workflows study retirement of the
-protective authority once commissioning succeeds, promoting the raw policy
-snapshot to a lower-latency control target and removing permanent computation,
-intervention, and dependence on a backup
-service~\cite{carr_partial_shielding_2023,hsu_sim_lab_real_2023}.  A finite
-release check (a bounded-horizon prediction, a certified rollout, a
-commissioning test) authorizes that promotion.
+Runtime assurance allows a controller to adapt while a Simplex decision
+module, runtime shield, or model-predictive safety filter retains action
+authority.  The runtime-assurance mechanism replaces unsafe policy proposals with
+actions from an integrity-protected fallback controller.  In our reported
+adaptation runs, every executed transition satisfied the measured safety
+constraints~\cite{seto_simplex_1998,alshiekh_shielding_2018,
+wabersich_linear_mpsc_2018}.  Some learning workflows nevertheless phase out a
+shield to reduce conservatism or permanent runtime cost, whereas others
+establish separate transfer evidence before deployment
+\cite{carr_partial_shielding_2023,hsu_sim_lab_real_2023}.  A release workflow
+may also test the raw policy over a bounded prediction or rollout horizon.
+Protection evidence and a bounded raw-policy test support different claims:
+the former covers the executed composition, and the latter covers the tested
+policy only over its declared horizon.
 
-We show that a finite release check does not transfer across the retirement it
-authorizes.  Protection establishes properties of the executed composition;
-raw release changes both the controller with action authority and the horizon
-over which safety is required.  Repeating the check online defines a different
-contract.  It observes the raw policy over a receding horizon, but a switch to
-the trusted baseline introduces another controller whose response from the
-handoff state requires separate evidence.  We call the general flaw
-\emph{evidence reuse across an authority transition}: evidence produced under
-one deployment contract is reused after the certified subject, authority,
-provenance, information, or horizon has changed.  The controlled experiments
-study two such transitions: release from the assured composition to the raw
-policy, and transfer from resident predictive authority to the trusted
-baseline.  Reward-record corruption additionally changes provenance.
+We audit two controller handoffs.  The first moves from shielded adaptation to
+raw-policy execution.  In the controlled study, a five-step raw-policy test
+re-establishes evidence for the released subject over five steps, but not for
+the remaining 115 steps of a 120-step deployment.  The clean comparison
+therefore measures horizon extrapolation after release rather than treating
+safe shielded execution as evidence that the raw policy is intrinsically safe.
+The second handoff occurs when a raw-policy lookahead switcher transfers control
+to a fallback controller.  The trigger predicts the outgoing policy, whereas
+safe transfer depends on the fallback's response from the handoff state.  We
+use \emph{evidence gaps across controller handoffs} for cases in which the
+evidence supplied to a decision does not cover the subject, authority,
+provenance, information, or horizon required by the post-handoff contract.
+Reward-record corruption stresses these gaps by changing the provenance of the
+learning input.
 
 \begin{figure}[t]
 \centering
 \fbox{\begin{minipage}[c][1.74in][c]{0.92\columnwidth}
 \centering
 \textbf{Asynchronous learning-data plane}\\[0.25em]
-reward record $\xrightarrow{\text{bounded write}}$ trusted updater
+reward record $\xrightarrow{\text{bounded write}}$ integrity-protected updater
 $\rightarrow$ raw candidate\\
 $\hspace{3.0em}\rightarrow$ one-time check $\rightarrow$ snapshot export\\[0.35em]
 \rule{0.88\columnwidth}{0.3pt}\\[-0.15em]
 \textbf{High-integrity runtime-assurance plane}\\[0.25em]
 authenticated state $\rightarrow$ predictor/selector $\rightarrow$ actuator\\
-$\hspace{3.1em}\uparrow$ trusted baseline\\[0.35em]
-resident check: monitor raw policy $\rightarrow$ switch to baseline\\
-baseline handoff: separate safety obligation
+$\hspace{2.4em}\uparrow$ integrity-protected LQR fallback\\[0.35em]
+lookahead switcher: monitor raw policy $\rightarrow$ transfer to LQR\\
+fallback recovery: separate handoff obligation
 \end{minipage}}
 \caption{Evaluated trust boundary.  The benchmark begins after bounded
 reward-record access is obtained; it does not model the initial service
-compromise.  Upstream provenance or recomputation removes this attack path,
-whereas resident predictive authority also requires evidence that the trusted
-baseline can safely accept the state at handoff.}
+compromise.  Upstream provenance or recomputation removes this attack path.
+The lookahead switcher separately requires evidence that the LQR fallback can
+recover from its handoff state.}
 \label{fig:lifecycle-placeholder}
 \end{figure}
 
 A clean cohort fixes the ordering without an attacker.  Twenty independently
 trained controllers supplied 480 snapshot--state pairs accepted by the clean
-five-step check.  Permanent raw release failed on 10 pairs distributed across
-five training runs, whereas resident predictive authority failed on none.  All
-10 paired discordances favoured residence (two-sided exact
+five-step raw-policy test.  Raw execution over 120 steps failed on 10 pairs
+distributed across five training runs, whereas the raw-policy lookahead
+switcher failed on none.  All 10 paired discordances favoured the switcher
+(two-sided exact
 $p=0.00195$), and the run-level failure frequency was 5/20 (Wilson 95\% CI
 $[11.2\%,46.9\%]$).  State pairs within a trained controller are repeated
 measurements, so the run count, not 480, supplies training-level replication.
 No attacker is involved in this separation.
 
-An upstream attacker widens the gap rather than creating it.  While the shield
-masks unsafe proposals, corrupted update data steers the learner without a
-physical violation during the reported adaptation runs.  Bounded reward-record
-edits raised a separate 120-pair count from 2 to 27.  A
-sign/envelope-constrained attacker remained effective as the protected
-bootstrap grew.  At 48 update batches it caused 46/116 raw-release failures and
-34/116 failures under resident predictive authority.  Paired outcomes were 27
-failures under both contracts, 19 only under raw release, seven only under
-resident authority, and 63 under neither.  All 34 resident failures followed a
-switch to the trusted baseline, and violation occurred after a median of one
-additional step.  The seven resident-only failures show that detecting risk in
-the raw policy did not establish the safety of the controller activated at the
-handoff.  We call the attack \emph{shield-retirement poisoning}.
+An upstream attacker amplifies the observed failures rather than creating the
+underlying evidence boundaries.  While the shield masks unsafe proposals,
+corrupted update data steers the learner without a physical violation during
+the reported adaptation runs.  Bounded reward-record edits raised a separate
+120-pair raw-execution count from 2 to 27.  A sign/envelope-constrained attacker
+remained effective as the protected bootstrap grew.  At 48 update batches it
+caused 46/116 raw-execution failures and 34/116 failures under the lookahead
+switcher.  Paired outcomes were 27 failures under both contracts, 19 only under
+raw execution, seven only under the switcher, and 63 under neither.  All 34
+switcher failures followed transfer to the integrity-protected LQR fallback,
+and violation occurred after a median of one additional step.  The seven
+switcher-only failures show that detecting risk in the raw policy did not
+establish safe recovery by the receiving controller.  We call the attack
+\emph{shield-retirement poisoning}.
 
 The attack applies when the runtime plane cannot reconstruct reward semantics
 from authenticated transitions (Section~\ref{sec:threat}).  Trusted
 recomputation removes the channel when such reconstruction is available.  It
-does not remove the attacker-independent release gap or establish the safety of
-a subsequent baseline handoff.
+does not extend a finite release test beyond its horizon or establish the
+safety of a subsequent fallback handoff.
 
 Operational technology (OT) guidance separates runtime-control assets from the
 data-management services and historians that exchange information across
@@ -93,30 +96,29 @@ learner state those edits are computed against.  Everything on the
 authenticated control path stays outside its write authority
 (Table~\ref{tab:trust-boundary}, Fig.~\ref{fig:lifecycle-placeholder}).
 
-Simplex and its neural and barrier-based successors keep a decision module
-resident
-\cite{seto_simplex_1998,phan_neural_simplex_2020,damare_bb_simplex_2025}.
-Policy repair and safe projection constrain a learned policy before deployment
-\cite{zhou_runtime_policy_repair_2020,lu_repair_preservation_2024,
-chow_safe_policy_2021}.  Reward-poisoning work studies how adversarial
-learning signals redirect updates, but not behind a shield.  The literature
-has reached both sides of the deployment decision: shielded-learning studies
-find that a shielded learner need not become intrinsically safe and recommend
-retaining the shield during execution~\cite{konighofer_online_shielding_2022},
-while published workflows bootstrap behind a shield and then retire
-it~\cite{carr_partial_shielding_2023,hsu_sim_lab_real_2023}.  The open
-question is therefore not whether shielding helps, but what evidence justifies
-handing action authority to the raw policy, and what separately justifies a
-later handoff to the baseline.  Those decisions are what we study.
+Prior work establishes the relevant safety obligations.  Shielded learning
+does not make the learned policy intrinsically safe, and online shielding work
+therefore recommends retaining protection during execution
+\cite{konighofer_online_shielding_2022}.  Simplex and model-predictive safety
+certification use recoverable regions, safe target sets, or switching
+conditions to justify transfer to a fallback controller
+\cite{seto_simplex_1998,phan_neural_simplex_2020,
+wabersich_linear_mpsc_2018,damare_bb_simplex_2025}.  Carr et al. study gradual
+and sudden shield retirement, while Hsu et al. establish independent transfer
+evidence before deployment
+\cite{carr_partial_shielding_2023,hsu_sim_lab_real_2023}.  We do not claim these
+obligations as new.  We test whether the bounded evidence supplied by the
+evaluated release and warning rules satisfies them, and how reward-record
+poisoning changes the resulting failures.
 
 \subsection{Evidence and Contributions}
 
-The contract gap and the channel that widens it are separate objects.  The
-clean Safe-Control-Gym cohort estimates how often the release gap appeared
-across independent training runs.  A horizon sweep measures the warning
-provided by the resident raw-policy check.  The duration sweep then evaluates
-the distinct handoff to the trusted baseline.  Carr et al.'s published workflow
-provides an independent shield-retirement lifecycle
+The evidence gaps and the channel that stresses them are separate objects.  The
+clean Safe-Control-Gym cohort estimates how often five-step evidence failed to
+extend to 120-step raw execution across independent training runs.  A horizon
+sweep measures warning time from the repeated raw-policy check.  The duration
+sweep then evaluates the distinct transfer to the LQR fallback.  Carr et al.'s
+published workflow provides an independent shield-retirement lifecycle
 \cite{carr_partial_shielding_2023}.  Adding bounded reward-record poisoning only
 during its protected bootstrap increased raw-policy violations at retirement
 by factors of 3.6 and 1.6 in two of three provenance-complete paired REINFORCE
@@ -125,22 +127,22 @@ training runs.
 Our contributions are:
 
 \begin{itemize}
-    \item We decompose release-time acceptance into an evidence tuple over
-    subject, authority, provenance, information, and horizon, and use it to
-    derive the obligations a deployment must re-establish for every component
-    the authority transition changes.
-    \item We estimate the attacker-independent gap over 20 independently
-    trained controllers, separating one-time raw release from resident
-    predictive authority on paired clean snapshots.  A locked horizon sweep
-    quantifies the warning produced by the repeated raw-policy check.
+    \item We provide a dependency-aware audit of handoff evidence over subject,
+    authority, provenance, information, and horizon.  A changed field prompts
+    reassessment; evidence must be replaced only when the post-handoff contract
+    no longer supplies a premise on which that evidence depends.
+    \item We quantify clean horizon extrapolation over 20 independently trained
+    controllers, comparing one-time five-step acceptance with 120-step raw
+    execution and a repeated raw-policy lookahead switcher.  A locked horizon
+    sweep measures warning time and admission loss.
     \item We instantiate bounded reward-record writes in the controlled study
     and in a third-party shield-retirement lifecycle.  In the
-    sign/envelope-constrained duration sweep, resident authority prevented 19
-    raw-release failures but had seven resident-only failures.  The result
-    isolates the baseline handoff as a separate evidence obligation.
+    sign/envelope-constrained duration sweep, the lookahead switcher prevented
+    19 raw-execution failures but had seven switcher-only failures.  The result
+    isolates fallback recovery from the warning supplied about the raw policy.
     \item We separate controls by contract.  Trusted recomputation closes the
     upstream reward channel; commit admission restricts raw-policy release;
-    resident authority requires an independently supported baseline handoff;
+    a lookahead switcher requires independently supported fallback recovery;
     and adaptation should be deployed only when paired task benefit justifies
     its transition risks and costs.  Our evaluated benign shifts do not
     establish such a benefit.

@@ -67,25 +67,47 @@ freeze mechanisms overlap near 0.027\,ms and zero intervention.}
 
 \begin{table}[t]
 \centering
-\caption{Closest work along the three axes combined in this paper: adversarial
-online update data, removal of runtime-assurance authority, and independent
-evidence for the released raw policy.}
+\caption{Closest work along the three axes combined in this paper.  ``Evidence
+at boundary'' records what is established, not merely what mechanism is
+present.}
 \label{tab:delta}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}L{0.32\columnwidth}L{0.19\columnwidth}L{0.18\columnwidth}L{0.18\columnwidth}@{}}
 \toprule
-Work & Adversarial update log & Authority removed & Independent raw-policy evidence\\
+Work & Adversarial learning data & Protection retired & Evidence at boundary\\
 \midrule
-Simplex / Neural Simplex~\cite{seto_simplex_1998,phan_neural_simplex_2020} & no & no (monitor resident) & n/a (composition certified)\\
-Bb-Simplex~\cite{damare_bb_simplex_2025} & no (trusted retraining) & no & n/a\\
-Policy repair / MPSC~\cite{zhou_runtime_policy_repair_2020,wabersich_linear_mpsc_2018} & no (trusted evidence) & repaired, verified & repaired\\
-Hsu et al.~\cite{hsu_sim_lab_real_2023} & no & partial & yes (transfer evidence)\\
-Carr et al.~\cite{carr_partial_shielding_2023} & no & yes (sudden/smooth) & empirical retirement\\
+Simplex / Neural Simplex~\cite{seto_simplex_1998,phan_neural_simplex_2020} & no & no & switching or recovery for resident composition\\
+Bb-Simplex~\cite{damare_bb_simplex_2025} & no & no & barrier-based switching condition\\
+Policy repair / MPSC~\cite{zhou_runtime_policy_repair_2020,wabersich_linear_mpsc_2018} & no & varies & repaired policy or recoverable set\\
+Hsu et al.~\cite{hsu_sim_lab_real_2023} & no & partial & independent transfer evidence\\
+Carr et al.~\cite{carr_partial_shielding_2023} & no & yes (sudden/smooth) & empirical retirement outcome\\
 BADControl~\cite{burbano_badcontrol_2026} & operational data, physical trigger & n/a & n/a\\
-Jiang et al.~\cite{jiang_backdoor_safe_rl_cps_2024} & yes (backdoor, triggered) & no (shield resident) & n/a\\
-\textbf{Controlled study} & \textbf{yes (reward record)} & \textbf{yes (raw release)} & \textbf{transition evidence tested}\\
-\textbf{Third-party case study} & \textbf{yes (reward record)} & \textbf{yes (Carr retirement)} & \textbf{transition evidence tested}\\
+Jiang et al.~\cite{jiang_backdoor_safe_rl_cps_2024} & yes (triggered backdoor) & no & retained shield\\
+\textbf{Controlled study} & \textbf{yes (reward record)} & \textbf{raw release; later LQR handoff} & \textbf{five-step raw-policy test; no LQR recovery certificate}\\
+\textbf{Third-party case study} & \textbf{yes (reward record)} & \textbf{Carr retirement} & \textbf{attack outcome at retirement; no five-step claim}\\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table*}[t]
+\centering
+\caption{Contract taxonomy used in the controlled study.  An
+integrity-protected component is outside attacker write authority; the label
+does not supply a safety certificate.}
+\label{tab:contract-taxonomy}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}L{0.14\textwidth}L{0.14\textwidth}L{0.18\textwidth}L{0.18\textwidth}L{0.13\textwidth}L{0.16\textwidth}@{}}
+\toprule
+Contract & Runtime component retained & Raw-policy claim & Fallback/handoff claim & Horizon & Evaluated boundary\\
+\midrule
+Raw execution after release & none & initial raw-policy test & n/a & test: 5; deployment: 120 & failure after test horizon\\
+Commit admission & none after commit & sampled candidate-state certificate & n/a & declared finite horizon & state coverage and model mismatch\\
+One-step action filter & action filter & none for raw policy & none & current step & empty kernel or later failure\\
+Raw-policy lookahead switcher & predictor, selector, LQR fallback & repeated raw-policy warning & none for LQR recovery & receding (5 primary) & failure after transfer\\
+Permanent shield / MPSC & shield or safety filter & composition, not raw policy alone & method-specific recovery premise & runtime or receding & estimator, model, and set assumptions\\
+Always-freeze & fixed controller & no learned snapshot released & n/a & deployment & foregone adaptation utility\\
+\bottomrule
+\end{tabular}
+\end{table*}

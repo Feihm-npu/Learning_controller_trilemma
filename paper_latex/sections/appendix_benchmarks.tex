@@ -3,8 +3,8 @@
 
 This appendix contains the low-dimensional semantic benchmarks that
 distinguish current-action filtering from update admission.  They instantiate
-the certificate semantics of Section~\ref{sec:gate} rather than the
-authority-transition attack evaluated in Section~\ref{sec:study}.
+the certificate semantics of Section~\ref{sec:gate} rather than the handoff and
+reward-poisoning study evaluated in Section~\ref{sec:study}.
 
 \subsection{Setup}
 
@@ -44,10 +44,10 @@ their sign is trusted.  Their safe intervals are $[-0.2,-0.08]$ and
 $[0.08,0.2]$, respectively.  The empty intersection prevents a common
 history-dependent action from being certified.
 
-\subsection{Trusted Anchors and Learning-Aware FDI}
+\subsection{Integrity-Protected Anchors and Learning-Aware FDI}
 
-A trusted state anchor can restore learning by shrinking the plausible-state
-set.  At $\rho=0.9$, a trusted sign anchor reduces the set to $[0,0.9]$ or
+An integrity-protected state anchor can restore learning by shrinking the
+plausible-state set.  At $\rho=0.9$, an integrity-protected sign anchor reduces the set to $[0,0.9]$ or
 $[-0.9,0]$.  The corresponding kernels, $[-0.2,-0.08]$ and $[0.08,0.2]$,
 are nonempty.
 

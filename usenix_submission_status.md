@@ -127,9 +127,9 @@ authority 0/120），但 LifecycleGate 这个名字承载了太多它没证明�
 ## 7. 需要你决定
 
 - [x] 确认 Cycle 1 截止日期（见第 1 节）。
-- [x] 标题定稿并写入 `usenix_sec2027.tex:78`：
-      **A Release Test Is Not Runtime Authority: Evidence Reuse at
-      Runtime-Assurance Authority Transitions**（注册后不可改；旧候选留在文件注释里）。
+- [x] 标题定稿并写入 `usenix_sec2027.tex`：
+      **A Release Test Is Not Runtime Authority: Evidence Gaps Across
+      Controller Handoffs**（注册后不可改）。
 - [ ] 8-24 做 go/no-go：判据见第 8 节。
 - [ ] 注册时 topics 建议 CPS / embedded & control security 为主、ML security 为次。
 - [ ] 作者名单 + 每人 ORCID（注册后不可改）。

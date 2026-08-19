@@ -5,20 +5,6 @@ This appendix collects the proofs deferred from Sections~\ref{sec:model}
 and~\ref{sec:gate}, in the order the results are stated, and adds the
 action-filtering separation those sections refer to.
 
-\begin{proof}[Proof of Proposition~\ref{prop:transfer}]
-Each component records a premise under which the acceptance evidence was
-derived.  If an authority transition removes or weakens that premise, the
-original derivation does not establish the corresponding obligation under
-$C_{\mathrm{deploy}}$.  Re-establishing every changed obligation supplies the
-missing premises; without them, $E$ alone is insufficient.  In the evaluated
-permanent-release transition, resident authority is removed and a finite check
-authorizes a longer unmonitored execution, so both authority and horizon
-change.  Under attack, update provenance changes as well.  Evidence carried
-over from protected adaptation also changes subject, from the assured
-composition to the raw policy.  The same argument applies independently to a
-later handoff from that policy to a baseline controller.
-\end{proof}
-
 \begin{proof}[Proof of Lemma~\ref{lem:current-gate}]
 The certified action must satisfy the certificate for every state compatible
 with the attacked history.  These states form $X_{\mathcal A}(h)$, and their

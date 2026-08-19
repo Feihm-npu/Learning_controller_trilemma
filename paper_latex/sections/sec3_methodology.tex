@@ -3,8 +3,8 @@
 
 This section develops the update conditions used by the empirical studies.
 The current- and future-history gates distinguish action filtering from
-certified learning and provide the obligations against which authority
-transitions are evaluated.  A reward-influence summary
+certified learning and provide the obligations against which the handoff
+contracts are evaluated.  A reward-influence summary
 then records how a bounded reward edit can move a linear release-gate margin
 within one policy-gradient batch; the evaluated multi-batch attack remains the
 fixed target-shaping rule described in Section~\ref{sec:study}.  All proofs
@@ -118,10 +118,10 @@ enforcement layer LifecycleGate.
 The empirical contracts use the finite-horizon check of
 Section~\ref{sec:model}, not the sound lifecycle certificate defined there.  A
 one-time release evaluates its declared horizon at $h$ and then executes
-$\pi_{\theta^+}$ without further evaluation.  A resident mechanism repeats the
-same check at subsequent histories, thereby extending observation through a
-receding horizon.  Repetition does not certify the baseline controller invoked
-after rejection.  A sound lifecycle certificate would instead cover every
+$\pi_{\theta^+}$ without further evaluation.  The raw-policy lookahead
+switcher repeats the same check at subsequent histories, thereby extending
+observation through a receding horizon.  Repetition does not certify the LQR
+fallback invoked after rejection.  A sound lifecycle certificate would instead cover every
 future history required by the contract, or supply a valid terminal or
 recovery argument; a controller handoff would additionally require evidence
 for the receiving controller from the transfer state.
@@ -129,10 +129,10 @@ Section~\ref{sec:release-contract-audit} measures these distinct obligations.
 Commit admission certifies a candidate on a declared state set and horizon,
 backtracking along the connected segment from the last admitted snapshot to
 exclude disconnected safe islands.  Its costs are coverage and model-mismatch
-risk; resident mechanisms instead incur intervention, rejection, and online
+risk; runtime mechanisms instead incur intervention, rejection, and online
 cost.  An empty plausible-state kernel, an uncertified snapshot,
 model failure, or solver failure triggers a fail-closed freeze or rollback,
-and a trusted anchor can resume learning by changing the justified
+and an integrity-protected anchor can resume learning by changing the justified
 plausible-state set at an explicit infrastructure cost.  Because membership is
 enforced independently of the task objective, a safe update may be neutral or
 harmful: accepted parameter distance measures update availability, whereas

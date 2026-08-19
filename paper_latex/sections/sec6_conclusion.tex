@@ -1,14 +1,13 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-A release test is not runtime authority: evidence collected under one contract
-does not certify a different controller or horizon.  In the clean cohort, raw
-release failed on 10/480 pairs across five of 20 trained controllers; resident
-authority failed on none.  Under the 48-batch sign/envelope-constrained attack,
-paired outcomes split 27 both, 19 raw-only, seven resident-only, and 63 neither.
-Every resident failure followed baseline transfer (median one step), so
-raw-policy warning did not certify the handoff.  Carr et al.'s lifecycle showed
-the release transition in two of three paired runs, with conditional effects
-in the wider corpus.  Trusted recomputation closes the reward channel; sound
-deployment must re-establish each authority-transition obligation and justify
-adaptation by task benefit, which the benign settings lacked.
+A five-step raw-policy test did not support the evaluated 120-step claim, and
+raw-policy warning did not establish LQR recovery after transfer.  The clean
+cohort observed 10/480 raw failures across five of 20 controllers and none
+under repeated lookahead.  Under constrained poisoning, 19/116 pairs failed
+only under raw execution and 7/116 only after the LQR handoff.  The third-party
+attack increased retirement violations in two of three provenance-complete
+pairs, but was conditional across training runs.  Trusted recomputation closes
+the reward-record channel when applicable; otherwise data integrity requires
+separate controls.  Independently, safety evidence must match each receiving
+controller and deployment horizon.
