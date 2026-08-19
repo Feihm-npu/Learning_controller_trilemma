@@ -16,14 +16,14 @@ battery, the run indexed by configured seed 101 was positive
 ($0.219\rightarrow0.754$ at retirement; McNemar exact
 $p=3.7\times10^{-113}$), while the other nine entered a high-violation ceiling
 regime (clean $0.728$--$0.760$) and were either protective or unchanged.
-Figure~\ref{fig:ppo-isolation} reports the full battery.  A ten-run full-phase
+Fig.~\ref{fig:ppo-isolation} reports the full battery.  A ten-run full-phase
 PPO battery likewise placed every clean policy near the retirement ceiling
 ($0.73$--$0.77$) and yielded no positive outcome on the primary retirement
 metric.  Its final metric captured a different effect: all ten poisoned
 policies remained unsafe ($0.49$--$0.77$), whereas nine clean policies recovered
 to approximately $0.22$ under continued learning.
 
-A ten-run shield-on-only battery on off-policy soft actor-critic (SAC)
+A ten-run shield-on-only battery on off-policy SAC
 provided a complementary boundary.  Three runs were positive
 ($0.207\rightarrow0.561$, $0.218\rightarrow0.513$, and
 $0.479\rightarrow0.954$; paired McNemar exact $p<10^{-40}$ for each), three
@@ -33,7 +33,7 @@ extension runs generated on a second host were non-positive.  The fixed
 attack therefore affected individual PPO and SAC training realizations without
 producing reliable success within either family.
 
-\begin{figure*}[t]
+\begin{figure*}[tbp]
 \centering
 \includegraphics[width=0.85\textwidth]{fig6_ppo_isolation.pdf}
 \caption{PPO retirement-boundary isolation on the third-party lifecycle
@@ -74,9 +74,9 @@ configuration also entered a different trajectory mode ($0.776$ rather than
 $0.232$ at retirement).  Dose comparisons are therefore confined to the
 locked local batch.  The independent batch shows that attackability follows
 the realized retirement state more closely than the nominal seed identifier.
-Figure~\ref{fig:dose-response} summarizes both panels.
+Fig.~\ref{fig:dose-response} summarizes both panels.
 
-\begin{figure*}[t]
+\begin{figure*}[tbp]
 \centering
 \includegraphics[width=\textwidth]{fig7_dose_response.pdf}
 \caption{Budget- and state-dependent effects on the full-phase REINFORCE
@@ -105,13 +105,17 @@ realization-dependent.
 
 \subsection{Opportunity-Region Cross-Tabulation}
 
-Figure~\ref{fig:two-by-two} plots the coarse two-by-two
-cross-tabulation summarized in Section~\ref{sec:third-party}: across 53
-locked paired runs spanning both scopes, all three learner families, and
-both domains, 12 of 20 runs with clean at-retirement violation below $0.5$
-were positive, whereas none of 33 ceiling runs was positive.
+Fig.~\ref{fig:two-by-two} plots the cross-tabulation reported in
+Section~\ref{sec:third-party}.  Fig.~\ref{fig:mechanism} instead uses the
+obstacle-only marker records that contain disagreement instrumentation.  Every
+retained positive outcome has clean $D_{\mathrm{ret}}\le0.047$, and no
+high-band run is positive.  The configuration-level accounting and the
+clean-versus-clean null of
+Section~\ref{sec:third-party} are produced by
+\texttt{analyze\_two\_sided\_and\_null.py} in the artifact, which writes both
+row-level tables.
 
-\begin{figure*}[t]
+\begin{figure*}[tbp]
 \centering
 \includegraphics[width=0.72\textwidth]{fig9_mechanism_divergence.pdf}
 \caption{Clean at-retirement raw-policy/shield disagreement marks an
@@ -120,12 +124,14 @@ families).  Each point is one paired clean/poisoned run; filled markers meet
 the positive-outcome rule, and hollow markers do not.
 Filled markers all have clean disagreement $\le0.047$; the dashed lines mark
 the fixed low/high disagreement bands ($<0.06$ and $\ge0.09$).  No
-high-disagreement run is positive, while seven of 18 low-disagreement runs are
-non-positive.}
+high-disagreement run is positive, while the low-disagreement region contains
+both positive and non-positive outcomes.  Exact corpus counts and a
+discrimination statistic are not
+reported because two historical deduplication decisions are unrecoverable.}
 \label{fig:mechanism}
 \end{figure*}
 
-\begin{figure*}[t]
+\begin{figure*}[tbp]
 \centering
 \includegraphics[width=\textwidth]{fig8_2x2_susceptibility.pdf}
 \caption{Two-by-two opportunity-region cross-tabulation across all locked
@@ -139,20 +145,42 @@ positive.}
 \label{fig:two-by-two}
 \end{figure*}
 
-\subsection{Family-Stratified Counts and Band Chronology}
+\subsection{Clean-Versus-Clean Null}
 
-Family-stratified counts clarify the AUC reported in
-Section~\ref{sec:third-party}.  REINFORCE had seven positive low-band runs and
-13 non-positive high-band runs.  PPO had one positive low-band run and 19
-non-positive high-band runs.  All ten SAC runs were low-band, with three
-positive and seven non-positive outcomes.
+A clean run carries no poisoning under either scope label, so two independently
+trained clean records of one configuration under different scope labels form a
+clean replicate pair.  The obstacle-only aggregate table contains 21 such
+pairs.  Eleven share a code version: one exceeds the $0.15$ decision threshold, at
+$\lvert\Delta\rvert=0.540$, and the median absolute difference over the eleven
+is $0.007$.  Ten cross code versions, of which three exceed the threshold, at
+$0.548$, $0.503$, and $0.498$.  The differences are bimodal: every pair either
+lands within $0.03$ or changes by nearly half the outcome range.
 
-The protocol chronology bounds the statistical interpretation.  The
-$0.06/0.09$ bands were fixed after analysis of 46 existing obstacle rows and
-before four SAC extension pairs with run indices 407--410.  All four
+\subsection{Reproducible Exclusion Audit and Band Chronology}
+
+Before historical membership decisions, the executable marker audit emits 58
+configuration rows: 15 positive and 43 non-positive.  Two REINFORCE membership
+decisions used for the retained marker figure lack an executable deduplication
+rule, so those raw totals are not treated as the marker's analysis denominator.
+Membership-invariant quantities are 32 high-band rows with no positive outcome,
+a maximum clean disagreement of 0.047 among retained positive rows, and
+non-positive rows extending to 0.111.  All 20 PPO rows satisfy the exclusion;
+all ten SAC rows are low-band, and only three are positive.  A corpus-level
+discrimination statistic and an exact low-band success fraction therefore
+remain unreported.
+
+The protocol chronology bounds the statistical interpretation, and the three
+analysis thresholds have different chronologies.  The positive-pair rule
+(poisoned at-retirement at least $0.15$ above clean, paired McNemar $p<0.01$)
+was written into the protocol on 2026-08-16, after the first three REINFORCE
+isolation pairs had been observed and before every later battery, so those
+three pairs are labelled by a rule that postdates them while later runs were
+labelled prospectively.  The clean-violation $0.5$ cut was likewise
+read off the early rows and then pre-specified for the ten-run batteries.  The
+$0.06/0.09$ bands were fixed after analysis of the then-existing obstacle rows
+and before four SAC extension pairs with run indices 407--410.  All four
 extensions were low-band and non-positive.  They strengthened the
 non-sufficiency result without prospectively testing high-disagreement
 exclusion.  The marker is also obstacle-scoped: two protective runs in the
 second environment had clean disagreement $0.476$ and $0.157$ despite clean
 violation below $0.5$.
-

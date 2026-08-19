@@ -1,0 +1,99 @@
+[1/45] duration=12 learner=2400 evaluation=9400 condition=clean: training
+pybullet build time: Jan 29 2025 23:16:28
+/home/feihm/llm-fei/learning_controller_trilemma/.venv-safe-control/lib/python3.10/site-packages/gymnasium/spaces/box.py:231: UserWarning: [33mWARN: Box low's precision lowered by casting to float32, current low.dtype=float64[0m
+  gym.logger.warn(
+/home/feihm/llm-fei/learning_controller_trilemma/.venv-safe-control/lib/python3.10/site-packages/gymnasium/spaces/box.py:297: UserWarning: [33mWARN: Box high's precision lowered by casting to float32, current high.dtype=float64[0m
+  gym.logger.warn(
+[1/45] duration=12 learner=2400 condition=clean: effective=(0.435,-1.604) raw_release_violations=2 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (40.4s)
+[2/45] duration=12 learner=2400 evaluation=9400 condition=unconstrained: training
+[2/45] duration=12 learner=2400 condition=unconstrained: effective=(-2.979,-5.000) raw_release_violations=8 resident_violations=0 known_sign_flagged=11 scalar_envelope_flagged=11 (36.8s)
+[3/45] duration=12 learner=2400 evaluation=9400 condition=constrained: training
+[3/45] duration=12 learner=2400 condition=constrained: effective=(-1.154,-4.370) raw_release_violations=8 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (38.8s)
+[4/45] duration=12 learner=2401 evaluation=9401 condition=clean: training
+[4/45] duration=12 learner=2401 condition=clean: effective=(-0.536,0.286) raw_release_violations=0 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (39.5s)
+[5/45] duration=12 learner=2401 evaluation=9401 condition=unconstrained: training
+[5/45] duration=12 learner=2401 condition=unconstrained: effective=(-1.288,-4.701) raw_release_violations=7 resident_violations=0 known_sign_flagged=11 scalar_envelope_flagged=11 (38.4s)
+[6/45] duration=12 learner=2401 evaluation=9401 condition=constrained: training
+[6/45] duration=12 learner=2401 condition=constrained: effective=(0.166,-2.786) raw_release_violations=2 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (38.2s)
+[7/45] duration=12 learner=2402 evaluation=9402 condition=clean: training
+[7/45] duration=12 learner=2402 condition=clean: effective=(-2.916,-2.977) raw_release_violations=1 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (39.7s)
+[8/45] duration=12 learner=2402 evaluation=9402 condition=unconstrained: training
+[8/45] duration=12 learner=2402 condition=unconstrained: effective=(-6.593,-4.103) raw_release_violations=3 resident_violations=0 known_sign_flagged=10 scalar_envelope_flagged=10 (41.1s)
+[9/45] duration=12 learner=2402 evaluation=9402 condition=constrained: training
+[9/45] duration=12 learner=2402 condition=constrained: effective=(-4.191,-4.063) raw_release_violations=2 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (40.5s)
+[10/45] duration=12 learner=2403 evaluation=9403 condition=clean: training
+[10/45] duration=12 learner=2403 condition=clean: effective=(0.311,-2.855) raw_release_violations=1 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (39.0s)
+[11/45] duration=12 learner=2403 evaluation=9403 condition=unconstrained: training
+[11/45] duration=12 learner=2403 condition=unconstrained: effective=(-3.665,-5.000) raw_release_violations=7 resident_violations=0 known_sign_flagged=12 scalar_envelope_flagged=12 (37.3s)
+[12/45] duration=12 learner=2403 evaluation=9403 condition=constrained: training
+[12/45] duration=12 learner=2403 condition=constrained: effective=(-0.823,-4.645) raw_release_violations=4 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (39.5s)
+[13/45] duration=12 learner=2404 evaluation=9404 condition=clean: training
+[13/45] duration=12 learner=2404 condition=clean: effective=(-0.833,0.636) raw_release_violations=0 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (38.7s)
+[14/45] duration=12 learner=2404 evaluation=9404 condition=unconstrained: training
+[14/45] duration=12 learner=2404 condition=unconstrained: effective=(-7.742,-4.272) raw_release_violations=11 resident_violations=0 known_sign_flagged=12 scalar_envelope_flagged=12 (37.2s)
+[15/45] duration=12 learner=2404 evaluation=9404 condition=constrained: training
+[15/45] duration=12 learner=2404 condition=constrained: effective=(-2.958,-1.648) raw_release_violations=1 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (38.0s)
+[16/45] duration=24 learner=2400 evaluation=9400 condition=clean: training
+[16/45] duration=24 learner=2400 condition=clean: effective=(5.000,-0.209) raw_release_violations=0 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (64.3s)
+[17/45] duration=24 learner=2400 evaluation=9400 condition=unconstrained: training
+[17/45] duration=24 learner=2400 condition=unconstrained: effective=(8.158,-3.266) raw_release_violations=3 resident_violations=0 known_sign_flagged=18 scalar_envelope_flagged=20 (60.2s)
+[18/45] duration=24 learner=2400 evaluation=9400 condition=constrained: training
+[18/45] duration=24 learner=2400 condition=constrained: effective=(8.531,-3.225) raw_release_violations=3 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (59.2s)
+[19/45] duration=24 learner=2401 evaluation=9401 condition=clean: training
+[19/45] duration=24 learner=2401 condition=clean: effective=(-4.965,2.369) raw_release_violations=1 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (63.8s)
+[20/45] duration=24 learner=2401 evaluation=9401 condition=unconstrained: training
+[20/45] duration=24 learner=2401 condition=unconstrained: effective=(3.349,-4.419) raw_release_violations=3 resident_violations=0 known_sign_flagged=15 scalar_envelope_flagged=16 (60.3s)
+[21/45] duration=24 learner=2401 evaluation=9401 condition=constrained: training
+[21/45] duration=24 learner=2401 condition=constrained: effective=(-0.658,-3.302) raw_release_violations=3 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (65.3s)
+[22/45] duration=24 learner=2402 evaluation=9402 condition=clean: training
+[22/45] duration=24 learner=2402 condition=clean: effective=(-8.945,-1.867) raw_release_violations=1 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (65.8s)
+[23/45] duration=24 learner=2402 evaluation=9402 condition=unconstrained: training
+[23/45] duration=24 learner=2402 condition=unconstrained: effective=(-4.066,-4.213) raw_release_violations=2 resident_violations=0 known_sign_flagged=20 scalar_envelope_flagged=21 (62.8s)
+[24/45] duration=24 learner=2402 evaluation=9402 condition=constrained: training
+[24/45] duration=24 learner=2402 condition=constrained: effective=(-3.344,-4.292) raw_release_violations=2 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (64.6s)
+[25/45] duration=24 learner=2403 evaluation=9403 condition=clean: training
+[25/45] duration=24 learner=2403 condition=clean: effective=(-1.736,-4.042) raw_release_violations=4 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=1 (64.3s)
+[26/45] duration=24 learner=2403 evaluation=9403 condition=unconstrained: training
+[26/45] duration=24 learner=2403 condition=unconstrained: effective=(0.121,-4.456) raw_release_violations=4 resident_violations=0 known_sign_flagged=18 scalar_envelope_flagged=20 (60.0s)
+[27/45] duration=24 learner=2403 evaluation=9403 condition=constrained: training
+[27/45] duration=24 learner=2403 condition=constrained: effective=(1.525,-4.378) raw_release_violations=4 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (59.6s)
+[28/45] duration=24 learner=2404 evaluation=9404 condition=clean: training
+[28/45] duration=24 learner=2404 condition=clean: effective=(-2.037,0.183) raw_release_violations=0 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (64.7s)
+[29/45] duration=24 learner=2404 evaluation=9404 condition=unconstrained: training
+[29/45] duration=24 learner=2404 condition=unconstrained: effective=(-3.216,-3.734) raw_release_violations=4 resident_violations=0 known_sign_flagged=18 scalar_envelope_flagged=19 (58.7s)
+[30/45] duration=24 learner=2404 evaluation=9404 condition=constrained: training
+[30/45] duration=24 learner=2404 condition=constrained: effective=(-0.618,-2.967) raw_release_violations=3 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (60.9s)
+[31/45] duration=48 learner=2400 evaluation=9400 condition=clean: training
+[31/45] duration=48 learner=2400 condition=clean: effective=(5.483,-3.064) raw_release_violations=3 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=1 (115.2s)
+[32/45] duration=48 learner=2400 evaluation=9400 condition=unconstrained: training
+[32/45] duration=48 learner=2400 condition=unconstrained: effective=(15.797,-4.809) raw_release_violations=17 resident_violations=17 known_sign_flagged=23 scalar_envelope_flagged=27 (108.1s)
+[33/45] duration=48 learner=2400 evaluation=9400 condition=constrained: training
+[33/45] duration=48 learner=2400 condition=constrained: effective=(17.815,-4.808) raw_release_violations=16 resident_violations=17 known_sign_flagged=0 scalar_envelope_flagged=1 (109.3s)
+[34/45] duration=48 learner=2401 evaluation=9401 condition=clean: training
+[34/45] duration=48 learner=2401 condition=clean: effective=(-6.890,2.791) raw_release_violations=3 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (119.7s)
+[35/45] duration=48 learner=2401 evaluation=9401 condition=unconstrained: training
+[35/45] duration=48 learner=2401 condition=unconstrained: effective=(5.783,-4.353) raw_release_violations=3 resident_violations=0 known_sign_flagged=23 scalar_envelope_flagged=26 (111.0s)
+[36/45] duration=48 learner=2401 evaluation=9401 condition=constrained: training
+[36/45] duration=48 learner=2401 condition=constrained: effective=(0.572,-4.367) raw_release_violations=3 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (111.5s)
+[37/45] duration=48 learner=2402 evaluation=9402 condition=clean: training
+[37/45] duration=48 learner=2402 condition=clean: effective=(-5.541,-0.294) raw_release_violations=1 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (112.1s)
+[38/45] duration=48 learner=2402 evaluation=9402 condition=unconstrained: training
+[38/45] duration=48 learner=2402 condition=unconstrained: effective=(7.786,-4.501) raw_release_violations=0 resident_violations=0 known_sign_flagged=33 scalar_envelope_flagged=35 (106.7s)
+[39/45] duration=48 learner=2402 evaluation=9402 condition=constrained: training
+[39/45] duration=48 learner=2402 condition=constrained: effective=(7.691,-4.470) raw_release_violations=0 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (108.2s)
+[40/45] duration=48 learner=2403 evaluation=9403 condition=clean: training
+[40/45] duration=48 learner=2403 condition=clean: effective=(-2.636,-2.668) raw_release_violations=2 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=2 (107.4s)
+[41/45] duration=48 learner=2403 evaluation=9403 condition=unconstrained: training
+[41/45] duration=48 learner=2403 condition=unconstrained: effective=(9.679,-4.994) raw_release_violations=24 resident_violations=21 known_sign_flagged=28 scalar_envelope_flagged=33 (107.1s)
+[42/45] duration=48 learner=2403 evaluation=9403 condition=constrained: training
+[42/45] duration=48 learner=2403 condition=constrained: effective=(4.157,-4.963) raw_release_violations=16 resident_violations=17 known_sign_flagged=0 scalar_envelope_flagged=1 (104.7s)
+[43/45] duration=48 learner=2404 evaluation=9404 condition=clean: training
+[43/45] duration=48 learner=2404 condition=clean: effective=(-7.812,1.041) raw_release_violations=0 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=3 (118.7s)
+[44/45] duration=48 learner=2404 evaluation=9404 condition=unconstrained: training
+[44/45] duration=48 learner=2404 condition=unconstrained: effective=(-1.825,-5.000) raw_release_violations=10 resident_violations=0 known_sign_flagged=37 scalar_envelope_flagged=39 (104.2s)
+[45/45] duration=48 learner=2404 evaluation=9404 condition=constrained: training
+[45/45] duration=48 learner=2404 condition=constrained: effective=(-2.488,-5.000) raw_release_violations=11 resident_violations=0 known_sign_flagged=0 scalar_envelope_flagged=0 (106.4s)
+wrote /home/feihm/llm-fei/learning_controller_trilemma/results/cartpole_v6_duration_rollouts.csv
+wrote /home/feihm/llm-fei/learning_controller_trilemma/results/cartpole_v6_duration_batches.csv
+wrote /home/feihm/llm-fei/learning_controller_trilemma/results/cartpole_v6_duration_summary.csv
+total wall clock: 3168.2s for 45 run(s) (70.4s/run)

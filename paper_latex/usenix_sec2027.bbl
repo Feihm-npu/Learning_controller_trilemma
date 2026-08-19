@@ -120,6 +120,22 @@ Z.~Yuan, A.~W. Hall, S.~Zhou, L.~Brunke, M.~Greeff, J.~Panerati, and A.~P.
   learning-based control and reinforcement learning in robotics,'' \emph{IEEE
   Robotics and Automation Letters}, vol.~7, no.~4, pp. 11\,142--11\,149, 2022.
 
+\bibitem{kelly_safety_case_maintenance_2001}
+T.~P. Kelly and J.~A. McDermid, ``A systematic approach to safety case
+  maintenance,'' \emph{Reliability Engineering and System Safety}, vol.~71,
+  no.~3, pp. 271--284, 2001.
+
+\bibitem{denney_dynamic_safety_cases_2015}
+E.~Denney, G.~Pai, and I.~Habli, ``Dynamic safety cases for through-life safety
+  assurance,'' in \emph{Proceedings of the 37th International Conference on
+  Software Engineering (ICSE)}, 2015, pp. 587--590.
+
+\bibitem{brunke_safe_learning_survey_2022}
+L.~Brunke, M.~Greeff, A.~W. Hall, Z.~Yuan, S.~Zhou, J.~Panerati, and A.~P.
+  Schoellig, ``Safe learning in robotics: From learning-based control to safe
+  reinforcement learning,'' \emph{Annual Review of Control, Robotics, and
+  Autonomous Systems}, vol.~5, pp. 411--444, 2022.
+
 \bibitem{didier_adaptive_mpsc_2021}
 A.~Didier, K.~P. Wabersich, and M.~N. Zeilinger, ``Adaptive model predictive
   safety certification for learning-based control,'' in \emph{2021 60th IEEE
@@ -199,15 +215,6 @@ D.~P. Nguyen, K.-C. Hsu, W.~Yu, J.~Tan, and J.~F. Fisac, ``Gameplay filters:
   Available: \url{https://arxiv.org/abs/2405.00846}
 \BIBentrySTDinterwordspacing
 
-\bibitem{burbano_badcontrol_2026}
-\BIBentryALTinterwordspacing
-L.~Burbano, H.~Sasahara, R.~Song, Z.~B. Celik, and A.~A. C{\'a}rdenas,
-  ``{BADControl}: Backdoor attacks against control systems,'' in
-  \emph{Proceedings of the 35th USENIX Security Symposium}, 2026. [Online].
-  Available:
-  \url{https://www.usenix.org/conference/usenixsecurity26/presentation/burbano}
-\BIBentrySTDinterwordspacing
-
 \bibitem{ma_policy_poisoning_2019}
 Y.~Ma, X.~Zhang, W.~Sun, and X.~Zhu, ``Policy poisoning in batch reinforcement
   learning and control,'' in \emph{Advances in Neural Information Processing
@@ -254,6 +261,21 @@ A.~Rakhsha, G.~Radanovic, R.~Devidze, X.~Zhu, and A.~Singla, ``Policy teaching
 T.~Everitt, V.~Krakovna, L.~Orseau, and S.~Legg, ``Reinforcement learning with
   a corrupted reward channel,'' in \emph{Proceedings of the 26th International
   Joint Conference on Artificial Intelligence ({IJCAI})}, 2017, pp. 4705--4713.
+
+\bibitem{jiang_backdoor_safe_rl_cps_2024}
+S.~Jiang, M.~Liu, and F.~Kong, ``Backdoor attacks on safe reinforcement
+  learning-enabled cyber-physical systems,'' \emph{IEEE Transactions on
+  Computer-Aided Design of Integrated Circuits and Systems}, vol.~43, no.~11,
+  pp. 4093--4104, 2024.
+
+\bibitem{burbano_badcontrol_2026}
+\BIBentryALTinterwordspacing
+L.~Burbano, H.~Sasahara, R.~Song, Z.~B. Celik, and A.~A. C{\'a}rdenas,
+  ``{BADControl}: Backdoor attacks against control systems,'' in
+  \emph{Proceedings of the 35th USENIX Security Symposium}, 2026. [Online].
+  Available:
+  \url{https://www.usenix.org/conference/usenixsecurity26/presentation/burbano}
+\BIBentrySTDinterwordspacing
 
 \bibitem{nika_reward_defense_2023}
 \BIBentryALTinterwordspacing

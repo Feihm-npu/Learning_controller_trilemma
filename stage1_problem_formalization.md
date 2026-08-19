@@ -1,3 +1,6 @@
+> ⚠️ **过时的规划/形式化草稿（2026-08-19 标注）。** 早于 2026-08-19 的实验与审计。
+> **当前权威状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+
 # Stage-1 问题精确化：学习型工业控制器的 safety-security-learning 三难
 
 > 状态：stage-1 初稿（2026-06-30）。目的不是给技术路线，而是把 round-6 的开放判断收缩成可核验、可证伪、可进入 stage-3 可行性分析的研究命题。

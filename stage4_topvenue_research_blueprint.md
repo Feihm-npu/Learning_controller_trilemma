@@ -1,3 +1,8 @@
+> ⚠️ **过时文档（2026-08-19 标注）。** 本文件的状态判断、待办与结论均**早于**
+> 2026-08-19 的三个新实验与证据审计，其中若干结论已被推翻或收窄。
+> **唯一权威的当前状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+> 本文件保留仅为历史记录，不要据此决定下一步动作。
+
 # Stage-4 Top-Venue Research Blueprint：certificate lifecycle attacks and gates
 
 > 状态：顶会/顶刊导向研究蓝图 v1（2026-07-01）。目标是把当前 certificate lifecycle seed 推进成安全顶会/顶刊可审稿的 attack+defense / theory+system paper。

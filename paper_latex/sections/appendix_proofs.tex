@@ -1,16 +1,22 @@
 \section{Deferred Proofs}
 \label{sec:appendix-proofs}
 
+This appendix collects the proofs deferred from Sections~\ref{sec:model}
+and~\ref{sec:gate}, in the order the results are stated, and adds the
+action-filtering separation those sections refer to.
+
 \begin{proof}[Proof of Proposition~\ref{prop:transfer}]
-Each component is a premise of the assurance decision.  A conclusion derived
-from one premise set is not preserved after a premise is removed or weakened.
-In the evaluated permanent-release transition, resident authority is removed
-and a finite check authorizes an unmonitored future, so authority and horizon
-change; under attack the update provenance becomes adversarial as well.
-Evidence carried over from protected adaptation additionally changes subject,
-from the composition to the raw policy, and the policy acts on deployment
-observations.  The original evidence
-therefore cannot be reused without re-establishing these obligations.
+Each component records a premise under which the acceptance evidence was
+derived.  If an authority transition removes or weakens that premise, the
+original derivation does not establish the corresponding obligation under
+$C_{\mathrm{deploy}}$.  Re-establishing every changed obligation supplies the
+missing premises; without them, $E$ alone is insufficient.  In the evaluated
+permanent-release transition, resident authority is removed and a finite check
+authorizes a longer unmonitored execution, so both authority and horizon
+change.  Under attack, update provenance changes as well.  Evidence carried
+over from protected adaptation also changes subject, from the assured
+composition to the raw policy.  The same argument applies independently to a
+later handoff from that policy to a baseline controller.
 \end{proof}
 
 \begin{proof}[Proof of Lemma~\ref{lem:current-gate}]
@@ -46,9 +52,9 @@ under that certificate creates a stale certified policy.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:gate}]
-A lifecycle certificate covers every attacked history reachable under the
-updated controller and admissible attack family.  Applying
-Lemma~\ref{lem:current-gate} pointwise gives
+Applying Lemma~\ref{lem:current-gate} pointwise to every
+$h'\in\mathcal H_{\mathcal A}(h,\theta^+)$, which the soundness definition of
+Section~\ref{sec:model} quantifies over, gives
 $\pi_{\theta^+}(h')\in K_\Gamma(h')$ for each such history.  This is the
 definition of $\theta^+\in\Theta_\Gamma(h)$.  A failed membership leaves the
 updated action map uncertified at that history.  An empty kernel additionally
@@ -57,7 +63,7 @@ requires a changed information set or rejection of certified operation.
 
 \begin{proof}[Proof of Proposition~\ref{prop:parameter-gate}]
 For fixed $z$, membership $\pi_\theta(z)\in[\ell_z,u_z]$ is equivalent to the
-two inequalities above.  Enforcing them for every $z\in\mathcal Z$ implements
+two inequalities of~\eqref{eq:parameter-gate-halfspaces}.  Enforcing them for every $z\in\mathcal Z$ implements
 the lifecycle gate on the abstraction.  Parameter box constraints preserve
 convexity.  A feasible or projected candidate satisfies every certified
 interval kernel in the abstraction.

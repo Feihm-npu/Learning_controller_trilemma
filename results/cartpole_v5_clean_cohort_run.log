@@ -1,0 +1,68 @@
+[1/20] training clean learner seed=2300 evaluation=9300
+pybullet build time: Jan 29 2025 23:16:28
+/home/feihm/llm-fei/learning_controller_trilemma/.venv-safe-control/lib/python3.10/site-packages/gymnasium/spaces/box.py:231: UserWarning: [33mWARN: Box low's precision lowered by casting to float32, current low.dtype=float64[0m
+  gym.logger.warn(
+/home/feihm/llm-fei/learning_controller_trilemma/.venv-safe-control/lib/python3.10/site-packages/gymnasium/spaces/box.py:297: UserWarning: [33mWARN: Box high's precision lowered by casting to float32, current high.dtype=float64[0m
+  gym.logger.warn(
+[1/20] seed=2300: clean=[1.5701920429567013, 1.4533645669390767] adaptation_constraint_violations=0
+[1/20] V5SeedSummary(learner_seed=2300, evaluation_seed=9300, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (43.6s)
+[2/20] training clean learner seed=2301 evaluation=9301
+[2/20] seed=2301: clean=[4.642894245195406, -1.1524272255606505] adaptation_constraint_violations=0
+[2/20] V5SeedSummary(learner_seed=2301, evaluation_seed=9301, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (40.7s)
+[3/20] training clean learner seed=2302 evaluation=9302
+[3/20] seed=2302: clean=[3.3748929048891423, 1.3735576257752249] adaptation_constraint_violations=0
+[3/20] V5SeedSummary(learner_seed=2302, evaluation_seed=9302, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (39.4s)
+[4/20] training clean learner seed=2303 evaluation=9303
+[4/20] seed=2303: clean=[3.038537725309312, -0.34513372122145025] adaptation_constraint_violations=0
+[4/20] V5SeedSummary(learner_seed=2303, evaluation_seed=9303, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (39.9s)
+[5/20] training clean learner seed=2304 evaluation=9304
+[5/20] seed=2304: clean=[4.082540510979249, -0.943533676763314] adaptation_constraint_violations=0
+[5/20] V5SeedSummary(learner_seed=2304, evaluation_seed=9304, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (39.2s)
+[6/20] training clean learner seed=2305 evaluation=9305
+[6/20] seed=2305: clean=[-6.826786595414447, -3.3611126750583282] adaptation_constraint_violations=0
+[6/20] V5SeedSummary(learner_seed=2305, evaluation_seed=9305, states_accepted=24, raw_release_violations=5, resident_violations=0, resident_switches=5) (39.7s)
+[7/20] training clean learner seed=2306 evaluation=9306
+[7/20] seed=2306: clean=[-0.49378053999494553, 2.689129472328378] adaptation_constraint_violations=0
+[7/20] V5SeedSummary(learner_seed=2306, evaluation_seed=9306, states_accepted=24, raw_release_violations=2, resident_violations=0, resident_switches=3) (39.1s)
+[8/20] training clean learner seed=2307 evaluation=9307
+[8/20] seed=2307: clean=[0.982715145937401, -0.7016048015391316] adaptation_constraint_violations=0
+[8/20] V5SeedSummary(learner_seed=2307, evaluation_seed=9307, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (39.6s)
+[9/20] training clean learner seed=2308 evaluation=9308
+[9/20] seed=2308: clean=[3.280469198608429, 0.6302533756402862] adaptation_constraint_violations=0
+[9/20] V5SeedSummary(learner_seed=2308, evaluation_seed=9308, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (40.0s)
+[10/20] training clean learner seed=2309 evaluation=9309
+[10/20] seed=2309: clean=[-0.9049151900579642, 0.11411348138113236] adaptation_constraint_violations=0
+[10/20] V5SeedSummary(learner_seed=2309, evaluation_seed=9309, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (36.7s)
+[11/20] training clean learner seed=2310 evaluation=9310
+[11/20] seed=2310: clean=[-2.1096887239920465, -0.5096355949101288] adaptation_constraint_violations=0
+[11/20] V5SeedSummary(learner_seed=2310, evaluation_seed=9310, states_accepted=24, raw_release_violations=1, resident_violations=0, resident_switches=1) (37.9s)
+[12/20] training clean learner seed=2311 evaluation=9311
+[12/20] seed=2311: clean=[-0.5422055613207591, -0.023210916122424707] adaptation_constraint_violations=0
+[12/20] V5SeedSummary(learner_seed=2311, evaluation_seed=9311, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (36.6s)
+[13/20] training clean learner seed=2312 evaluation=9312
+[13/20] seed=2312: clean=[-3.100272346691984, 0.011325386853628536] adaptation_constraint_violations=0
+[13/20] V5SeedSummary(learner_seed=2312, evaluation_seed=9312, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (34.9s)
+[14/20] training clean learner seed=2313 evaluation=9313
+[14/20] seed=2313: clean=[2.7041878780818434, 2.0396304519581068] adaptation_constraint_violations=0
+[14/20] V5SeedSummary(learner_seed=2313, evaluation_seed=9313, states_accepted=24, raw_release_violations=1, resident_violations=0, resident_switches=1) (38.7s)
+[15/20] training clean learner seed=2314 evaluation=9314
+[15/20] seed=2314: clean=[-4.154880476306815, -1.0907289099759425] adaptation_constraint_violations=0
+[15/20] V5SeedSummary(learner_seed=2314, evaluation_seed=9314, states_accepted=24, raw_release_violations=1, resident_violations=0, resident_switches=1) (38.4s)
+[16/20] training clean learner seed=2315 evaluation=9315
+[16/20] seed=2315: clean=[1.8389662773341535, -0.6978848857852094] adaptation_constraint_violations=0
+[16/20] V5SeedSummary(learner_seed=2315, evaluation_seed=9315, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (39.4s)
+[17/20] training clean learner seed=2316 evaluation=9316
+[17/20] seed=2316: clean=[-2.974854903072089, 1.6563280406464105] adaptation_constraint_violations=0
+[17/20] V5SeedSummary(learner_seed=2316, evaluation_seed=9316, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (39.9s)
+[18/20] training clean learner seed=2317 evaluation=9317
+[18/20] seed=2317: clean=[-4.912806294699738, -0.9851028578933027] adaptation_constraint_violations=0
+[18/20] V5SeedSummary(learner_seed=2317, evaluation_seed=9317, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (39.1s)
+[19/20] training clean learner seed=2318 evaluation=9318
+[19/20] seed=2318: clean=[-2.235834611458046, 1.001383356494368] adaptation_constraint_violations=0
+[19/20] V5SeedSummary(learner_seed=2318, evaluation_seed=9318, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (39.3s)
+[20/20] training clean learner seed=2319 evaluation=9319
+[20/20] seed=2319: clean=[3.283095173572771, 1.0944658378429744] adaptation_constraint_violations=0
+[20/20] V5SeedSummary(learner_seed=2319, evaluation_seed=9319, states_accepted=24, raw_release_violations=0, resident_violations=0, resident_switches=0) (40.5s)
+wrote /home/feihm/llm-fei/learning_controller_trilemma/results/cartpole_v5_clean_cohort_rollouts.csv
+wrote /home/feihm/llm-fei/learning_controller_trilemma/results/cartpole_v5_clean_cohort_summary.csv
+total wall clock: 782.7s for 20 run(s) (39.1s/run)

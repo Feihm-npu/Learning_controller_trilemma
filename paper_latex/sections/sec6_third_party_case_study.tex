@@ -16,7 +16,7 @@ itemizes every instrumentation and attack patch.  REINFORCE training runs for
 optimization (PPO) pipeline retires the shield after $10^5$ environment
 steps.
 
-\paragraph{Lifecycle fidelity.}
+\emph{Lifecycle fidelity.}
 On the obstacle domain ($N{=}6$), the clean condition reproduces the
 qualitative ordering of Carr et al.'s Table~1 for REINFORCE: shield retained
 0/0 violations during/after training, smooth 326/675, sudden 3277/3784, and
@@ -24,17 +24,25 @@ no-shield 3798/3784.  Shield $<$ smooth $\ll$ sudden $\le$ no-shield is the
 ordering reported by Carr et al., establishing the lifecycle fidelity of the
 instrumented implementation.
 
-\paragraph{Causal isolation at the retirement boundary.}
-Under a locked protocol, poisoning is confined to the shielded bootstrap:
+\emph{Causal isolation at the retirement boundary.}
+We use two locked poisoning scopes.  Under \emph{bootstrap-only} scope,
 reward-record mutation is active only while the shield enforces the action
-mask, stops at retirement, and all subsequent learning is clean.  We evaluate
-the raw policy at the switch instant before any unshielded learning (1000
-episodes) and again after the full budget (5000 episodes).  Each independently
-trained clean/poisoned pair is one training-level replicate; configured seeds
-serve only as run indices.  A pair is \emph{positive} when the poisoned
-at-retirement rate exceeds its clean pair by at least $0.15$ and the paired
-McNemar exact test gives $p<0.01$; all other outcomes are
-\emph{non-positive}, and \emph{protective} denotes a lower poisoned rate.
+mask, stops at retirement, and all subsequent learning is clean.  Under
+\emph{full-phase} scope it stays active for the whole run, including
+post-retirement learning; Appendix~\ref{sec:appendix-thirdparty} reports its
+batteries.  Unless stated otherwise the results below use bootstrap-only
+scope.  We evaluate the raw policy at the switch instant before any unshielded
+learning (1000 episodes) and again after the full budget (5000 episodes).
+Each independently trained clean/poisoned pair is one training-level
+replicate; configured seeds serve only as run indices, and a pair is
+\emph{provenance-complete} when both its clean and its poisoned endpoint trace
+to the same locked configuration on the same host.  A pair is \emph{positive}
+when the poisoned at-retirement rate exceeds its clean pair by at least $0.15$
+and the paired McNemar exact test gives $p<0.01$; all other outcomes are
+\emph{non-positive}, and \emph{protective} denotes a poisoned rate at least
+$0.15$ below clean.  The significance clause never binds at this episode
+count: every observed difference of $0.15$ or more had $p<10^{-29}$, and every
+pair with $p\ge0.01$ differed by less than $0.02$.
 
 \begin{table}[t]
 \centering
@@ -56,11 +64,17 @@ configured seed & clean & poisoned & clean & poisoned\\
 3$^a$ & 0.241 & 0.242 & 0.747 & 0.228\\
 \bottomrule
 \end{tabular}
-\vspace{1pt}\par\footnotesize $^a$An earlier run-index-3 clean summary
-duplicated a separate fix-check record and is excluded.  This row reports a
-fresh clean/poisoned pair generated under the locked configuration.  The
-archived poisoned realization (0.748 at retirement) lacks a provenance-valid
-clean endpoint and is excluded from paired inference.
+\vspace{2pt}\par
+\begin{minipage}{\columnwidth}\raggedright\footnotesize
+$^a$A routine integrity sweep over all runs found the earlier run-index-3
+clean at-retirement record byte-identical to a summary file from a separate
+verification run; the same sweep cleared rows~1 and~2.  Both endpoints of
+row~3 were therefore regenerated in a fresh namespace, on a different host
+from rows~1 and~2, so row~3 is a same-host pair drawn from a different host.
+The archived local poisoned realization (0.748 at retirement) is excluded
+because pairing it with the regenerated clean endpoint would cross hosts.  The
+exclusion rule was recorded on 2026-08-17, after the 2026-08-14 protocol lock.
+\end{minipage}
 \end{table}
 
 Two of the three provenance-complete pairs had higher raw-policy violation
@@ -91,34 +105,35 @@ pair in Table~\ref{tab:carr-isolation}.}
 \label{fig:carr-isolation}
 \end{figure*}
 
-\paragraph{Learner and budget boundary.}
+\emph{Learner and budget boundary.}
 The same contrast attack was also evaluated on the third-party PPO and
 off-policy soft actor-critic (SAC) pipelines, across attack budgets and
 attack shapes, and on a second gridworld of the same suite.  It raised
 post-removal violations in individual PPO and SAC training realizations
-without producing reliable success within either family, its dose response
-depended on the realized retirement state rather than the nominal seed, and
-the second environment reproduced the lifecycle ordering while remaining
+without producing reliable success within either family.  Its dose response
+depended on the realized retirement state rather than the nominal seed.  The
+second environment reproduced the lifecycle ordering while remaining
 realization-dependent under attack.
 Appendix~\ref{sec:appendix-thirdparty} reports these batteries in full.
 
-\paragraph{Escape condition.}
-Under the same full-scope poisoning used in the full-phase battery, a retained
+\emph{Escape condition.}
+Under full-phase poisoning, a retained
 shield kept physical violations at zero before and after training in all three
 paired runs.  The corresponding sudden-retirement runs exposed final violation
-fractions of $0.490$, $0.752$, and $0.744$ after removal.  Resident authority
-therefore contained the downstream consequence of full-scope contamination.
+fractions of $0.490$, $0.752$, and $0.744$ after removal.  The retained
+shield's winning-region mask guarantees zero violations while a safe masked
+action exists.  Full-phase contamination never produced an empty mask in these
+runs, so retained authority remained available.
 
-\paragraph{Interpretation.}
+\emph{Interpretation.}
 Carr et al.'s workflow supplies the lifecycle component: protected bootstrap
 followed by retirement of the shield's action authority, evaluated under
 unpoisoned learning.  The controlled study in Section~\ref{sec:study} supplies
 the adversarial-provenance mechanism.  Their composition exposes the evidence
 boundary at that authority transition.  Absolute rates differ across
 instrumented and non-instrumented code versions because the
-unmasked-disagreement probe requires an independent belief tracker; all
-clean-vs-poisoned comparisons are paired within a locked code version and are
-unaffected by that change.
+unmasked-disagreement probe requires an independent belief tracker.  Each
+clean/poisoned comparison is paired within one locked code version.
 
 Training outcomes varied across platforms.  A ten-run REINFORCE
 shield-on-only battery on Linux produced three positive low-clean-violation
@@ -139,24 +154,41 @@ were positive, whereas none of 33 ceiling runs was positive
 clean violation therefore marks available headroom but does not determine the
 outcome.
 
-The 50 obstacle runs with disagreement instrumentation give a sharper
-retirement-state marker.  Clean $D_{\mathrm{ret}}$ is strongly associated with
-clean violation (Spearman $0.976$, $p=1.3\times10^{-33}$) and negatively
-associated with attack headroom (Spearman $-0.547$, $p=3.9\times10^{-5}$).
-Every positive outcome had clean $D_{\mathrm{ret}}\le0.047$, while
-non-positive outcomes extended to $0.111$.  Under the fixed bands, all 11
-positive outcomes fell in the low-disagreement region
-($D_{\mathrm{ret}}<0.06$), and none of 32 high-disagreement runs was positive;
-the area under the receiver operating characteristic curve (AUC) was $0.953$
-(Mann--Whitney $p=5.5\times10^{-6}$).  High disagreement thus acted as a
-strong exclusion condition in this corpus, whereas low disagreement defined an
-opportunity region: eleven of 18 low-band corpus runs were positive, and the
-fresh pair, analyzed separately from the 50 disjoint namespaces, gave an
-additional low-band non-positive realization.  Appendix~\ref{sec:appendix-thirdparty}
-plots the corpus (Fig.~\ref{fig:mechanism}) and gives the family-stratified
-counts and the band chronology.  Because
-$D_{\mathrm{ret}}$ is measured after the shielded bootstrap, it characterizes
-a realized retirement state rather than an attacker-side trigger, and the
-AUC describes discrimination within the locked corpus rather than external
-classifier validation.
+\emph{Corpus accounting.}  The 53-run susceptibility corpus contains one
+contrast configuration for each clean/poisoned training pair: ten pairs for
+each learner--scope combination in the obstacle domain, except that SAC has no
+full-phase battery, plus three REINFORCE isolation pairs in the avoid domain.
+Twelve comparisons met the positive rule, 20 had a rate difference at or below
+$-0.15$, and 21 lay between the two effect thresholds.  In the sub-ceiling
+stratum, the corresponding counts were 12, 3, and 5; all 33 ceiling
+comparisons were protective or unchanged.  Effects were therefore not
+uniformly harmful over the run-level corpus, while positive outcomes were
+confined to the sub-ceiling stratum.
 
+The artifact also retains a 54-comparison obstacle-only configuration table.
+It replaces the three avoid-domain pairs with four exploratory full-phase
+REINFORCE comparisons at two attack budgets over two run indices.  Because
+those configurations reuse run indices, that table is descriptive and is not
+used to estimate training-level prevalence or for an independence-based test.
+
+Because clean training runs of this lifecycle enter bimodal trajectory modes,
+we calibrated the decision rule against clean-versus-clean replication: one of
+eleven same-version clean replicate pairs crosses the $0.15$ threshold
+(Appendix~\ref{sec:appendix-thirdparty}).  A single paired run therefore
+can cross the effect threshold under clean replication.  Training-level
+inference therefore relies on the multi-run batteries.
+
+Disagreement instrumentation gives a second view of the obstacle-domain
+retirement state, not independent confirmation.  Its reproducible exclusion
+result is that every
+retained positive outcome had clean $D_{\mathrm{ret}}\le0.047$, non-positive
+outcomes extended to $0.111$, and none of 32 high-disagreement runs was
+positive.  Holding out a learner family preserved the exclusion for all 20 PPO
+rows, but all SAC rows were low-band and only 3/10 were positive, so low
+disagreement did not predict success.  Two historical REINFORCE rows lack an
+executable deduplication rule; we therefore omit the corpus size, exact positive
+count, and discrimination statistic that depended on those membership
+decisions.  The marker remains
+a post-bootstrap, obstacle-scoped exclusion condition, not an attacker trigger
+or validated classifier.  Appendix~\ref{sec:appendix-thirdparty} records the
+audit and band chronology.

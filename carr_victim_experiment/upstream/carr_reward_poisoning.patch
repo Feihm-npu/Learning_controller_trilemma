@@ -1,0 +1,879 @@
+diff --git a/model_simulator.py b/model_simulator.py
+index 8cfd91e..4351126 100644
+--- a/model_simulator.py
++++ b/model_simulator.py
+@@ -50,9 +50,9 @@ class SimulationExecutor:
+     """
+     Base class that wraps and extends the stormpy simulator for shielding.
+     """
+-    def __init__(self, model, shield):
++    def __init__(self, model, shield, seed=10):
+         self._model = model
+-        self._simulator = stormpy.simulator.create_simulator(model, seed=10)
++        self._simulator = stormpy.simulator.create_simulator(model, seed=seed)
+         self._simulator.set_full_observability(True) # We want to access the full state space for visualisations.
+         self._shield = shield
+ 
+diff --git a/rl_simulator.py b/rl_simulator.py
+index 9df8747..8aa3333 100644
+--- a/rl_simulator.py
++++ b/rl_simulator.py
+@@ -17,7 +17,8 @@ from model_simulator import SimulationExecutor
+ import logging
+ logger = logging.getLogger(__name__)
+ 
+-def collect_episode(env,policy,num_episodes,buffer):
++
++def collect_episode(env, policy, num_episodes, buffer):
+     episode_counter = 0
+     env.reset()
+     good_run = False
+@@ -25,30 +26,31 @@ def collect_episode(env,policy,num_episodes,buffer):
+         time_step = env.current_time_step()
+         action_step = policy.action(time_step)
+         next_time_step = env.step(env.apply_action(action_step.action))
+-        traj = trajectory.from_transition(time_step,action_step,next_time_step)
++        traj = trajectory.from_transition(time_step, action_step, next_time_step)
+         buffer.add_batch(traj)
+         if next_time_step.step_type == ts.StepType.LAST:
+             episode_counter += 1
+-            if next_time_step.reward>env.goal_value -2:
++            if next_time_step.reward > env.goal_value - 2:
+                 good_run = True
+     return good_run
+ 
+ 
+-def collect_step(env,agent,policy,buffer):
++def collect_step(env, agent, policy, buffer):
+     time_step = env.current_time_step()
+     actions = env._simulator.available_actions()
+     safe_actions = env._shield.shielded_actions(range(len(actions)))
+     action_step = policy.action(time_step)
+     next_time_step = env.step(env.apply_action(action_step.action))
+-    traj = trajectory.from_transition(time_step,action_step,next_time_step)
++    traj = trajectory.from_transition(time_step, action_step, next_time_step)
+     buffer.add_batch(traj)
+ 
+-def collect_data(env,agent,policy,buffer,steps):
++
++def collect_data(env, agent, policy, buffer, steps):
+     for i in range(steps):
+-        collect_step(env,agent,policy,buffer)
++        collect_step(env, agent, policy, buffer)
+ 
+ 
+-def compute_avg_return(env, agent,policy, num_episodes=10,max_steps=100):
++def compute_avg_return(env, agent, policy, num_episodes=10, max_steps=100):
+     total_return = 0.0
+     episodes = []
+     for _ in range(num_episodes):
+@@ -68,10 +70,64 @@ def compute_avg_return(env, agent,policy, num_episodes=10,max_steps=100):
+         episodes.append(episode_return.numpy())
+     episode_rewards = np.array(episodes)
+     avg_return = total_return / num_episodes
+-    min_value = 0 if env.goal_value==10 else -1000
+-    return_set = avg_return.numpy(),np.quantile(episode_rewards,0.3173),np.quantile(episode_rewards,0.6827),np.clip(avg_return.numpy()-np.std(episode_rewards),min_value,env.goal_value),np.clip(avg_return.numpy()+np.std(episode_rewards),min_value,env.goal_value)
+-    return return_set,episodes
+-def solicit_input(recorder,executor,maxsteps):
++    min_value = 0 if env.goal_value == 10 else -1000
++    return_set = avg_return.numpy(), np.quantile(episode_rewards, 0.3173), np.quantile(episode_rewards, 0.6827), np.clip(avg_return.numpy() - np.std(episode_rewards), min_value, env.goal_value), np.clip(avg_return.numpy() + np.std(episode_rewards), min_value, env.goal_value)
++    return return_set, episodes
++
++
++def evaluate_episodes(env, policy, num_episodes, max_steps=100):
++    env.reset_violation_count()
++    num_violations = 0
++    first_violation_episode = None
++    first_violation_step = None
++    disagreement_steps = 0
++    total_steps = 0
++    violation_trace = np.zeros(num_episodes, dtype=np.int8)
++
++    for ep in range(num_episodes):
++        time_step = env.reset()
++        episode_violated = False
++        step_count = 0
++        while not time_step.is_last():
++            actions = env._simulator.available_actions()
++            safe_actions = env._shield.shielded_actions(range(len(actions)))
++            action_step = policy.action(time_step)
++            action = env.apply_action(action_step.action)
++
++            if action not in safe_actions:
++                disagreement_steps += 1
++            total_steps += 1
++
++            prev_violations = env.no_violations
++            time_step = env.step(action)
++            step_count += 1
++
++            if env.no_violations > prev_violations:
++                episode_violated = True
++                if first_violation_episode is None:
++                    first_violation_episode = ep
++                    first_violation_step = step_count
++
++            if step_count >= max_steps:
++                break
++
++        if episode_violated:
++            num_violations += 1
++            violation_trace[ep] = 1
++
++    violation_fraction = num_violations / num_episodes
++    disagreement_fraction = disagreement_steps / total_steps if total_steps > 0 else 0.0
++    stats = {
++        "num_violations": num_violations,
++        "violation_fraction": violation_fraction,
++        "first_violation_episode": first_violation_episode,
++        "first_violation_step": first_violation_step,
++        "disagreement_fraction": disagreement_fraction,
++    }
++    return stats, violation_trace
++
++
++def solicit_input(recorder, executor, maxsteps):
+     state = executor._simulator.restart()
+     finished = False
+     executor._shield.reset()
+@@ -83,8 +139,7 @@ def solicit_input(recorder,executor,maxsteps):
+         safe_actions = executor._shield.shielded_actions(range(len(actions)))
+         logger.debug(f"Number of actions: {actions}. Safe action indices: {safe_actions}")
+         time_step = executor.current_time_step()
+-        # action_step = policy.action(time_step)  # agent(policy,time_step, allowed_actions=safe_actions)
+-        action = int(input('Action: '))
++        action = int(input("Action: "))
+         executor._simulator.step(action)
+         state = executor._simulator._report_state()
+         print(executor._model.state_valuations.get_json(state))
+@@ -107,7 +162,7 @@ def solicit_input(recorder,executor,maxsteps):
+     recorder.end_path(finished)
+ 
+ 
+-def record_track(recorder,executor,agent,policy,maxsteps,no_tracks=1):
++def record_track(recorder, executor, agent, policy, maxsteps, no_tracks=1):
+     for _ in range(no_tracks):
+         state = executor._simulator.restart()
+         finished = False
+@@ -120,7 +175,7 @@ def record_track(recorder,executor,agent,policy,maxsteps,no_tracks=1):
+             safe_actions = executor._shield.shielded_actions(range(len(actions)))
+             logger.debug(f"Number of actions: {actions}. Safe action indices: {safe_actions}")
+             time_step = executor.current_time_step()
+-            action_step = policy.action(time_step) #agent(policy,time_step, allowed_actions=safe_actions)
++            action_step = policy.action(time_step)
+             action = executor.apply_action(action_step.action)
+             executor._simulator.step(action)
+             state = executor._simulator._report_state()
+@@ -141,9 +196,13 @@ def record_track(recorder,executor,agent,policy,maxsteps,no_tracks=1):
+         recorder.record_allowed_actions(safe_actions)
+         recorder.end_path(finished)
+ 
++
+ class TF_Environment(SimulationExecutor):
+-    def __init__(self,model,shield,obs_length=1,valuations=False,obs_type='BELIEF_SUPPORT',maxsteps=100,goal_value=1000):
+-        super().__init__(model,shield)
++    def __init__(self, model, shield, seed=10, poison_spec=None, obs_length=1,
++                 valuations=False, obs_type="BELIEF_SUPPORT", maxsteps=100, goal_value=1000):
++        super().__init__(model, shield, seed=seed)
++        self.seed = seed
++        self.poison_spec = poison_spec
+         self.shield_on = True
+         self.decay = 0
+         self.obs_type = obs_type
+@@ -152,15 +211,18 @@ class TF_Environment(SimulationExecutor):
+         self.fixed_policy = False
+         self.fixed_policy_p = 0
+         self.shield_switch_episode = -1
++        self.shield_switch_type = "HARD"
+         self.no_violations = 0
++        self.episode_violation_log = []
++
+         action_keywords = set()
+         for s_i in range(self._model.nr_states):
+             n_act = self._model.get_nr_available_actions(s_i)
+             for a_i in range(n_act):
+-                action_keywords = action_keywords.union(self._model.choice_labeling.get_labels_of_choice(self._model.get_choice_index(s_i,a_i)))
+-        # action_spec_count = [self._model.get_nr_available_actions(i) for i in range(1,self._model.nr_states)]
+-        self.action_indices = dict([[j,i] for i,j in enumerate(action_keywords)])
+-        self.act_keywords = dict([[self.action_indices[i],i] for i in self.action_indices])
++                action_keywords = action_keywords.union(
++                    self._model.choice_labeling.get_labels_of_choice(self._model.get_choice_index(s_i, a_i)))
++        self.action_indices = dict([[j, i] for i, j in enumerate(action_keywords)])
++        self.act_keywords = dict([[self.action_indices[i], i] for i in self.action_indices])
+         self.nr_actions = len(action_keywords)
+         self.valuations = valuations
+         if valuations:
+@@ -170,58 +232,63 @@ class TF_Environment(SimulationExecutor):
+         else:
+             self.obs_length = obs_length
+             obs_shape = np.array(self.observe()).shape
+-        self.act_spec = tf_agents.specs.BoundedTensorSpec(dtype='int32', name='action', minimum=0, maximum=self.nr_actions - 1,shape=tf.TensorShape(()))
+-        self.disc_spec = tf_agents.specs.BoundedTensorSpec(name='discount', dtype='float32', minimum=0, maximum=1,shape=tf.TensorShape(()))
+-        self.obs_spec = {'obs': tf_agents.specs.TensorSpec(name='observation', dtype='int32', shape=tf.TensorShape(obs_shape)),'mask': tf_agents.specs.TensorSpec(shape=(self.nr_actions,), dtype='bool',name='mask')}
+-        self.rew_spec = tf_agents.specs.TensorSpec(name='reward', dtype='float32', shape=tf.TensorShape(()))
+-        self.step_spec = tf_agents.specs.TensorSpec(name='step_type', dtype='int32', shape=tf.TensorShape(()))
++        self.act_spec = tf_agents.specs.BoundedTensorSpec(dtype="int32", name="action", minimum=0, maximum=self.nr_actions - 1, shape=tf.TensorShape(()))
++        self.disc_spec = tf_agents.specs.BoundedTensorSpec(name="discount", dtype="float32", minimum=0, maximum=1, shape=tf.TensorShape(()))
++        self.obs_spec = {"obs": tf_agents.specs.TensorSpec(name="observation", dtype="int32", shape=tf.TensorShape(obs_shape)), "mask": tf_agents.specs.TensorSpec(shape=(self.nr_actions,), dtype="bool", name="mask")}
++        self.rew_spec = tf_agents.specs.TensorSpec(name="reward", dtype="float32", shape=tf.TensorShape(()))
++        self.step_spec = tf_agents.specs.TensorSpec(name="step_type", dtype="int32", shape=tf.TensorShape(()))
+         self.time_step_spec = ts.TimeStep(discount=self.disc_spec, observation=self.obs_spec, reward=self.rew_spec, step_type=self.step_spec)
+-        replay_config = {'mem_size':obs_length,'obs_dims':self.obs_length}
+-        # self.replay_memory = ReplayMemory(replay_config)
+-        # self.replay_memory.initial_add(self.observe())
++
+         self.step_count = 0
+         self.episode_count = 0
+-        self.cost_ind = list(self._model.reward_models.keys()).index('costs')
+-        self.gain_ind = list(self._model.reward_models.keys()).index('gains')
++        self.cost_ind = list(self._model.reward_models.keys()).index("costs")
++        self.gain_ind = list(self._model.reward_models.keys()).index("gains")
+         self.first = True
+         self.maxsteps = maxsteps
+ 
++        self.poison_fn = None
++        self.risky_flags = None
++        self.poison_stats = {
++            "mutated_records": 0.0,
++            "total_delta": 0.0,
++            "raw_sum": 0.0,
++            "raw_sq": 0.0,
++            "raw_min": None,
++            "raw_max": None,
++            "n_records": 0.0,
++        }
++        if poison_spec is not None:
++            self.set_poison(poison_spec)
+ 
+     def restart(self):
+         self._simulator.restart()
+         self._shield.reset()
+-        # self.replay_memory.reset(self.observe())
+         self.step_count = 0
+         self.sink_flag = False
+         self.episode_count += 1
+ 
+     def reset(self):
+         self.restart()
+-        # self._simulator.step(0)
+-        # self._shield.track(0,self._simulator._report_observation())
+         return self.current_time_step()
+ 
+     def is_done(self):
+-        # if self._model.is_sink_state(self._simulator._engine.get_current_state()) and not self.sink_flag:
+-        #     self.sink_flag = True
+-        #     return False
+-        return self._model.is_sink_state(self._simulator._engine.get_current_state()) or self.step_count==self.maxsteps
++        return self._model.is_sink_state(self._simulator._engine.get_current_state()) or self.step_count == self.maxsteps
+ 
+-    def current_time_step(self,rew=None):
++    def current_time_step(self, rew=None):
+         if rew is not None:
+             r = tf.constant([rew])
+         else:
+-            r = tf.constant([self._simulator._report_rewards()[0]]) if len(self._simulator._report_rewards()) != 0 else tf.constant([0.])
+-        discount = tf.constant([1.])
++            r = tf.constant([self._simulator._report_rewards()[0]]) if len(self._simulator._report_rewards()) != 0 else tf.constant([0.0])
++        discount = tf.constant([1.0])
+         actions = self._simulator.available_actions()
+         if self.shield_on:
+             safe_actions = self._shield.shielded_actions(range(len(actions)))
+         else:
+-            if self.shield_switch_type == 'HARD':
++            if self.shield_switch_type == "HARD":
+                 safe_actions = actions
+-            elif self.shield_switch_type == 'SOFT':
++            elif self.shield_switch_type == "SOFT":
+                 if np.random.random(1)[0] > self.decay:
+-                    safe_actions = self._shield.shielded_actions(range(len(actions))) ## Shield on
++                    safe_actions = self._shield.shielded_actions(range(len(actions)))
+                 else:
+                     safe_actions = actions
+ 
+@@ -231,182 +298,245 @@ class TF_Environment(SimulationExecutor):
+             else:
+                 safe_actions = range(len(actions))
+ 
+-        if len(self._model.choice_labeling.get_labels_of_choice(self._model.get_choice_index(self._simulator._report_state(),0)))==0:
++        if len(self._model.choice_labeling.get_labels_of_choice(self._model.get_choice_index(self._simulator._report_state(), 0))) == 0:
+             mask_inds = [0]
+         else:
+-            mask_inds = [self.action_indices[self._model.choice_labeling.get_labels_of_choice(self._model.get_choice_index(self._simulator._report_state(),a_i)).pop()] for a_i in safe_actions]
+-        mask = np.zeros(shape=(self.nr_actions,),dtype=bool)
++            mask_inds = [self.action_indices[self._model.choice_labeling.get_labels_of_choice(self._model.get_choice_index(self._simulator._report_state(), a_i)).pop()] for a_i in safe_actions]
++        mask = np.zeros(shape=(self.nr_actions,), dtype=bool)
+         for i in mask_inds:
+             mask[i] = True
+-        mask = tf.logical_and(tf.ones(shape=(1,self.nr_actions),dtype=tf.bool),mask)
+-        # obs_in = []
+-        # for o_i in range(self.obs_length-1):
+-        #
+-        # print(self._simulator._report_state())
+-        # observation = {'obs':tf.constant([self.replay_memory.getObs()],dtype='int32'),'mask':mask}
+-        observation = {'obs':tf.constant([self.observe()],dtype='int32'),'mask':mask}
++        mask = tf.logical_and(tf.ones(shape=(1, self.nr_actions), dtype=tf.bool), mask)
++        observation = {"obs": tf.constant([self.observe()], dtype="int32"), "mask": mask}
+         if self.first:
+             self.first = False
+-            return ts.TimeStep(reward=r, observation=observation, discount=discount,step_type=tf.constant([ts.StepType.FIRST]))
++            return ts.TimeStep(reward=r, observation=observation, discount=discount, step_type=tf.constant([ts.StepType.FIRST]))
+         elif self.is_done():
+             self.restart()
+-            self.first=True
+-            return ts.TimeStep(reward=r,observation=observation,discount=discount,step_type=tf.constant([ts.StepType.LAST]))
++            self.first = True
++            return ts.TimeStep(reward=r, observation=observation, discount=discount, step_type=tf.constant([ts.StepType.LAST]))
+         else:
+-            return ts.TimeStep(reward=r, observation=observation,discount=discount, step_type=tf.constant([ts.StepType.MID]))
++            return ts.TimeStep(reward=r, observation=observation, discount=discount, step_type=tf.constant([ts.StepType.MID]))
+ 
+-    def step(self,action):
++    def step(self, action):
+         state, rew, labels = self._simulator.step(action)
+         self._shield.track(action, self._simulator._report_observation())
+-        # obs = self.observe()
+         self.step_count += 1
+-        if (self.is_done() and 'traps' in labels):
++        if (self.is_done() and "traps" in labels):
+             rew[self.cost_ind] += self.goal_value if self.goal_value > 10 else 0
+             self.no_violations += 1
+-        elif (self.is_done() and 'goal' in labels):
++            self.episode_violation_log.append(self.episode_count)
++        elif (self.is_done() and "goal" in labels):
+             rew[self.gain_ind] += self.goal_value
+         elif (self.is_done()):
+             rew[self.cost_ind] += 0
+-        # elif 'traps' in labels:
+-        #     rew[self.cost_ind] += self.goal_value if self.goal_value > 10 else 0
+-        current_step = self.current_time_step(rew=self.cost_fn(rew))
++
++        cost = self.cost_fn(rew)
++        if self.poison_fn is not None:
++            self._record_raw_reward_stat(cost)
++            cost = self.poison_fn(cost, state)
++        current_step = self.current_time_step(rew=cost)
+         return current_step
+ 
+-    def simulate_deep_RL(self, recorder, total_nr_runs=5,eval_interval=1000,eval_episodes=10,eval_env=None,agent_arg='DQN',hyper_param=None):
++    def set_poison(self, poison_spec):
++        self.poison_spec = poison_spec
++        name = poison_spec.get("name", "clean")
++        delta = float(poison_spec.get("delta", 0.0))
++        scope = poison_spec.get("scope", "full")
++        risky_flags = poison_spec.get("risky_flags", None)
++        if risky_flags is not None:
++            self.risky_flags = np.asarray(risky_flags, dtype=bool)
++
++        def _poison_fn(cost, state):
++            if name == "clean" or delta == 0.0:
++                return cost
++            if scope == "shield-on" and not self.shield_on:
++                return cost
++            if name == "constant":
++                xi = delta
++            elif name == "risk":
++                xi = delta if (self.risky_flags is not None and self.risky_flags[state]) else 0.0
++            elif name == "contrast":
++                xi = delta if (self.risky_flags is not None and self.risky_flags[state]) else -delta
++            else:
++                xi = 0.0
++            if xi != 0.0:
++                self.poison_stats["mutated_records"] += 1.0
++                self.poison_stats["total_delta"] += float(xi)
++            return cost + xi
++
++        self.poison_fn = _poison_fn
++
++    def _record_raw_reward_stat(self, cost):
++        c = float(cost)
++        self.poison_stats["n_records"] += 1.0
++        self.poison_stats["raw_sum"] += c
++        self.poison_stats["raw_sq"] += c * c
++        if self.poison_stats["raw_min"] is None or c < self.poison_stats["raw_min"]:
++            self.poison_stats["raw_min"] = c
++        if self.poison_stats["raw_max"] is None or c > self.poison_stats["raw_max"]:
++            self.poison_stats["raw_max"] = c
++
++    def simulate_deep_RL(self, recorder, total_nr_runs=5, eval_interval=1000, eval_episodes=10,
++                         eval_env=None, agent_arg="DQN", hyper_param=None,
++                         at_retirement_eps=1000, final_eval_eps=5000, final_unshielded=True):
++        random.seed(self.seed)
++        np.random.seed(self.seed)
++        tf.random.set_seed(self.seed)
+         gamma = 1.0
+         alpha = 3e-2
+         self.alpha = alpha
+         log_interval = 10
+         num_eval_episodes = eval_episodes
+-        eval_interval = eval_interval
+         collect_steps_per_iteration = 1
++
+         if hyper_param:
+-            if 'network_size' in hyper_param:
+-                RL_agent = DeepAgent(self, alpha, agent_arg,layer_size=hyper_param['network_size'])
++            if "network_size" in hyper_param:
++                RL_agent = DeepAgent(self, alpha, agent_arg, layer_size=hyper_param["network_size"])
+             else:
+-                if 'alpha' in hyper_param:
+-                    alpha = hyper_param['alpha']
++                if "alpha" in hyper_param:
++                    alpha = hyper_param["alpha"]
+                     self.alpha = alpha
+-
+-                RL_agent = DeepAgent(self,alpha, agent_arg)
++                RL_agent = DeepAgent(self, alpha, agent_arg)
+         else:
+-            RL_agent = DeepAgent(self,alpha,agent_arg)
++            RL_agent = DeepAgent(self, alpha, agent_arg)
++
+         buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
+             data_spec=RL_agent.agent.collect_data_spec,
+             batch_size=1,
+             max_length=self.maxsteps)
+-        avg_return,episodes = compute_avg_return(eval_env, RL_agent.agent,RL_agent.agent.policy,num_eval_episodes,max_steps=self.maxsteps)
+-        # record_track(recorder, eval_env, RL_agent.agent, RL_agent.agent.policy, maxsteps)
++        avg_return, episodes = compute_avg_return(eval_env, RL_agent.agent, RL_agent.agent.policy, num_eval_episodes, max_steps=self.maxsteps)
+         self.reset()
+-        collect_data(self, RL_agent.agent,RL_agent.agent.collect_policy, buffer,steps =2)
+-        dataset = buffer.as_dataset(num_parallel_calls=1,sample_batch_size=64,num_steps=2).prefetch(3)
++        collect_data(self, RL_agent.agent, RL_agent.agent.collect_policy, buffer, steps=2)
++        dataset = buffer.as_dataset(num_parallel_calls=1, sample_batch_size=64, num_steps=2).prefetch(3)
+         iterator = iter(dataset)
+         RL_agent.agent.train = common.function(RL_agent.agent.train)
+-        returns = [(0,)+avg_return]
+-        episodes_list = [[0]+episodes]
+-        rand_pol = tf_agents.policies.random_tf_policy.RandomTFPolicy(self.time_step_spec,self.act_spec,observation_and_action_constraint_splitter=RL_agent.observation_and_action_constraint_splitter)
+-        print(f'Random policy return: {compute_avg_return(eval_env,RL_agent.agent,rand_pol,10,max_steps=self.maxsteps)}')
++        returns = [(0,) + avg_return]
++        episodes_list = [[0] + episodes]
++        disagreement_curve = []
++        at_retirement_stats = None
++        at_retirement_trace = None
+ 
+-        for _ in range(total_nr_runs):
++        rand_pol = tf_agents.policies.random_tf_policy.RandomTFPolicy(self.time_step_spec, self.act_spec, observation_and_action_constraint_splitter=RL_agent.observation_and_action_constraint_splitter)
++        print(f"Random policy return: {compute_avg_return(eval_env, RL_agent.agent, rand_pol, 10, max_steps=self.maxsteps)}")
+ 
+-            if agent_arg == 'REINFORCE':
+-                collect_episode(self,RL_agent.agent.collect_policy,collect_steps_per_iteration,buffer)
++        for _ in range(total_nr_runs):
++            if agent_arg == "REINFORCE":
++                collect_episode(self, RL_agent.agent.collect_policy, collect_steps_per_iteration, buffer)
+                 experience = buffer.gather_all()
+                 train_loss = RL_agent.agent.train(experience).loss
+                 buffer.clear()
+             else:
+-                collect_data(self,RL_agent.agent,  RL_agent.agent.collect_policy, buffer, collect_steps_per_iteration)
++                collect_data(self, RL_agent.agent, RL_agent.agent.collect_policy, buffer, collect_steps_per_iteration)
+                 experience, unused_info = next(iterator)
+                 train_loss = RL_agent.agent.train(experience).loss
+ 
+-
+-
+-            step = int(RL_agent.agent.train_step_counter.numpy()/25) if agent_arg=='PPO' else RL_agent.agent.train_step_counter.numpy()
++            step = int(RL_agent.agent.train_step_counter.numpy() / 25) if agent_arg == "PPO" else RL_agent.agent.train_step_counter.numpy()
+ 
+             if step % log_interval == 0:
+-                print('step = {0}: loss = {1}'.format(step, train_loss))
++                print("step = {0}: loss = {1}".format(step, train_loss))
+ 
+             if step % eval_interval == 0:
+-                avg_return,episodes = compute_avg_return(eval_env, RL_agent.agent, RL_agent.agent.policy, num_eval_episodes,max_steps=self.maxsteps)
+-                print('step = {0}: Average Return = {1}'.format(step, avg_return))
+-                returns.append((step,)+avg_return)
+-                episodes_list.append([step]+episodes)
++                avg_return, episodes = compute_avg_return(eval_env, RL_agent.agent, RL_agent.agent.policy, num_eval_episodes, max_steps=self.maxsteps)
++                print("step = {0}: Average Return = {1}".format(step, avg_return))
++                returns.append((step,) + avg_return)
++                episodes_list.append([step] + episodes)
+ 
+-            if step == self.shield_switch_episode:
++                prev_eval_shield = eval_env.shield_on
++                eval_env.shield_on = False
++                dis_stats, _ = evaluate_episodes(eval_env, RL_agent.agent.policy, num_eval_episodes, max_steps=self.maxsteps)
++                disagreement_curve.append([step, dis_stats["disagreement_fraction"]])
++                eval_env.shield_on = prev_eval_shield
++
++            if step == self.shield_switch_episode and self.shield_on:
++                eval_env.shield_on = False
++                at_retirement_stats, at_retirement_trace = evaluate_episodes(eval_env, RL_agent.agent.policy, at_retirement_eps, max_steps=self.maxsteps)
+                 self.shield_on = False
+                 eval_env.shield_on = False
+ 
+             if not self.shield_on:
+-                self.decay += 5e-3*alpha
++                self.decay += 5e-3 * alpha
+                 eval_env.decay = self.decay
+ 
+-        # record_track(recorder,eval_env,RL_agent.agent,RL_agent.agent.policy,self.maxsteps,3)
+-        eval_env.reset_violation_count()
+-        compute_avg_return(eval_env,RL_agent.agent, RL_agent.agent.policy, 5000,max_steps=self.maxsteps)
+-        print(f'Violations during Learning: {self.no_violations}')
+-        print(f'Violations after Learning: {eval_env.no_violations}')
+-        return returns,episodes_list
+-
+-    def set_shield_switch(self,eps,s_type):
++        if final_unshielded:
++            eval_env.shield_on = False
++        eval_stats, eval_trace = evaluate_episodes(eval_env, RL_agent.agent.policy, final_eval_eps, max_steps=self.maxsteps)
++        print(f"Violations during Learning: {self.no_violations}")
++        print(f"Violations after Learning: {eval_env.no_violations}")
++
++        result = {
++            "returns": returns,
++            "episodes_list": episodes_list,
++            "eval_stats": eval_stats,
++            "eval_trace": eval_trace,
++            "at_retirement_stats": at_retirement_stats,
++            "at_retirement_trace": at_retirement_trace,
++            "disagreement_curve": disagreement_curve,
++            "during_violations": self.no_violations,
++            "during_violation_episodes": self.episode_violation_log,
++            "poison_stats": self.poison_stats,
++        }
++        return result
++
++    def set_shield_switch(self, eps, s_type):
+         self.shield_switch_episode = eps
+         self.shield_switch_type = s_type
+ 
+     def reset_violation_count(self):
+         self.no_violations = 0
+-    def set_fixed_policy(self,p):
++
++    def set_fixed_policy(self, p):
+         self.fixed_policy = True
+         self.fixed_policy_p = p
+ 
+-
+     def observe(self):
+         if self.valuations:
+-            return np.array(self.get_observation_valuation(),dtype=int)
++            return np.array(self.get_observation_valuation(), dtype=int)
+         else:
+-            if self.obs_type == 'STATE_LEVEL':
++            if self.obs_type == "STATE_LEVEL":
+                 return [self._simulator._report_state()]
+-            elif self.obs_type == 'BELIEF_SUPPORT':
+-                support = np.zeros((self._model.nr_states,),dtype=int)
++            elif self.obs_type == "BELIEF_SUPPORT":
++                support = np.zeros((self._model.nr_states,), dtype=int)
+                 for i in self._shield.list_support():
+                     support[i] = 1
+                 return support.tolist()
+             else:
+                 return [self._simulator._report_observation()]
+ 
+-    def cost_fn(self,rew_in):
+-        if len(rew_in)>1:
+-            return rew_in[self.gain_ind]-rew_in[self.cost_ind]
++    def cost_fn(self, rew_in):
++        if len(rew_in) > 1:
++            return rew_in[self.gain_ind] - rew_in[self.cost_ind]
+         else:
+             return -rew_in[0]
+ 
+     def get_observation_valuation(self):
+-        if self.obs_type == 'STATE_LEVEL':
++        if self.obs_type == "STATE_LEVEL":
+             return [json_to_int(self._model.state_valuations.get_json(self._simulator._report_state())[i]) for i in self.keywords]
+         else:
+             return [json_to_int(self._model.observation_valuations.get_json(self._simulator._report_observation())[i]) for i in self.keywords]
+ 
+     def get_observation_keywords(self):
+-        if self.obs_type == 'STATE_LEVEL':
++        if self.obs_type == "STATE_LEVEL":
+             keywords = list([i[1:-2] for i in str(self._model.state_valuations.get_json(0)).split()[1:-1:2]])
+         else:
+             keywords = list([i[1:-2] for i in str(self._model.observation_valuations.get_json(0)).split()[1:-1:2]])
+         return keywords
+ 
+     def get_choice_labels(self):
+-        return [self._model.choice_labeling.get_labels_of_choice(self._model.get_choice_index(self._simulator._report_state(),a_i)).pop() for a_i in range(self._simulator.nr_available_actions())]
++        return [self._model.choice_labeling.get_labels_of_choice(self._model.get_choice_index(self._simulator._report_state(), a_i)).pop() for a_i in range(self._simulator.nr_available_actions())]
+ 
+-    def apply_action(self,act_in):
++    def apply_action(self, act_in):
+         try:
+             act_keyword = self.act_keywords[int(act_in)]
+             choice_list = self.get_choice_labels()
+             return choice_list.index(act_keyword)
+-        except:
++        except Exception:
+             return 0
+ 
+-    def collect_buffer(self,total_nr_runs=5,total_nr_good_runs=1):
++    def collect_buffer(self, total_nr_runs=5, total_nr_good_runs=1):
+         alpha = 3e-2
+         collect_steps_per_iteration = 1
+         good_runs = 0
+-        agent_arg = 'REINFORCE'
++        agent_arg = "REINFORCE"
+         RL_agent = DeepAgent(self, alpha, agent_arg)
+         buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
+             data_spec=RL_agent.agent.collect_data_spec,
+@@ -414,12 +544,9 @@ class TF_Environment(SimulationExecutor):
+             max_length=self.maxsteps)
+         experience_set = []
+         self.reset()
+-
+-        rand_pol = tf_agents.policies.random_tf_policy.RandomTFPolicy(self.time_step_spec, self.act_spec,
+-                                                                      observation_and_action_constraint_splitter=RL_agent.observation_and_action_constraint_splitter)
+-
++        rand_pol = tf_agents.policies.random_tf_policy.RandomTFPolicy(self.time_step_spec, self.act_spec, observation_and_action_constraint_splitter=RL_agent.observation_and_action_constraint_splitter)
+         for _ in range(total_nr_runs):
+-            if agent_arg == 'REINFORCE':
++            if agent_arg == "REINFORCE":
+                 good_run = collect_episode(self, rand_pol, collect_steps_per_iteration, buffer)
+                 if good_run:
+                     experience = buffer.gather_all()
+@@ -432,11 +559,11 @@ class TF_Environment(SimulationExecutor):
+                 collect_data(self, RL_agent.agent, RL_agent.agent.collect_policy, buffer, collect_steps_per_iteration)
+                 experience, unused_info = next(iterator)
+                 train_loss = RL_agent.agent.train(experience).loss
+-
+         return experience_set
+ 
++
+ def json_to_int(i):
+     try:
+         return int(i)
+-    except:
+-        return 0 if i=='false' else 1
+\ No newline at end of file
++    except Exception:
++        return 0 if i == "false" else 1
+diff --git a/run_carr_victim.py b/run_carr_victim.py
+new file mode 100644
+index 0000000..1b580dd
+--- /dev/null
++++ b/run_carr_victim.py
+@@ -0,0 +1,228 @@
++#!/usr/bin/env python3
++"""Standalone Carr et al. AAAI'23 victim runner (server rebuild).
++
++Keeps all experiment code on the server. Imports upstream model builders and the
++patched TF_Environment from the local repo. Two independent belief trackers are
++created for learn/eval (protocol amendment v1.4/vC).
++"""
++import argparse
++import json
++import os
++import random
++import sys
++import time
++
++import numpy as np
++import stormpy as sp
++
++import gridstorm.models as grid_models
++from shield import build_model, compute_winning_region, construct_otf_shield
++from noshield import NoShield
++from model_simulator import Tracker
++from rl_simulator import TF_Environment
++
++
++def compute_risky_flags(model):
++    """Return bool array: state is risk-adjacent if some available action can
++    transition (with positive probability) into a trap state in one step."""
++    trap_states = set()
++    for s in range(model.nr_states):
++        if "traps" in model.labels_state(s):
++            trap_states.add(s)
++    risky = np.zeros(model.nr_states, dtype=bool)
++    for s in range(model.nr_states):
++        for a in range(model.get_nr_available_actions(s)):
++            ci = model.get_choice_index(s, a)
++            for entry in model.transition_matrix.get_row(ci):
++                if entry.column in trap_states and entry.value() > 0.0:
++                    risky[s] = True
++                    break
++            if risky[s]:
++                break
++    return risky
++
++
++def build_env(model, tracker, seed, poison_spec, args):
++    return TF_Environment(
++        model,
++        tracker,
++        seed=seed,
++        poison_spec=poison_spec,
++        obs_length=1,
++        valuations=args.valuations,
++        obs_type=args.obs_level,
++        maxsteps=args.maxsteps,
++        goal_value=args.goal_value,
++    )
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--grid-model", default="obstacle")
++    p.add_argument("--constants", default="N=6")
++    p.add_argument("--learning-method", default="PPO")
++    p.add_argument("--max-runs", type=int, default=100000)
++    p.add_argument("--maxsteps", type=int, default=100)
++    p.add_argument("--obs-level", default="BELIEF_SUPPORT")
++    p.add_argument("--valuations", action="store_true")
++    p.add_argument("--goal-value", type=int, default=1000)
++    p.add_argument("--seed", type=int, default=101)
++    p.add_argument("--noshield", action="store_true")
++    p.add_argument("--switch-shield", default="HARD", choices=["HARD", "SOFT", "RETAINED"])
++    p.add_argument("--shield-episode", type=int, default=4000)
++    p.add_argument("--eval-interval", type=int, default=1000)
++    p.add_argument("--eval-episodes", type=int, default=10)
++    p.add_argument("--at-retirement-eps", type=int, default=1000)
++    p.add_argument("--final-eval-eps", type=int, default=5000)
++    p.add_argument("--poison-name", default="clean", choices=["clean", "constant", "risk", "contrast"])
++    p.add_argument("--poison-delta", type=float, default=2.0)
++    p.add_argument("--poison-scope", default="shield-on", choices=["full", "shield-on"])
++    p.add_argument("--fname", default="_VICTIM")
++    p.add_argument("--output-dir", required=True)
++    p.add_argument("--no-overwrite", action="store_true", help="refuse if output dir already contains the summary")
++    args = p.parse_args()
++
++    videoname = f"{args.grid_model}-{'-'.join(args.constants.split('='))}-{'noshield' if args.noshield else 'computed-shield'}"
++    out_summary = os.path.join(args.output_dir, f"{videoname}{args.fname}_summary.json")
++    if args.no_overwrite and os.path.exists(out_summary):
++        raise SystemExit(f"Refusing to overwrite existing summary: {out_summary}")
++    os.makedirs(args.output_dir, exist_ok=True)
++
++    # Seeds are also set inside simulate_deep_RL, but set here for shield/model steps.
++    random.seed(args.seed)
++    np.random.seed(args.seed)
++
++    constants = dict(item.split("=") for item in args.constants.split(","))
++    model_fn = getattr(grid_models, args.grid_model)
++    learn_input = model_fn(**constants)
++    eval_input = model_fn(**constants)
++
++    learn_model, _, formula = build_model(learn_input)
++    eval_model, _, _ = build_model(eval_input)
++
++    if args.noshield:
++        otf_shield = NoShield()
++    else:
++        wr = compute_winning_region(learn_model, formula, initial=False)
++        otf_shield = construct_otf_shield(learn_model, wr)
++
++    # Independent belief trackers for learn and eval (v1.4/vC).
++    learn_tracker = Tracker(learn_model, otf_shield)
++    eval_tracker = Tracker(eval_model, otf_shield)
++
++    if args.poison_name == "clean" or args.poison_delta == 0.0:
++        poison_spec = {"name": "clean", "delta": 0.0, "scope": args.poison_scope, "risky_flags": None}
++    else:
++        risky_flags = compute_risky_flags(learn_model)
++        poison_spec = {
++            "name": args.poison_name,
++            "delta": args.poison_delta,
++            "scope": args.poison_scope,
++            "risky_flags": risky_flags,
++        }
++
++    learn_env = build_env(learn_model, learn_tracker, args.seed, poison_spec, args)
++    eval_env = build_env(eval_model, eval_tracker, args.seed, None, args)
++
++    # Switch wiring. For retained/no-shield, never switch. Eval env never switches
++    # by its own loop; final eval is explicitly unshielded.
++    if args.noshield or args.switch_shield == "RETAINED":
++        learn_env.set_shield_switch(-1, "HARD")
++        eval_env.set_shield_switch(-1, "HARD")
++    else:
++        learn_env.set_shield_switch(args.shield_episode, args.switch_shield)
++        eval_env.set_shield_switch(-1, args.switch_shield)
++
++    t0 = time.time()
++    result = learn_env.simulate_deep_RL(
++        None,
++        total_nr_runs=args.max_runs,
++        eval_interval=args.eval_interval,
++        eval_episodes=args.eval_episodes,
++        eval_env=eval_env,
++        agent_arg=args.learning_method,
++        hyper_param=None,
++        at_retirement_eps=args.at_retirement_eps,
++        final_eval_eps=args.final_eval_eps,
++        final_unshielded=(not args.noshield and args.switch_shield != "RETAINED"),
++    )
++    elapsed = time.time() - t0
++
++    base = os.path.join(args.output_dir, f"{videoname}{args.fname}")
++    np.save(base + "_eval_trace.npy", np.asarray(result["eval_trace"], dtype=np.int8))
++    at_trace_file = None
++    if result.get("at_retirement_trace") is not None:
++        at_trace_file = f"{videoname}{args.fname}_at_retirement_trace.npy"
++        np.save(os.path.join(args.output_dir, at_trace_file), np.asarray(result["at_retirement_trace"], dtype=np.int8))
++
++    try:
++        np.savetxt(base + ".csv", np.asarray(result["returns"]), delimiter=" ")
++    except Exception as e:
++        print(f"WARN could not save returns csv: {e}", file=sys.stderr)
++    try:
++        np.savetxt(base + "_Episodes.csv", np.asarray(result["episodes_list"]), delimiter=" ")
++    except Exception as e:
++        print(f"WARN could not save episodes csv: {e}", file=sys.stderr)
++
++    cfg = {
++        "grid_model": args.grid_model,
++        "constants": args.constants,
++        "learning_method": args.learning_method,
++        "max_runs": args.max_runs,
++        "maxsteps": args.maxsteps,
++        "obs_level": args.obs_level,
++        "valuations": args.valuations,
++        "goal_value": args.goal_value,
++        "seed": args.seed,
++        "noshield": args.noshield,
++        "switch_shield": args.switch_shield,
++        "shield_episode": args.shield_episode,
++        "poison": None if args.poison_name == "clean" else {"name": args.poison_name, "delta": args.poison_delta, "scope": args.poison_scope},
++        "eval_interval": args.eval_interval,
++        "eval_episodes": args.eval_episodes,
++        "at_retirement_eps": args.at_retirement_eps,
++        "final_eval_eps": args.final_eval_eps,
++        "fname": args.fname,
++    }
++
++    summary = {
++        "cfg": cfg,
++        "videoname": videoname,
++        "during_violations": result["during_violations"],
++        "during_violation_episodes": result["during_violation_episodes"],
++        "eval_stats": result["eval_stats"],
++        "at_retirement_stats": result["at_retirement_stats"],
++        "disagreement_curve": result["disagreement_curve"],
++        "poison_stats": result["poison_stats"],
++        "poison_scope": args.poison_scope,
++        "eval_trace_file": f"{videoname}{args.fname}_eval_trace.npy",
++        "at_retirement_trace_file": at_trace_file,
++        "wall_time_sec": elapsed,
++    }
++
++    # Make JSON numpy-safe.
++    def _clean(obj):
++        if isinstance(obj, dict):
++            return {k: _clean(v) for k, v in obj.items()}
++        if isinstance(obj, (list, tuple)):
++            return [_clean(v) for v in obj]
++        if isinstance(obj, np.ndarray):
++            return obj.tolist()
++        if isinstance(obj, (np.integer,)):
++            return int(obj)
++        if isinstance(obj, (np.floating,)):
++            return float(obj)
++        if isinstance(obj, (np.bool_,)):
++            return bool(obj)
++        return obj
++
++    summary = _clean(summary)
++    with open(out_summary, "w") as f:
++        json.dump(summary, f, indent=1)
++
++    print(f"DONE seed={args.seed} poison={args.poison_name} delta={args.poison_delta} "
++          f"scope={args.poison_scope} wall={elapsed:.1f}s summary={out_summary}")
++
++
++if __name__ == "__main__":
++    main()

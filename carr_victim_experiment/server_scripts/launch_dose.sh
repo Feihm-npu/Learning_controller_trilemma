@@ -1,8 +1,8 @@
 #!/bin/bash
 # v1.7 dose-response battery launch (10 runs, seed 1, server vC code)
-cd /home/feihm/carr_victim_server
+cd ${ARTIFACT_ROOT}
 mkdir -p results/dose
-R=/home/feihm/carr_victim_server/results/dose
+R=${ARTIFACT_ROOT}/results/dose
 PIDS=()
 i=0
 # Primary: full-phase contrast on transfer-sensitive seed 1 (delta 0.1,0.25,0.5,1.0)

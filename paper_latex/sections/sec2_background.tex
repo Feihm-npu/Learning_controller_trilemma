@@ -59,6 +59,24 @@ $\theta_{t+1}=U(\theta_t,h)$.  The accepted certificate asserts that the next
 certified action is sound for every state in $X_{\mathcal A}(h)$.
 \end{definition}
 
+\begin{definition}[Finite-horizon check]
+Let $\mathcal H_{\mathcal A}^{\tau}(h,\pi)$ denote the attacked histories
+reachable within the next $\tau$ steps from $h$ under policy $\pi$.  A
+finite-horizon check is sound for its declared horizon if acceptance implies
+that $\pi(h')$ satisfies $\Gamma$ for every
+$h'\in\mathcal H_{\mathcal A}^{\tau}(h,\pi)$ and every
+$x\in X_{\mathcal A}(h')$.  It makes no claim about histories outside this
+set.
+\end{definition}
+
+\begin{definition}[Sound lifecycle certificate]
+A certificate accepted for $\pi_{\theta^+}$ at history $h$ over attack family
+$\mathcal A$ is \emph{sound} when it asserts, for every attacked history $h'$
+reachable after $h$ under $\pi_{\theta^+}$ and every $x\in X_{\mathcal A}(h')$,
+that $\pi_{\theta^+}(h')$ satisfies $\Gamma$.  An acceptance rule is sound for
+a contract when acceptance implies the safety property that contract requires.
+\end{definition}
+
 \begin{definition}[Learning-freeze frontier]
 For a family of histories parameterized by attack strength or ambiguity
 radius, the learning-freeze frontier is the boundary at which
@@ -72,33 +90,30 @@ information.
 \subsection{Assurance-Contract Failure Modes}
 \label{sec:lifecycle-attacks}
 
-Four failure modes arise at different points in the assurance lifecycle.
-Under \emph{nominal-state certification}, a certificate evaluates an estimate
-$\hat x(h)$ or a reported sensor value, so under FDI an accepted action may be
-safe for $\hat x(h)$ but unsafe for another state in $X_{\mathcal A}(h)$;
-severe-attack safety filters address this state-semantics failure.  Under
-\emph{action-only filtering}, a robust filter projects the current action into
-$K_\Gamma(h)$ when the kernel is nonempty, which protects the applied action
-at that step but leaves the learner update a separate object: if
-$\pi_{\theta_{t+1}}(h)$ leaves $K_\Gamma(h)$, the certificate covers the
-filtered action but not the updated action map.  Under \emph{uncertified
-learning after rejection}, an empty kernel lets a severe-attack filter reject
-the action or enter fail-safe mode while an update computed from the same
-attacked history falls outside the accepted certificate lifecycle.
+Four failure modes arise at different points in the assurance lifecycle, and
+three of them are already recognized.  \emph{Nominal-state certification}
+evaluates the certificate at an estimate $\hat x(h)$, so under FDI an accepted
+action may be unsafe for another state in $X_{\mathcal A}(h)$; severe-attack
+safety filters address it.  \emph{Action-only filtering} projects the applied
+action into $K_\Gamma(h)$ but leaves the updated action map a separate object,
+so the certificate can cover the actuator channel while
+$\pi_{\theta_{t+1}}(h)\notin K_\Gamma(h)$.  \emph{Uncertified learning after
+rejection} occurs when an empty kernel forces a fail-safe action while an
+update computed from the same attacked history proceeds anyway.
 
 The fourth mode is the subject of this paper.  Under \emph{protected
 adaptation with unsafe deployment}, an adaptation shield keeps every
-data-collection transition safe, so no observation made during adaptation
-reports on the raw policy that will later act alone.  Releasing that policy on
-finite evidence collected under the shield exposes the delayed effect, and raw
-release therefore requires evidence for the subject that receives action
-authority.  Corrupted reward records are not needed to reach this mode; they
-widen it, steering the trusted update rule toward a raw policy that fails
-after retirement while every protected transition stays safe.
+data-collection transition safe.  Safety of those executed transitions does
+not establish the behavior of the unfiltered raw policy that will later act
+alone.  Raw release therefore requires evidence for the subject receiving
+action authority.  Corrupted reward records are not needed to reach this mode;
+they widen it by steering the trusted update rule toward a raw policy that
+fails after retirement while protected execution remains safe.
 
 These modes require separate metrics: accepted certificates whose applied
 action is unsafe for some plausible state, accepted certificates for which the
 updated raw policy leaves the kernel, and nontrivial updates after certificate
 rejection.  End-to-end studies add delayed deployment violations, admission
 coverage, paired clean/poison outcomes, update fraction, intervention, reward,
-and certificate runtime.
+and certificate runtime.  Useful learning additionally requires paired task
+improvement over always-freeze.

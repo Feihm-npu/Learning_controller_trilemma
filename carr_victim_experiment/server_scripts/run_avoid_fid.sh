@@ -2,9 +2,9 @@
 # v1.8 avoid-domain fidelity gate: single clean run at a given switch mode
 # Usage: run_avoid_fid.sh <noshield|retained|sudden|smooth> <outdir>
 set -e
-source /home/feihm/anaconda3/etc/profile.d/conda.sh
+source ${CONDA_ROOT}/etc/profile.d/conda.sh
 conda activate carr
-cd /home/feihm/carr_victim_server/safe_RL_POMDPs_patched
+cd ${ARTIFACT_ROOT}/safe_RL_POMDPs_patched
 MODE=$1; OUTDIR=$2
 EXTRA=""
 case "$MODE" in

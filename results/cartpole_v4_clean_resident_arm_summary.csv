@@ -1,0 +1,2 @@
+pairs,clean_release_violations,clean_resident_violations,clean_resident_forward_switches,switches_before_paired_release_failure,median_switch_lead_steps
+120,2,0,2,2,4.0

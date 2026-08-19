@@ -1,8 +1,8 @@
 #!/bin/bash
 # v1.10 Part A SAC pipeline smoke (2 runs: clean + contrast, seed 499, max-runs 2000)
-cd /home/feihm/carr_victim_server
+cd ${ARTIFACT_ROOT}
 mkdir -p results/sac_smoke
-R=/home/feihm/carr_victim_server/results/sac_smoke
+R=${ARTIFACT_ROOT}/results/sac_smoke
 PIDS=()
 ./run_sac_smoke.sh clean $R/obstacle_sudden_SAC_none_d2_s499_smoke > $R/none_s499.log 2>&1 &
 PIDS+=($!)

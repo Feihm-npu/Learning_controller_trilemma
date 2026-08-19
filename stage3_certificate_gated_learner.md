@@ -1,3 +1,6 @@
+> ⚠️ **过时的规划/形式化草稿（2026-08-19 标注）。** 早于 2026-08-19 的实验与审计。
+> **当前权威状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+
 # Stage-3 算法草稿：Certificate-Gated Learner
 
 > 状态：算法伪代码 v1（2026-06-30）。配套 `stage3_certificate_extension.md`，把 theorem 的必要条件转成可实验的最小机制。该机制不是替代 severe sensor attack safety filter，而是在其 certified kernel $K_\Gamma(h)$ 之上增加 online update gate。

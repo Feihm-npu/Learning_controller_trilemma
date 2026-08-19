@@ -82,7 +82,7 @@ returned a box around the nominal attacked history.  The one-step kernel was
 computed over a grid within that box.  In all benchmarks, learning-aware FDI
 pushed the learner toward a larger positive action parameter.
 
-\begin{figure*}[t]
+\begin{figure*}[tbp]
 \centering
 \includegraphics[width=\textwidth]{lifecycle_gate_summary.pdf}
 \caption{Lifecycle-gate benchmark results.  Increasing ambiguity shrinks the
@@ -92,7 +92,7 @@ would leave the updated policy outside the kernel.}
 \label{fig:lifecycle-benchmarks}
 \end{figure*}
 
-Figure~\ref{fig:lifecycle-benchmarks} separates current-action filtering from
+Fig.~\ref{fig:lifecycle-benchmarks} separates current-action filtering from
 update certification.  At $\rho=0.8$, the nominal filter had unsafe certified
 rate $1.0$.  The robust action filter had stale-policy rate $1.0$ because the
 learner parameter left $K(\rho)$ after action projection.  LifecycleGate had
@@ -120,7 +120,7 @@ over ambiguity interval $[z-\rho,z+\rho]$.  Requiring $kz+b$ to lie in every
 kernel produced linear halfspace constraints on $(k,b)$.  The parameter gate
 projected poisoned candidates onto this certified set.
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\columnwidth]{parameter_gate_summary.pdf}
 \caption{Parameter-level gate for linear policy $u=kz+b$.  Current-action
@@ -129,14 +129,14 @@ certified halfspace set constrains the full update.}
 \label{fig:parameter-gate}
 \end{figure}
 
-Figure~\ref{fig:parameter-gate} shows the parameter-level frontier.  At
+Fig.~\ref{fig:parameter-gate} shows the parameter-level frontier.  At
 $\rho=0.7$, current-action filtering had stale-policy rate $1.0$.  The
 parameter gate kept the rate at zero and permitted two of five updates.  It
 permitted one constrained update at $\rho=0.8$ and froze at $\rho=0.85$.
-Figure~\ref{fig:matrix-parameter-gate} repeats the comparison for the matrix
+Fig.~\ref{fig:matrix-parameter-gate} repeats the comparison for the matrix
 parameterization.
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\columnwidth]{matrix_parameter_gate_summary.pdf}
 \caption{Parameter-level gate for the two-dimensional linear tank policy.  The
@@ -158,7 +158,7 @@ update directions.  Its objectives maximize stale-policy, unsafe-action, or
 forced-freeze outcomes.  For forced freeze, the attacker also selects the
 budget-feasible ambiguity radius that most reduces the certified set.
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.98\columnwidth]{adaptive_attack_summary.pdf}
 \caption{Finite-search attacker against the scalar parameter gate.  The
@@ -167,7 +167,7 @@ LifecycleGate freezes when the certified kernel is empty.}
 \label{fig:adaptive-attacker}
 \end{figure}
 
-Figure~\ref{fig:adaptive-attacker} preserves the lifecycle separation under
+Fig.~\ref{fig:adaptive-attacker} preserves the lifecycle separation under
 adaptive direction search.  At high ambiguity, the robust action filter
 protected the applied action but left the raw policy stale.  LifecycleGate
 kept unsafe, stale, and uncertified-learning rates at zero while allowing
@@ -178,7 +178,7 @@ updates, whereas LifecycleGate performed none.
 \subsection{Safe-Control-Gym Cartpole Semantics}
 
 We next instantiate the lifecycle condition in the Safe-Control-Gym cartpole
-benchmark.  The official linear-quadratic regulator (LQR) is augmented with a
+benchmark.  The official LQR is augmented with a
 two-parameter linear residual learner.  The attacker injects continuous
 observation FDI and optimizes a cross-entropy-method (CEM) objective over
 stale-policy, unsafe-action, and forced-freeze margins.  The attacked
@@ -198,7 +198,7 @@ learner is linear in $(\theta_{\mathrm{gain}},\theta_{\mathrm{bias}})$, so
 requiring the updated residual policy to stay inside all future kernels yields
 the halfspace constraints used by LifecycleGate.
 
-\begin{figure*}[t]
+\begin{figure*}[tbp]
 \centering
 \includegraphics[width=\textwidth]{safe_control_gym_paper_mini_summary.pdf}
 \caption{Safe-Control-Gym cartpole lifecycle evidence from a two-run sweep.
@@ -209,7 +209,7 @@ empty as ambiguity increased.}
 \label{fig:safe-control-gym}
 \end{figure*}
 
-Figure~\ref{fig:safe-control-gym} separates three effects.  Action filtering
+Fig.~\ref{fig:safe-control-gym} separates three effects.  Action filtering
 removed current constraint violations without certifying the updated residual
 policy.  Always-freeze avoided stale certification but admitted no learning.
 LifecycleGate projected feasible poisoned updates into the future-history

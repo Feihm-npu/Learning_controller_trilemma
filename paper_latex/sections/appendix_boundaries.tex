@@ -43,3 +43,38 @@ continuous-state invariant-set proofs.  For the benign shift, maximum action
 implementation error is $2.61\times10^{-11}$ N.  A corrected calibration
 metric left run indices, states, bias grid, and threshold unchanged.  Realized
 state violations and pre-clip saturation are reported separately.
+
+\begin{table}[t]
+\centering
+\caption{Frozen reward-integrity audit.  Rates are batch-level true- and
+false-positive rates (TPR/FPR) across seven training runs.  Each check requires
+the stated defender assumption.}
+\label{tab:reward-integrity}
+\footnotesize
+\begin{tabular}{@{}L{0.27\columnwidth}L{0.43\columnwidth}L{0.17\columnwidth}@{}}
+\toprule
+Check & Required trusted information & TPR/FPR\\
+\midrule
+Reward recomputation & Authenticated transition and deterministic reward
+& 1.000/0\\
+Known-sign check & Task guarantee that reward is nonpositive & 0.905/0\\
+Scalar envelope & Clean development range transfers & 0.917/0.036\\
+Batch-mean envelope & Clean batch mean transfers & 0.012/0.036\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Integrity controls and negative variants.}  Four frozen checks were
+evaluated on 84 clean and 84 poisoned batches from seven training runs.
+Trusted recomputation blocks every evaluated edit when reward is a
+deterministic function of the authenticated transition.  The known-sign and
+scalar-envelope checks detected above 90\% of the original sign-violating rule,
+whereas a batch-mean envelope did not.  Temporal and moment-preserving variants
+respected their stated invariants and moved parameters toward the target but
+each caused 0/24 raw-release failures; those experiments bound two hand-designed
+variants, not the channel.  Placing the known-sign check in the update loop
+reduced the original rule from 39/126 raw-release failures to 0/126, but
+Section~\ref{sec:constrained} shows that a constrained attacker retains harm.
+Authentication and trusted reward recomputation therefore provide upstream
+controls under different assumptions.  That producer remains within the
+trusted computing base of the evaluated threat model.

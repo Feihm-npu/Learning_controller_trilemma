@@ -1,3 +1,11 @@
+> ⛔ **结论已被推翻（2026-08-19 标注）。** 本文件记录 detector-constrained / stealth
+> 攻击变体**未通过**物理效应门而被关闭。2026-08-19 的 v6 实验推翻了这一结论：
+> 把编辑投影进检测器自身定义的可行盒后，攻击在每个时长都**零标记**且有效
+> （duration 12：17 次失败 vs clean 4；duration 48：46 次，并击败常驻防御 34 次）。
+> 见 `safe_control_gym_cartpole_v6_duration_stealth_attack.py` 与
+> [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md) §1.3–1.4。
+> **不要据此认为受约束攻击不可行。**
+
 # Reward-ingestion realism and detector-constrained attack WP results
 
 > Finalized 2026-08-10. R1 passed both locked-trace and burned-seed gates. R2

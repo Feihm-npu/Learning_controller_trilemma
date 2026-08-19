@@ -1,3 +1,6 @@
+> ⚠️ **过时的规划/形式化草稿（2026-08-19 标注）。** 早于 2026-08-19 的实验与审计。
+> **当前权威状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+
 # Stage-3 可行性计划：从三难到可证明边界
 
 > 状态：stage-3 入口计划（2026-06-30）。基于 `stage1_problem_formalization.md` 与 `gap_matrix.md`，并补充复核 ISAACS、Gameplay Filters、FIRA、BADControl、adversarial RL safety certification、Certified Continual Learning 等最高风险近邻后的收敛判断。

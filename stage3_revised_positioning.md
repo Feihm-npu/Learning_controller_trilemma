@@ -1,3 +1,8 @@
+> ⚠️ **过时文档（2026-08-19 标注）。** 本文件的状态判断、待办与结论均**早于**
+> 2026-08-19 的三个新实验与证据审计，其中若干结论已被推翻或收窄。
+> **唯一权威的当前状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+> 本文件保留仅为历史记录，不要据此决定下一步动作。
+
 # Stage-3 修订定位：从 plausible-state safety filtering 到 certificate lifecycle gate
 
 > 状态：贡献定位修订 v1（2026-06-30）。触发原因：`Safety of Linear Systems under Severe Sensor Attacks` 已覆盖 severe sensor attack 下的 plausible-state characterization + CBF/QP safety filter，因此本方向必须把新意收紧到 online-updated learning controller 的证书生命周期。

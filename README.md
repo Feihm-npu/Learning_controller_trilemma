@@ -2,7 +2,21 @@
 
 **用途**：对**在线更新的学习型工业控制器**（RL/神经 MPC/LLM-in-loop），在**过程感知的策略性 security 对手**（FDI/传感器欺骗，*非*有界扰动）下，"**可认证安全**（闭环物理安全包络）∧ **security**"是否可能？安全（保守/固定/可分析）—安保（自适应/不可预测）—学习（持续更新）三者是否有**被证明的根本张力**？
 
-**状态**：已进入 **NDSS 2027 research-track presentation-hardening 阶段**。当前主线不是早期的普适“三难/不可能性”叙事，而是一个更窄且有实证支撑的 security claim：reward-only update-log poisoning 下，有限时域 runtime assurance 对“控制权常驻于受保护组合策略”与“永久释放 raw learner”给出不同的安全合约。冻结 target/attacker/detector 后的 V4 五个 untouched seeds 得到 poisoned raw release `27/120`、paired clean `2/120`、resident predictive authority `0/120`，27 个 poisoned failures 均有 timely switch，且 5/5 seeds 复现；锁定 horizon sweep 在 `H=3/5/10` 均分离合同。独立旧快照审计保留 one-step resident kernel `14/71` failure 的阴性结果。理论已通过 conic homogenization 扩展到 normalization singularity 与 global gradient-norm clipping：V3 从旧条件 `0/36` eligible 提升到 `22/36` verified batches，但 coordinatewise parameter clipping 仍排除。扩展 solver 在 burned seed 上产生 `9/12` nonzero edits 仍为 `0/24` release failure，因此仍只作为 batch audit。有效攻击可被简单 log checks 检出，PPO 与 benign-adaptation utility 也继续作为阴性边界。
+**状态**：目标场地 **USENIX Security 2027 Cycle 1**（不再是 NDSS/TDSC；相关旧文档已加过时横幅）。
+
+> **读这一份，不要读旧的状态文档**：[`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)
+> 是当前唯一权威的状态与方向文档（2026-08-19）。本 README 以下的分节清单多为
+> stage-1/3 时期的历史草稿，均已单独标注过时。
+
+当前主线：在有限时域 runtime assurance 下，**授权转移时的发布检查不可传递**。
+稿件状态为正文 13 页、0 error/0 overfull、claim-lock 测试 20/20 通过。
+2026-08-19 的三个新实验改变了若干结论，其中最重要的两条是：
+
+- **无对抗缺口是可推断的率**，不再是轶事：20 个独立训练 run 中 **5 个**出现 clean release 失败
+  （10/480 对，run 级 Wilson 95% CI [11.2%, 46.9%]，配对 p=0.00195），常驻臂 0/480。
+- **"有效攻击可被简单 log checks 检出"已被推翻**：把编辑投影进检测器自身定义的可行盒后，
+  攻击在每个时长都**零标记**且有效；在 48-batch 的受保护 bootstrap 下它还**击败了常驻防御本身**
+  （34/116），失效模式是备份控制器接管后**无法恢复**，而非前瞻不足。
 
 **本目录内容**：
 - `research_state.md` — round-6 核验判定（What/Why/最接近工作/为何没答/开放核 + **诚实剔除**"异常检测结构性必输"那条）。

@@ -22,8 +22,14 @@
 \usepackage{usenix}
 
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{graphicx}
 \graphicspath{{figures/}}
+
+% Ragged-right variant of p{} for the narrow table columns.  Justifying a
+% 0.25\columnwidth cell opens inter-word gaps wide enough to read as column
+% separators; this only changes alignment inside those cells.
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 % Captions at 9pt: allowed by USENIX (the 10pt/12pt requirement applies to
 % body text) and standard practice in the proceedings.
@@ -43,19 +49,9 @@
 \renewcommand{\dbltopfraction}{0.92}
 \renewcommand{\dblfloatpagefraction}{0.7}
 
-% Float and display separations.  These affect white space around floats and
-% equations only; body font size (10pt) and leading (12pt) are untouched.
-\setlength{\textfloatsep}{10pt plus 3pt minus 2pt}
-\setlength{\dbltextfloatsep}{10pt plus 3pt minus 2pt}
-\setlength{\floatsep}{8pt plus 2pt minus 2pt}
-\setlength{\dblfloatsep}{8pt plus 2pt minus 2pt}
-\setlength{\intextsep}{8pt plus 2pt minus 2pt}
-\AtBeginDocument{%
-  \setlength{\abovedisplayskip}{5pt plus 2pt minus 2pt}%
-  \setlength{\belowdisplayskip}{5pt plus 2pt minus 2pt}%
-  \setlength{\abovedisplayshortskip}{3pt plus 1pt minus 1pt}%
-  \setlength{\belowdisplayshortskip}{4pt plus 2pt minus 2pt}%
-}
+% Float and display separations are left at the class defaults.  The CFP
+% requires page limits to be met through content alone, so no white space is
+% recovered anywhere in this file.
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -63,7 +59,6 @@
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
-\newtheorem{corollary}{Corollary}
 \newtheorem{proposition}{Proposition}
 
 \begin{document}
@@ -85,33 +80,32 @@
 \maketitle
 
 \begin{abstract}
-Learning-enabled controllers can be commissioned behind runtime assurance: a
-trusted shield or safety filter holds action authority while the policy
-adapts, so every training transition satisfies the safety certificate.  A
-deployment can then retire that authority and release the raw policy after a
-finite check.  We show that the check does not transfer across this
-retirement.  Evidence collected under a retained authority is reused to
-authorize execution without it, over a longer horizon, a flaw we call evidence
-reuse across an authority transition.
-
-The gap does not require an adversary.  In a controlled Safe-Control-Gym
-study, snapshots that passed a five-step release check failed on 2 of 120
-pairs once released raw, whereas the same prediction retained at runtime
-failed on none; a one-step filter did not suffice.  An upstream
-attacker amplifies the gap rather than creating it: an adversary holding only
-bounded write access to reward records raised raw-release failures to 27 of
-120 with no training-time violation, and raised violations at retirement by
-factors of 3.6 and 1.6 on a published third-party lifecycle.  Retained predictive
-authority switched before all 27 failures.  Trusted recomputation closes this
-channel; it does not close the contract gap the channel exploits.
+A learning-enabled controller can adapt while runtime assurance retains action
+authority, then release a raw policy after a finite check.  Such evidence is
+tied to the checked subject, authority, and horizon.  In Safe-Control-Gym, a
+clean cohort of 20 independently trained controllers supplied 480 accepted
+snapshot--state pairs.  Permanent raw release failed on 10 pairs across five
+training runs, whereas resident predictive authority failed on none.  A
+bounded reward-record attacker widened this gap while satisfying calibrated
+known-sign and scalar-envelope checks.  After 48 protected update batches, it
+caused 46/116 failures under raw release and 34/116 under resident authority.
+Paired accounting found 27 failures under both contracts, 19 only under raw
+release, seven only under resident authority, and 63 under neither.  Every
+resident failure followed a switch to the trusted baseline, with a median of
+one further step to violation.  Thus, repeated raw-policy checks did not also
+establish the safety of the baseline handoff.  Bootstrap-only poisoning also
+increased retirement violations in two of three provenance-complete pairs of a
+published lifecycle.  Trusted recomputation closes the reward channel, but
+each controller receiving authority still requires evidence for its own
+deployment contract.
 \end{abstract}
 
 \input{sections/sec1_introduction}
 \input{sections/sec2_background}
 \input{sections/sec3_threat_model}
 \input{sections/sec3_methodology}
-\input{sections/sec6_third_party_case_study}
 \input{sections/sec4_evaluation}
+\input{sections/sec6_third_party_case_study}
 \input{sections/sec5_related_work}
 \input{sections/sec6_conclusion}
 
@@ -119,12 +113,11 @@ channel; it does not close the contract gap the channel exploits.
 
 % Ethical Considerations and Open Science are USENIX appendices and are
 % excluded from the 13-page body limit.
+\clearpage
 \input{sections/sec7_ethics_usenix}
 
-{\footnotesize
 \bibliographystyle{IEEEtran}
 \bibliography{reference}
-}
 
 % Technical appendices follow the references and are excluded from the
 % 13-page body limit for the initial submission.

@@ -10,52 +10,61 @@ compare deployment contracts.
 The evaluated threat begins \emph{after} compromise of a reward-ingestion
 principal in the asynchronous learning-data plane and grants only bounded
 scalar writes to reward records.  Initial access, product-specific
-exploitation, and evasion of log-integrity controls fall outside the artifact
-and evaluation.  The experiments characterize the consequence of a
-least-privilege data-integrity gap for evidence inheritance at raw-policy
-release.  We therefore describe a composition weakness in an assurance
-workflow rather than an exploit against an identified fielded product, and we
-publish no capability that lowers the cost of obtaining the assumed access.
+exploitation, compromise of trusted recomputation, and attacks on runtime
+control assets fall outside the artifact and evaluation.  The experiments
+include evasion of calibrated task-aware checks and characterize the
+consequence of a least-privilege data-integrity gap for evidence inheritance at
+raw-policy release.  The artifact contains no access-acquisition or
+field-targeting mechanism.
 
 Stakeholders are operators of runtime-assured learning controllers, vendors of
-shielding and safety-filter tooling, and the public exposed to the controlled
-plant.  The main foreseeable harm from publication is that an attacker who
-already holds reward-ingestion access learns that a retired shield leaves
-latent policy damage exposed.  We judge the disclosure benefit to dominate:
-the exposure follows from documented assurance architectures, the attack is
-detected by the simple task-aware reward checks we measure, and the paper
-states deployable countermeasures at both ends of the authority transition.
-Origin-bound reward records and trusted recomputation remove the upstream
-precondition; resident predictive authority, commit admission, and permanent
-filtering contain the downstream physical consequence.
+shielding and safety-filter tooling, the authors of the third-party lifecycle
+artifact we instrument, and the public exposed to the controlled plant.  The main foreseeable harm from publication is that an attacker who
+already holds reward-ingestion access learns that protected adaptation can
+leave latent policy damage and that a baseline handoff can be followed by a
+violation.  We judge the disclosure benefit to dominate: the exposure follows
+from documented assurance architectures, all experiments target public
+simulation artifacts, and the paper states countermeasures at both ends of the
+authority transition.  Origin-bound reward records and trusted recomputation
+remove the upstream precondition; commit admission and permanent filtering
+limit downstream consequence; resident predictive authority does so only
+when its baseline handoff is independently supported.
 
 The third-party lifecycle we instrument is a published research artifact
 released under an open license by its authors, used unmodified except for
 documented instrumentation and reward-record patches that the artifact
 itemizes.  No vendor product, hosted service, or operational deployment was
-tested, so no coordinated vulnerability disclosure was owed to a third party.
-We follow the USENIX Security ethics guidelines and the principles of the
-Menlo Report in reporting the above.
+tested, so no vendor coordinated-disclosure process applies.  The affected
+party is instead the artifact's authors.  To preserve double-blind anonymity,
+communication and transfer of the instrumentation patches, paired result files,
+and manuscript are scheduled after the anonymity period.
+
+Two Menlo principles determine the artifact scope.  Beneficence:
+reproducibility requires the reward-shaping and sign/envelope-constrained
+scripts, so the artifact limits them to public simulation environments and
+includes no mechanism for obtaining the assumed ingestion access or targeting
+a fielded product.
+Respect for law and public interest: because the instrumented target is a
+licensed research artifact rather than a fielded system, we treated its
+authors as the party owed notice and handled disclosure as above.
 
 \section*{Open Science}
 
 We support the USENIX Security open science policy and will make every
 artifact required to reproduce the reported results openly available.  The
-artifact contains: (i) the experiment drivers for the controlled
-Safe-Control-Gym study and the third-party shield-retirement case study;
-(ii) row-level result files backing every table and figure, with source-linked
-provenance columns; (iii) exact commands, run namespaces, upstream revisions,
-model files, and dependency versions; (iv) locked protocol documents recording
-the analysis chronology; and (v) SHA-256 checksums for all locked files.
-Automated checks in the artifact audit table provenance, claim locks, and
-manuscript format.
+artifact contains the experiment drivers for the controlled Safe-Control-Gym
+study and the third-party shield-retirement case study, and the row-level
+result files backing every table and figure, with source-linked provenance
+columns.  It also records the exact commands, run namespaces, upstream
+revisions, model files, and dependency versions; the locked protocol documents
+recording the analysis chronology; and SHA-256 checksums for all locked files.
+Automated checks in the artifact audit three things: table provenance, claim
+locks, and manuscript format.
 
 For anonymous review, the artifact is submitted as an anonymized archive
 through the submission system, so the review committees can access every
 component without contacting the authors.  Upon acceptance we will publish the
 same artifact in a public repository with a permanent DOI under an open
 license, together with the third-party upstream revision pins required to
-rebuild the case-study environment.  The artifact retains the scope boundaries
-stated in the paper: the trusted-anchor, certificate-coverage, timing, PPO,
-benign-utility, and protocol-chronology limitations are recorded with the data
-rather than removed.
+rebuild the case-study environment.  The artifact retains every scope boundary stated in
+Section~\ref{sec:limits}, recorded with the data rather than removed.

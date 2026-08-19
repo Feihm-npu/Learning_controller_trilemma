@@ -1,6 +1,5 @@
 \section{Certificate Coverage and Model Mismatch}
 \label{sec:appendix-coverage}
-\label{sec:coverage-appendix}
 
 Reporting zero violations only on certificate-admitted states can be
 vacuous.  We therefore lock a separate CasADi--PyBullet confusion audit before
@@ -24,8 +23,8 @@ Table~\ref{tab:coverage} evaluates 1728 snapshot--state pairs.  CasADi
 certifies 1293; none violates the PyBullet state box within 100 steps.
 Clean, commit, and freeze coverage is 0.986, 0.944, and 1.000.  The raw
 poisoned snapshots physically violate 403/432 pairs and have certificate
-coverage 0.062, so their low coverage is informative rejection rather than
-vacuous evidence for a safe deployed snapshot.  Across all mechanisms the
+coverage 0.062, so their low coverage is informative rejection, not vacuous
+evidence for a safe deployed snapshot.  Across all mechanisms the
 certificate conservatively rejects five physically safe pairs.  Maximum
 action-interface error and actuator saturation are zero.
 
@@ -50,3 +49,43 @@ therefore not a utility comparison.}
 \label{tab:unified-frontier}
 \input{generated/tdsc_frontier_results}
 \end{table*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.94\textwidth]{fig4_frontier.pdf}
+\caption{The unified frontier on the same paired state blocks.  Error bars in
+(a) are 95\% Wilson intervals for violation rate and paired-block bootstrap
+intervals for mean rollout reward, conditional on the three locked learner
+snapshots.  Panel (b) separates the negligible raw
+policy latency from the permanently-online protection cost; raw, commit, and
+freeze mechanisms overlap near 0.027\,ms and zero intervention.}
+\label{fig:unified-frontier}
+\end{figure*}
+
+\section{Closest-Work Comparison}
+\label{sec:appendix-delta}
+
+\begin{table}[t]
+\centering
+\caption{Closest work along the three axes combined in this paper: adversarial
+online update data, removal of runtime-assurance authority, and independent
+evidence for the released raw policy.}
+\label{tab:delta}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}L{0.32\columnwidth}L{0.19\columnwidth}L{0.18\columnwidth}L{0.18\columnwidth}@{}}
+\toprule
+Work & Adversarial update log & Authority removed & Independent raw-policy evidence\\
+\midrule
+Simplex / Neural Simplex~\cite{seto_simplex_1998,phan_neural_simplex_2020} & no & no (monitor resident) & n/a (composition certified)\\
+Bb-Simplex~\cite{damare_bb_simplex_2025} & no (trusted retraining) & no & n/a\\
+Policy repair / MPSC~\cite{zhou_runtime_policy_repair_2020,wabersich_linear_mpsc_2018} & no (trusted evidence) & repaired, verified & repaired\\
+Hsu et al.~\cite{hsu_sim_lab_real_2023} & no & partial & yes (transfer evidence)\\
+Carr et al.~\cite{carr_partial_shielding_2023} & no & yes (sudden/smooth) & empirical retirement\\
+BADControl~\cite{burbano_badcontrol_2026} & operational data, physical trigger & n/a & n/a\\
+Jiang et al.~\cite{jiang_backdoor_safe_rl_cps_2024} & yes (backdoor, triggered) & no (shield resident) & n/a\\
+\textbf{Controlled study} & \textbf{yes (reward record)} & \textbf{yes (raw release)} & \textbf{transition evidence tested}\\
+\textbf{Third-party case study} & \textbf{yes (reward record)} & \textbf{yes (Carr retirement)} & \textbf{transition evidence tested}\\
+\bottomrule
+\end{tabular}
+\end{table}

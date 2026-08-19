@@ -1,3 +1,6 @@
+> ⚠️ **过时的规划/形式化草稿（2026-08-19 标注）。** 早于 2026-08-19 的实验与审计。
+> **当前权威状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+
 # Safe-Control-Gym Mainline Experiment Plan
 
 状态：执行中。SWaT/WaDi/iTrust 记录为 deferred track，当前不阻塞主线。

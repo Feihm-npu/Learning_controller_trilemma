@@ -1,3 +1,6 @@
+> ⚠️ **过时的规划/形式化草稿（2026-08-19 标注）。** 早于 2026-08-19 的实验与审计。
+> **当前权威状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+
 # Stage-3 Toy Theorem 草稿：FDI 不可区分性下的证书-学习冻结边界
 
 > 状态：正式证明草稿 v1（2026-06-30）。目标是给 online-updated learning controller 的 certificate lifecycle gate 提供最小反例。注意：plausible-state characterization 与 fixed-controller severe-attack safety filtering 已有强邻居，本 theorem 的新意不在重新证明这些对象，而在说明一旦控制器继续在线更新，sound certificate 必须对更新本身施加 gate。

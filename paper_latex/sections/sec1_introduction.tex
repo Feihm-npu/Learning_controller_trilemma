@@ -3,31 +3,31 @@
 Runtime assurance is a standard way to let a controller learn without letting
 it crash the plant.  A Simplex decision module, a runtime shield, or a
 model-predictive safety filter holds action authority during adaptation: it
-replaces unsafe policy proposals with actions from a trusted baseline, so
-every transition collected while the policy trains satisfies the safety
-certificate~\cite{seto_simplex_1998,alshiekh_shielding_2018,
+replaces unsafe policy proposals with actions from a trusted baseline.  In our
+reported adaptation runs, every executed transition satisfied the measured
+safety constraints~\cite{seto_simplex_1998,alshiekh_shielding_2018,
 wabersich_linear_mpsc_2018}.  Deployments need not keep that machinery
 forever.  Published learning-enabled control workflows study retirement of the
 protective authority once commissioning succeeds, promoting the raw policy
 snapshot to a lower-latency control target and removing permanent computation,
 intervention, and dependence on a backup
 service~\cite{carr_partial_shielding_2023,hsu_sim_lab_real_2023}.  A finite
-release check --- a bounded-horizon prediction, a certified rollout, a
-commissioning test --- authorizes that promotion.
+release check (a bounded-horizon prediction, a certified rollout, a
+commissioning test) authorizes that promotion.
 
-We show that the release check does not transfer across the retirement it
-authorizes.  Protection makes the executed composition safe; it does not make
-the raw policy safe.  The same finite check is sound while it retains
-authority and unsound once it is spent at release, because release removes the
-authority that made the evidence actionable and extends the horizon over which
-it must hold.  We call the underlying flaw \emph{evidence reuse across an
-authority transition}: evidence produced under one deployment contract is
-reused under another that has changed at least one of its premises --- the
-certified subject, the resident authority, the update provenance, the
-information available at decision time, or the horizon.  In the controlled
-release experiment below the changed premises are authority and horizon;
-adversarial reward provenance violates a third, and composition-to-raw
-handoffs additionally change the certified subject.
+We show that a finite release check does not transfer across the retirement it
+authorizes.  Protection establishes properties of the executed composition;
+raw release changes both the controller with action authority and the horizon
+over which safety is required.  Repeating the check online defines a different
+contract.  It observes the raw policy over a receding horizon, but a switch to
+the trusted baseline introduces another controller whose response from the
+handoff state requires separate evidence.  We call the general flaw
+\emph{evidence reuse across an authority transition}: evidence produced under
+one deployment contract is reused after the certified subject, authority,
+provenance, information, or horizon has changed.  The controlled experiments
+study two such transitions: release from the assured composition to the raw
+policy, and transfer from resident predictive authority to the trusted
+baseline.  Reward-record corruption additionally changes provenance.
 
 \begin{figure}[t]
 \centering
@@ -41,49 +41,60 @@ $\hspace{3.0em}\rightarrow$ one-time check $\rightarrow$ snapshot export\\[0.35e
 \textbf{High-integrity runtime-assurance plane}\\[0.25em]
 authenticated state $\rightarrow$ predictor/selector $\rightarrow$ actuator\\
 $\hspace{3.1em}\uparrow$ trusted baseline\\[0.35em]
-resident after check: timely switch\\
-authority removed: delayed failure
+resident check: monitor raw policy $\rightarrow$ switch to baseline\\
+baseline handoff: separate safety obligation
 \end{minipage}}
 \caption{Evaluated trust boundary.  The benchmark begins after bounded
 reward-record access is obtained; it does not model the initial service
 compromise.  Upstream provenance or recomputation removes this attack path,
-whereas resident predictive authority contains its downstream physical
-consequence.}
+whereas resident predictive authority also requires evidence that the trusted
+baseline can safely accept the state at handoff.}
 \label{fig:lifecycle-placeholder}
 \end{figure}
 
-The gap is measurable without an adversary.  In our controlled study,
-snapshots that passed a five-step release check failed on 2 of 120
-snapshot--state pairs once released raw, whereas the identical prediction
-retained at runtime failed on none.  Residence alone is not the remedy: on a
-disjoint cohort, a one-step resident kernel failed on 14 of 71 accepted pairs
-and reached an empty kernel 41 times.  What separates these outcomes is
-whether a check with enough lookahead to leave switching lead time keeps
-authority at runtime.
+A clean cohort fixes the ordering without an attacker.  Twenty independently
+trained controllers supplied 480 snapshot--state pairs accepted by the clean
+five-step check.  Permanent raw release failed on 10 pairs distributed across
+five training runs, whereas resident predictive authority failed on none.  All
+10 paired discordances favoured residence (two-sided exact
+$p=0.00195$), and the run-level failure frequency was 5/20 (Wilson 95\% CI
+$[11.2\%,46.9\%]$).  State pairs within a trained controller are repeated
+measurements, so the run count, not 480, supplies training-level replication.
+No attacker is involved in this separation.
 
-An upstream adversary widens the gap rather than creating it.  While the
-shield masks unsafe proposals, corrupted update data steers the learner
-without producing a single physical violation, and the damage stays latent
-until authority is removed: bounded reward-record edits raised the same
-120-pair count from 2 to 27.  We call this \emph{shield-retirement poisoning}.
-Its applicability is narrow by construction (Section~\ref{sec:threat}): where
-the runtime plane can recompute reward from authenticated transitions, trusted
-recomputation removes the channel outright, as our frozen integrity audit
-confirms.  The contract gap survives that defense.
+An upstream attacker widens the gap rather than creating it.  While the shield
+masks unsafe proposals, corrupted update data steers the learner without a
+physical violation during the reported adaptation runs.  Bounded reward-record
+edits raised a separate 120-pair count from 2 to 27.  A
+sign/envelope-constrained attacker remained effective as the protected
+bootstrap grew.  At 48 update batches it caused 46/116 raw-release failures and
+34/116 failures under resident predictive authority.  Paired outcomes were 27
+failures under both contracts, 19 only under raw release, seven only under
+resident authority, and 63 under neither.  All 34 resident failures followed a
+switch to the trusted baseline, and violation occurred after a median of one
+additional step.  The seven resident-only failures show that detecting risk in
+the raw policy did not establish the safety of the controller activated at the
+handoff.  We call the attack \emph{shield-retirement poisoning}.
 
-The attacker we evaluate is deliberately weak.  Operational technology (OT)
-guidance separates runtime-control assets from the data-management services
-and historians that exchange information across
-zones~\cite{nist_ot_security_2023,mitre_data_historian}, and our threat model
-begins after compromise of a reward-ingestion principal in that learning-data
-plane.  This is an explicit split-trust precondition: the attacker may modify
-bounded scalar reward records consumed by a policy-gradient updater, and
-nothing else.  Authenticated runtime states, actions, learner code,
-parameters, optimizer state, certificates, and deployment states remain
-outside its write authority (Fig.~\ref{fig:lifecycle-placeholder}).
+The attack applies when the runtime plane cannot reconstruct reward semantics
+from authenticated transitions (Section~\ref{sec:threat}).  Trusted
+recomputation removes the channel when such reconstruction is available.  It
+does not remove the attacker-independent release gap or establish the safety of
+a subsequent baseline handoff.
 
-Existing mechanisms address neighboring problems.  Simplex and its neural and
-barrier-based successors keep a decision module resident
+Operational technology (OT) guidance separates runtime-control assets from the
+data-management services and historians that exchange information across
+zones~\cite{nist_ot_security_2023,mitre_data_historian}, so we make the
+attacker deliberately narrow in authority and start the threat model after
+compromise of a reward-ingestion principal in that learning-data plane.  This
+is an explicit split-trust precondition: the attacker may modify bounded
+scalar reward records consumed by a policy-gradient updater, and reads the
+learner state those edits are computed against.  Everything on the
+authenticated control path stays outside its write authority
+(Table~\ref{tab:trust-boundary}, Fig.~\ref{fig:lifecycle-placeholder}).
+
+Simplex and its neural and barrier-based successors keep a decision module
+resident
 \cite{seto_simplex_1998,phan_neural_simplex_2020,damare_bb_simplex_2025}.
 Policy repair and safe projection constrain a learned policy before deployment
 \cite{zhou_runtime_policy_repair_2020,lu_repair_preservation_2024,
@@ -95,39 +106,42 @@ retaining the shield during execution~\cite{konighofer_online_shielding_2022},
 while published workflows bootstrap behind a shield and then retire
 it~\cite{carr_partial_shielding_2023,hsu_sim_lab_real_2023}.  The open
 question is therefore not whether shielding helps, but what evidence justifies
-handing action authority to the raw policy.  That decision is what we study.
+handing action authority to the raw policy, and what separately justifies a
+later handoff to the baseline.  Those decisions are what we study.
 
 \subsection{Evidence and Contributions}
 
-We separate the contract gap from the channel that widens it.  The controlled
-Safe-Control-Gym study supplies the counts above under a five-step check that
-accepted every candidate, and adds a locked horizon sweep placing the usable
-lookahead between an insufficient one-step check and an over-conservative
-twenty-step one.  The channel is not confined to our harness: Carr et al.'s
-published workflow trains a policy behind a Storm belief-support shield and
-later retires the shield's authority~\cite{carr_partial_shielding_2023}, and
-adding bounded reward-record poisoning only during the protected bootstrap
-increased raw-policy violations at retirement by factors of 3.6 and 1.6 in two
-of three provenance-complete paired REINFORCE training runs.
+The contract gap and the channel that widens it are separate objects.  The
+clean Safe-Control-Gym cohort estimates how often the release gap appeared
+across independent training runs.  A horizon sweep measures the warning
+provided by the resident raw-policy check.  The duration sweep then evaluates
+the distinct handoff to the trusted baseline.  Carr et al.'s published workflow
+provides an independent shield-retirement lifecycle
+\cite{carr_partial_shielding_2023}.  Adding bounded reward-record poisoning only
+during its protected bootstrap increased raw-policy violations at retirement
+by factors of 3.6 and 1.6 in two of three provenance-complete paired REINFORCE
+training runs.
 
 Our contributions are:
 
 \begin{itemize}
-    \item We formalize release-time acceptance as an evidence tuple over
-    subject, authority, provenance, information, and horizon, and show that a
-    deployment must re-establish every component the authority transition
-    changes.
-    \item We measure the resulting gap without an adversary, separating
-    one-time raw release from resident predictive authority, one-step
-    filtering, and commit admission, and locating the lookahead at which a
-    retained check is neither insufficient nor over-conservative.
-    \item We instantiate one upstream channel that widens the gap ---
-    bounded reward-record writes --- in the controlled study and in a
-    third-party shield-retirement lifecycle, and report the integrity controls
-    that close that channel while leaving the gap open.
-    \item We characterize the attack's empirical boundary across systems,
-    learners, integrity controls, and deployment contracts: high
-    retirement-state disagreement excludes every observed positive outcome in
-    the locked corpus, while low disagreement defines an opportunity region
-    without guaranteeing success.
+    \item We decompose release-time acceptance into an evidence tuple over
+    subject, authority, provenance, information, and horizon, and use it to
+    derive the obligations a deployment must re-establish for every component
+    the authority transition changes.
+    \item We estimate the attacker-independent gap over 20 independently
+    trained controllers, separating one-time raw release from resident
+    predictive authority on paired clean snapshots.  A locked horizon sweep
+    quantifies the warning produced by the repeated raw-policy check.
+    \item We instantiate bounded reward-record writes in the controlled study
+    and in a third-party shield-retirement lifecycle.  In the
+    sign/envelope-constrained duration sweep, resident authority prevented 19
+    raw-release failures but had seven resident-only failures.  The result
+    isolates the baseline handoff as a separate evidence obligation.
+    \item We separate controls by contract.  Trusted recomputation closes the
+    upstream reward channel; commit admission restricts raw-policy release;
+    resident authority requires an independently supported baseline handoff;
+    and adaptation should be deployed only when paired task benefit justifies
+    its transition risks and costs.  Our evaluated benign shifts do not
+    establish such a benefit.
 \end{itemize}

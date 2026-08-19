@@ -1,8 +1,13 @@
+> ⚠️ **场地与引用已过时（2026-08-19 标注）。** 本文件提及的 NDSS 与
+> `ndss_submission_status.md` / `research_state.md` 均为历史；当前场地是 USENIX Security 2027。
+> **当前权威状态请读 [`../usenix_direction_audit_0819.md`](../usenix_direction_audit_0819.md)。**
+> 本目录的 `protocol.md`、`patches.md`、`SERVER_VS_LOCAL_DIVERGENCE.md` 与 `results/` 不过时。
+
 # Carr et al. AAAI'23 victim experiment — reward poisoning across shield retirement
 
-Third-party workflow demonstration for the NDSS paper's security claim
+Third-party workflow demonstration for the USENIX Security paper's security claim
 ("assurance evidence's validity across an authority transition", see repo
-`ndss_submission_status.md` / `research_state.md`). Uses the *official* code of
+`../usenix_direction_audit_0819.md`). Uses the *official* code of
 
 > Carr, Jansen, Junges, Topcu, "Safe Reinforcement Learning via Shielding under
 > Partial Observability", AAAI 2023 (DOI 10.1609/aaai.v37i12.26723)
@@ -12,16 +17,21 @@ Third-party workflow demonstration for the NDSS paper's security claim
 ## Layout
 - `protocol.md` — locked experiment protocol (before any run): lifecycle, attack
   plane, budgets, metrics, fidelity gate, stop rules, amendments v1.1–v1.5.
-- `patches.md` — every deviation from upstream, with rationale (git diff 62c515e).
+- `patches.md` — every deviation from upstream, with rationale.
 - `RESULTS_ANALYSIS_AND_NEXT_STEPS.md` — 结果梳理 + 下一步规划（2026-08-16）：
   证据链 E0–E4、数据复核、数据卫生问题、服务器任务优先序、预注册纪律。
-- `upstream/` — vendored official code (pristine in commit 62c515e; patches since).
-- `run_carr.py` — runner: `--env {obstacle,avoid,rocks,...} --condition
-  {none,shield,sudden,smooth} --method REINFORCE/PPO/SAC --runs N --seed S
-  --poison {none,v1,v2,v3} --delta D` (本机运行代码，按仓库规则不随 Git 同步)。
+- `upstream/safe_RL_POMDPs/cfgs/` — official configurations at upstream commit
+  `b01dbe8b40e2167bdc1d93dea7b43e96f1a835ee`.
+- `upstream/carr_reward_poisoning.patch` — complete executable delta against that
+  commit. It modifies `model_simulator.py` and `rl_simulator.py` and adds the
+  actual `run_carr_victim.py` driver used by the reported experiments.
+- `server_scripts/` — parameterized run and launch scripts. Set `ARTIFACT_ROOT`
+  to the directory containing the patched checkout and `CONDA_ROOT` to the
+  Conda installation root.
 - `smoke_stormpy.py` — native-layer smoke (POMDP build, winning region, risk flags).
 - `check_api_compat.py` — tf-agents API compatibility check.
-- `aggregate_results.py` — results table + figures (本机运行代码，不同步)。
+- Analysis and figure scripts in this directory generate the result tables and
+  figures; Python source is part of the reproducibility artifact.
 - `results/` — per-run dirs with `*_summary.json` (provenance + metrics),
   `*_eval_trace.npy` (per-episode eval violations), G0 CSV (reward curves);
   `aggregate_table.csv` (full-phase vA) 与 `aggregate_table_v2.csv` (vA+vC 合并基座)。
@@ -44,10 +54,19 @@ Third-party workflow demonstration for the NDSS paper's security claim
   `version`/`scope`/`at_ret_*` 列，smoke 行（runs=200）已标注。
 - **运行纪律**：新实验必须用**新目录名 / 新 seed 命名空间**，禁止覆盖已有 run dirs。
 
-## Environment (this Mac)
-macOS 14.4.1 arm64, venv at `venv/` (Python 3.10.12 from pyenv):
-tensorflow 2.15.1, tensorflow-probability 0.23.0, tf-agents 0.19.0, stormpy 1.11.3,
-numpy 1.26.4. `wheels_cache/` holds the downloaded wheels for offline rebuilds.
+## Rebuild the instrumented upstream checkout
+
+```sh
+git clone https://github.com/stevencarrau/safe_RL_POMDPs.git safe_RL_POMDPs_patched
+git -C safe_RL_POMDPs_patched checkout b01dbe8b40e2167bdc1d93dea7b43e96f1a835ee
+git -C safe_RL_POMDPs_patched apply ../carr_victim_experiment/upstream/carr_reward_poisoning.patch
+```
+
+The patch is reviewable without executing TensorFlow or Storm and exposes the
+exact shield-retirement switch, reward mutation, independent belief trackers,
+at-retirement evaluation, and run provenance.  The original runs used Python
+3.10.12, TensorFlow 2.15.1, TensorFlow Probability 0.23.0, TF-Agents 0.19.0,
+stormpy 1.11.3, and NumPy 1.26.4.  See `server_scripts/` for the exact commands.
 
 ## Headline protocol (see protocol.md for the full text)
 1. Train REINFORCE behind the Storm belief-support shield (obstacle N=6, 5000

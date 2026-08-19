@@ -3,8 +3,8 @@
 
 This section develops the update conditions used by the empirical studies.
 The current- and future-history gates distinguish action filtering from
-certified learning, and the same conditions state what a deployment contract
-must re-establish when it stops applying them.  A reward-influence summary
+certified learning and provide the obligations against which authority
+transitions are evaluated.  A reward-influence summary
 then records how a bounded reward edit can move a linear release-gate margin
 within one policy-gradient batch; the evaluated multi-batch attack remains the
 fixed target-shaping rule described in Section~\ref{sec:study}.  All proofs
@@ -73,6 +73,7 @@ $\mathcal Z$ is then equivalent to
     \theta^\top\phi(z)\le u_z,\qquad
     -\theta^\top\phi(z)\le -\ell_z,\qquad
     \forall z\in\mathcal Z.
+\label{eq:parameter-gate-halfspaces}
 \end{equation}
 Optional box constraints on $\theta$ preserve a convex polytope.  Rejecting
 candidates outside this set, or projecting onto it, is sound for the finite
@@ -89,19 +90,16 @@ separating fixed filtering from certified learning.
 \subsection{Reward Influence on a Release Gate}
 \label{sec:reward-geometry}
 
-The upstream channel of Section~\ref{sec:threat} reaches these halfspaces
-through a single policy-gradient batch: editing a reward after collection
-leaves the states, actions, and score rows of that batch unchanged, so a
-bounded edit produces gate-directed parameter motion within the batch.
-Appendix~\ref{sec:appendix-support} makes this exact, reducing the positive
-support of an admissible reward edit against a linear release halfspace to a
-monotone family of second-order-cone feasibility problems, valid under global
-Euclidean gradient-norm clipping; if that support does not exceed the current
-margin, no admissible edit can cross the halfspace in the batch.  The result
-is confined to one batch and does not explain the multi-batch attack we
-evaluate, which is the fixed target-shaping rule of Section~\ref{sec:study}.
-Coordinatewise parameter clipping remains outside the exact support
-computation.
+Editing a reward after collection leaves the states, actions, and score rows
+of a batch unchanged, so a bounded edit produces gate-directed parameter
+motion inside that batch.  Appendix~\ref{sec:appendix-support} makes the
+resulting influence exact under global Euclidean gradient-norm clipping,
+giving a per-batch certificate that no admissible edit crosses a release
+halfspace.  Its consequence is negative and it is the reason the evaluated
+attack must accumulate: the result is confined to one batch and does not
+explain the multi-batch attack we evaluate, which is the fixed target-shaping
+rule of Section~\ref{sec:study}.  Coordinatewise parameter clipping remains
+outside the exact support computation.
 
 \subsection{Certificate-Gated Update and Deployment Contracts}
 \label{sec:lifecyclegate}
@@ -117,20 +115,22 @@ unless the cover, regularity, and model-error premises of
 Appendix~\ref{sec:appendix-lift} justify a robust margin.  We call this
 enforcement layer LifecycleGate.
 
-The layer realizes the deployment contracts of Section~\ref{sec:threat}.
-They differ in \emph{when} the admission test is applied, not in what it
-tests: a one-time release contract evaluates Theorem~\ref{thm:gate} once, at
-$h$, and then executes $\pi_{\theta^+}$ untested, whereas a resident contract
-re-evaluates it at every subsequent history.  The two agree exactly when the
-finite abstraction used at $h$ covers every history the released policy later
-reaches --- the premise Appendix~\ref{sec:appendix-lift} isolates, and one
-that release-time evidence cannot establish on its own.
-Section~\ref{sec:release-contract-audit} measures the resulting difference.
+The empirical contracts use the finite-horizon check of
+Section~\ref{sec:model}, not the sound lifecycle certificate defined there.  A
+one-time release evaluates its declared horizon at $h$ and then executes
+$\pi_{\theta^+}$ without further evaluation.  A resident mechanism repeats the
+same check at subsequent histories, thereby extending observation through a
+receding horizon.  Repetition does not certify the baseline controller invoked
+after rejection.  A sound lifecycle certificate would instead cover every
+future history required by the contract, or supply a valid terminal or
+recovery argument; a controller handoff would additionally require evidence
+for the receiving controller from the transfer state.
+Section~\ref{sec:release-contract-audit} measures these distinct obligations.
 Commit admission certifies a candidate on a declared state set and horizon,
 backtracking along the connected segment from the last admitted snapshot to
-exclude disconnected safe islands, at the cost of coverage and
-model-mismatch risk; resident mechanisms instead pay intervention, rejection,
-and online cost.  An empty plausible-state kernel, an uncertified snapshot,
+exclude disconnected safe islands.  Its costs are coverage and model-mismatch
+risk; resident mechanisms instead incur intervention, rejection, and online
+cost.  An empty plausible-state kernel, an uncertified snapshot,
 model failure, or solver failure triggers a fail-closed freeze or rollback,
 and a trusted anchor can resume learning by changing the justified
 plausible-state set at an explicit infrastructure cost.  Because membership is

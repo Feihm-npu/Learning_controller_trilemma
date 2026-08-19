@@ -1,3 +1,6 @@
+> ⚠️ **过时的规划/形式化草稿（2026-08-19 标注）。** 早于 2026-08-19 的实验与审计。
+> **当前权威状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+
 # Stage-3 证书推广：从单步安全到 invariant/barrier 必要条件
 
 > 状态：证明推广草稿 v1（2026-06-30）。目标是把 `stage3_toy_theorem.md` 的单步不可能性接到真正的闭环安全证书，包括 invariant set、barrier certificate、reachability certificate 和 runtime shield。注意：plausible-state CBF/QP safety filtering 已有强邻居；本文件将其抽象为 $K_\Gamma(h)$ baseline，并把新意放在 online update 是否能保持该 kernel。

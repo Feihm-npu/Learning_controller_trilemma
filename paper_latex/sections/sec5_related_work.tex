@@ -1,12 +1,25 @@
 \section{Related Work}
 \label{sec:related}
 
-\textbf{Runtime assurance and safe controller updates.}
+\emph{Assurance cases and change impact.}
+That evidence stops supporting a claim once the system it was collected on
+changes is the founding problem of safety-case maintenance.  Kelly and McDermid give the impact analysis that decides which legs of an
+argument a change invalidates~\cite{kelly_safety_case_maintenance_2001}, and
+dynamic safety cases carry it into operation so assurance is re-argued through
+life~\cite{denney_dynamic_safety_cases_2015}.  That literature asks whether
+engineers correctly re-argue safety after a known change.  We instantiate that
+maintenance problem at controller-authority transitions: a release check and a
+later baseline handoff are separate change-impact events with distinct
+evidence obligations.
+
+\emph{Runtime assurance and safe controller updates.}
+Safety filters and shields form a design space, and we position against it as
+a whole~\cite{brunke_safe_learning_survey_2022}.
 Simplex architectures retain a decision module and a trusted baseline during
 online upgrades~\cite{seto_simplex_1998}; neural and barrier-based Simplex add
 online retraining, reverse switching, and switching conditions under bounded
 model error \cite{phan_neural_simplex_2020,damare_bb_simplex_2025}; and
-model-predictive safety certification (MPSC) and runtime shields preserve
+MPSC and runtime shields preserve
 recoverability or prevent unsafe actions \cite{wabersich_linear_mpsc_2018,
 didier_adaptive_mpsc_2021,alshiekh_shielding_2018}.  All certify a resident
 composition; we consider a transition in which the raw policy later receives
@@ -17,64 +30,41 @@ before use \cite{zhou_runtime_policy_repair_2020,lu_repair_preservation_2024,
 chow_safe_policy_2021,yu_certificate_repair_2025,
 mirzaeedodangeh_safe_updates_2026,hsu_sim_lab_real_2023}.
 
-\textbf{Shield retirement and attacked state semantics.}
+\emph{Shield retirement and attacked states.}
 Könighofer et al.~\cite{konighofer_online_shielding_2022} establish the
 non-adversarial half of this observation: policies trained under an online
 shield inflict more unshielded violations than conventionally trained ones, so
 shielding must be applied during execution.  They further note that a
 finite-horizon shield needs sufficient lookahead, or the agent reaches states
 in which every action is unsafe; the 41 empty kernels our one-step control
-reached instantiate that situation.  We claim neither observation.  Our object
-is the retirement decision that Carr et al.'s lifecycle takes: whether the same
-finite prediction, spent once as a release credential, is equivalent to
-retaining it as a repeatedly evaluated recoverability trigger.  The horizon
-sweep quantifies the resulting tradeoff between switching lead time and release
-admission, an axis distinct from the horizon/computation tradeoff they
-describe.
-Carr et al.~\cite{carr_partial_shielding_2023} study a partially observable
+reached instantiate that situation.  Our horizon sweep quantifies the
+tradeoff between warning time and release admission.  The duration study then
+separates raw-policy warning from baseline handoff: 19 paired failures occurred
+only under raw release, whereas seven occurred only after resident transfer to
+the baseline.  Because the experiment evaluates no recovery certificate, these
+outcomes do not locate the handoff states relative to a recoverable set.  Carr et
+al.~\cite{carr_partial_shielding_2023} study a partially observable
 bootstrap-to-retirement lifecycle and compare sudden with smooth shield
 removal under trusted learning signals.  We reuse that published lifecycle as
 a third-party case study and add bounded reward-record poisoning during the
 protected bootstrap; the resulting experiment concerns evidence reuse across
-the same authority transition, not the soundness of their original claims.
+the same authority transition.  Their trusted-signal setting serves as the
+clean control for the added data-integrity channel.
 
 Secure estimation characterizes when sensor attacks can be detected or
 corrected~\cite{pasqualetti_attack_2013,fawzi_secure_2014}, and severe-attack
 CBF filtering constructs plausible-state sets and safe-action kernels when the
-state cannot be reconstructed uniquely~\cite{tan_safety_2024}; our model
-consumes such a set and asks whether an adversarially updated action map
-remains inside its certified kernel.  Related lines learn barriers or solve
+state is not uniquely reconstructable~\cite{tan_safety_2024}; our model
+consumes such a set and asks whether an adversarially updated action map stays
+inside its certified kernel.  Related lines learn barriers or solve
 adversarial reach--avoid problems under trusted learning signals
 \cite{brunke_barrier_learning_2022,
 capone_bandit_safe_control_2025,wu_certifying_2022,pham_certified_2024,
-hsu_isaacs_2023,nguyen_gameplay_2024}.  Table~\ref{tab:delta} places the
-closest work on the three axes this paper combines.
+hsu_isaacs_2023,nguyen_gameplay_2024}.  Table~\ref{tab:delta} in
+Appendix~\ref{sec:appendix-delta} places the closest work on the three axes
+this paper combines.
 
-\begin{table}[t]
-\centering
-\caption{Closest work along the three axes combined in this paper: adversarial
-online update data, removal of runtime-assurance authority, and independent
-evidence for the released raw policy.}
-\label{tab:delta}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}p{0.32\columnwidth}p{0.19\columnwidth}p{0.18\columnwidth}p{0.18\columnwidth}@{}}
-\toprule
-Work & Adversarial update log & Authority removed & Independent raw-policy evidence\\
-\midrule
-Simplex / Neural Simplex~\cite{seto_simplex_1998,phan_neural_simplex_2020} & no & no (monitor resident) & n/a (composition certified)\\
-Bb-Simplex~\cite{damare_bb_simplex_2025} & no (trusted retraining) & no & n/a\\
-Policy repair / MPSC~\cite{zhou_runtime_policy_repair_2020,wabersich_linear_mpsc_2018} & no (trusted evidence) & repaired, verified & repaired\\
-Hsu et al.~\cite{hsu_sim_lab_real_2023} & no & yes & yes (transfer evidence)\\
-Carr et al.~\cite{carr_partial_shielding_2023} & no & yes (sudden/smooth) & empirical retirement\\
-BADControl~\cite{burbano_badcontrol_2026} & operational data, physical trigger & n/a & n/a\\
-\textbf{Controlled study} & \textbf{yes (reward record)} & \textbf{yes (raw release)} & \textbf{transition evidence tested}\\
-\textbf{Third-party case study} & \textbf{yes (reward record)} & \textbf{yes (Carr retirement)} & \textbf{transition evidence tested}\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\textbf{Policy and reward poisoning.}
+\emph{Policy and reward poisoning.}
 Policy poisoning has been studied in batch reinforcement learning and
 control~\cite{ma_policy_poisoning_2019}; online attacks perturb rewards under
 an $\ell_\infty$ budget and adapt to the
@@ -84,16 +74,22 @@ and black-box deep learners, and targeted poisoning can teach a chosen policy
 rakhsha_policy_teaching_2020,everitt_corrupted_reward_2017}.  None of this
 line places the learner behind a runtime shield.
 
-BADControl poisons operational data in PID and LQR loops to implant a
-vulnerability activated by a physical trigger~\cite{burbano_badcontrol_2026}.
-Our contribution concerns a different composition: bounded reward-record
-poisoning affects a policy trained behind runtime assurance, and failure
-appears after authority retirement without an activation input.  Where online
+\emph{Backdoors on shielded and classical controllers.}
+Jiang et al.\ implant backdoors in formal-language-guided \emph{safe} RL
+policies, so that a trigger state reached at runtime produces a safety
+violation~\cite{jiang_backdoor_safe_rl_cps_2024}.  This is the closest prior
+composition, and the difference matters: their trigger must survive a shield
+that is never retired, whereas our attacker plants nothing triggerable and the
+damage is inert until the deployment removes the monitor on the strength of a
+finite check.  The exploited object is the release decision, not an input.
+BADControl poisons operational data in proportional-integral-derivative (PID)
+and LQR loops to implant a vulnerability activated by a physical
+trigger~\cite{burbano_badcontrol_2026}, which shares the trigger structure
+without the learner or the shield.  Where online
 reward-poisoning defenses model adaptive attacker--defender interaction
 \cite{nika_reward_defense_2023}, we separate provenance, trusted
 recomputation, detection, commit admission, and runtime containment.
 
-\textbf{Conic reward-influence analysis.}
 Appendix~\ref{sec:appendix-support} applies classical homogenization and
 second-order-cone feasibility \cite{schaible_fractional_duality_1976,
 agrawal_dqcp_2020,bauschke_homogenization_2023,belloni_soc_feasibility_2008}
@@ -101,40 +97,46 @@ to the normalized image of a centered reward-to-go zonotope.
 
 \section{Discussion and Limitations}
 
-The evidence supports an architectural vulnerability with conditional
-exploitability.  Protected adaptation certifies the executed composition while
-resident authority remains active; permanent raw release removes that
-authority and extends the horizon of the evidence, and adversarial provenance
-violates a third premise.  Neither result requires the shield or filter itself
-to be unsound, and the clean cohort fixes the ordering: the transition is a
-contract gap before it is an attack surface.
+The evidence supports conditional exploitability at two authority
+transitions.  Permanent raw release changes the subject, authority, and horizon
+of evidence collected during protected adaptation; the clean cohort exhibits
+this gap without an attacker.  A later transfer from the monitored raw policy
+to the baseline changes the receiving controller, which the duration study
+shows to be a separate obligation.
 
-The attack has a structured opportunity region that does not determine
-success: every positive outcome in the locked corpus occurred at low
-retirement-state disagreement and no high-disagreement run was positive, yet
-the fresh REINFORCE pair, seven low-band corpus runs, and the SAC battery show
-that headroom is insufficient for the fixed attack.  The defenses separate
-integrity from authority.  Provenance binding and trusted recomputation remove
-the evaluated upstream channel while leaving the contract gap in place;
-task-aware checks add semantic assumptions; commit admission limits which raw
-snapshot receives authority; and resident predictive authority contains unsafe
-proposals at runtime, where the one-step kernel shows that residence alone is
-insufficient.  These contracts differ in coverage, intervention, latency, and
-reward cost, so the choice is an explicit architectural tradeoff.
+In the Carr corpus, positive outcomes were confined to low retirement-state
+disagreement, but that region also contained non-positive outcomes.  The
+53-run accounting (12 positive, 20 protective, and 21 unchanged) supports a
+conditional, not uniform, attack effect.  Controls map to different premises:
+trusted recomputation closes the reward channel, commit admission restricts
+raw-policy release, and resident authority requires evidence for the baseline
+handoff.  Their coverage, intervention, latency, and reward costs remain an
+architectural tradeoff.
+
+That tradeoff is justified only if adaptation provides paired task benefit
+over freezing the trusted controller.  It did not in any evaluated benign
+setting: freeze was never worse than clean adaptation, and the locked benign
+audit stopped after 0/12 paired improvements.  The resulting inference is
+limited to the present deployments, which provide no measured utility basis
+for accepting an additional authority-transition risk.
 
 \subsection{Limitations}
 \label{sec:limits}
 
 \emph{The marker is descriptive, not an attacker trigger.}  Retirement-state
-disagreement is observed after the protected bootstrap and therefore
-characterizes a realized deployment state; an attacker-side trigger would
-require evidence that earlier disagreement trajectories predict the
-opportunity region.  The reported AUC is a descriptive measure over the locked
-corpus rather than a validated classifier, and the marker is obstacle-scoped:
-the second environment also contained protective outcomes at high clean
-disagreement.
+disagreement is observed after the protected bootstrap, so it characterizes a
+realized deployment state; an attacker-side trigger would need earlier
+disagreement trajectories to predict the opportunity region.  The high-band
+exclusion is reproducible, but two historical REINFORCE membership decisions
+were not recorded by an executable deduplication rule.  We therefore report no
+corpus discrimination statistic, total row count, or exact positive count.  Holding out one learner
+family also identifies only 3 of 10 SAC outcomes.  The marker is an
+obstacle-scoped exclusion condition, not a validated classifier.
 
-\emph{The formal results have bounded verification scope.}  The current- and
+\emph{The formal results have bounded verification scope.}
+Proposition~\ref{prop:transfer} is a soundness statement about acceptance
+rules, not a claim about any particular policy.  It organizes evidence
+obligations; no empirical result is derived from it.  The current- and
 future-history gates state certificate obligations, and the linear parameter
 gate is exact on its finite abstraction; the continuous lift additionally
 requires a justified reachable-set cover, regularity and model-error bounds,
@@ -144,19 +146,21 @@ standardized-advantage batch with global gradient clipping, leaving
 coordinatewise parameter clipping and multi-batch attack construction outside
 its scope.
 
-\emph{The empirical generality is bounded.}  The end-to-end physical effect is
-established for low-dimensional Monte Carlo policy-gradient learners, and the
-learned-baseline variant shares their return and attack channel rather than
-forming an independent learner family.  The official Safe-Control-Gym PPO
-audit showed checkpoint-level redirection without stable physical failure, and
-on the third-party lifecycle PPO and SAC contained individual positive
-realizations without reliable success across paired runs.
+\emph{Empirical generality is bounded to Monte Carlo policy gradients.}  The
+learned-baseline variant shares their return and attack channel, so it is not
+an independent family.  The official Safe-Control-Gym PPO audit showed
+checkpoint-level redirection without stable physical failure, and on the
+third-party lifecycle PPO and SAC contained individual positive realizations
+without reliable success across paired runs.
 
-\emph{The threat model starts after access is obtained.}  It does not estimate the
-prevalence of bounded reward-ingestion access across products or model service
-exploitation.  The effective fixed attack is detectable by the tested
-task-aware checks, and sign-respecting variants did not retain deployment
-harm.  The trusted-anchor audit models bounded error only for altitude and pitch and
-reports calls rather than hardware-specific cost.  These boundaries limit claims about
-stealth, cross-architecture prevalence, and deployment overhead without
-changing the authority-transition result.
+\emph{We assume access, and do not estimate its prevalence.}  The evaluated
+attack rule also reads the learner state its edits are computed against
+(Table~\ref{tab:trust-boundary}), so it assumes read access to the learner as
+well as one scalar write, which is stronger than the write alone.  The
+task-aware checks detect the rule we first evaluated but not an attacker
+constrained to respect them, so only trusted recomputation closes the channel,
+and the applicability condition of Section~\ref{sec:threat} excludes it.  At
+48 batches the resident failures occur in two of five trained controllers.
+The study does not certify an LQR recovery set or identify which handoff states
+would be safe.  These conditions limit claims about cross-architecture
+prevalence and deployment overhead.

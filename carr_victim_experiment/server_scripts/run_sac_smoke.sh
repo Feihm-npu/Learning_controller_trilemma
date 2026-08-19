@@ -2,9 +2,9 @@
 # v1.10 Part A SAC pipeline smoke (NOT a battery run) — single SAC shield-on run
 # Usage: run_sac_smoke.sh <clean|contrast> <outdir>
 set -e
-source /home/feihm/anaconda3/etc/profile.d/conda.sh
+source ${CONDA_ROOT}/etc/profile.d/conda.sh
 conda activate carr
-cd /home/feihm/carr_victim_server/safe_RL_POMDPs_patched
+cd ${ARTIFACT_ROOT}/safe_RL_POMDPs_patched
 POISON=$1; OUTDIR=$2
 export OMP_NUM_THREADS=1
 export TF_NUM_INTRAOP_THREADS=1

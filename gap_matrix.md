@@ -1,3 +1,8 @@
+> ⚠️ **过时文档（2026-08-19 标注）。** 本文件的状态判断、待办与结论均**早于**
+> 2026-08-19 的三个新实验与证据审计，其中若干结论已被推翻或收窄。
+> **唯一权威的当前状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+> 本文件保留仅为历史记录，不要据此决定下一步动作。
+
 # 近邻文献 Gap Matrix：learning controller trilemma
 
 > 状态：stage-1 初稿（2026-06-30）。来源包括本目录 round-6 核验、本地 `raw_materials/TDSC|TIFS|top4|AI_conferences` 轻量核验，以及外部近邻检索。目标是判断是否已有工作直接回答“在线更新学习型控制器 × 策略性 FDI/欺骗对手 × 闭环安全证书”。

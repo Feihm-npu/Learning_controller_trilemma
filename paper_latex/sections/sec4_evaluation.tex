@@ -1,17 +1,12 @@
 \section{Controlled Mechanism Study}
 \label{sec:study}
 
-The case study located the authority transition in an independently published
-lifecycle; this section isolates its mechanism in
-Safe-Control-Gym~\cite{yuan_safe_control_gym_2022}.  A prospective
-contract-separation audit first tests whether finite release evidence supports
-both permanent raw release and resident predictive authority, with and without
-the attacker, using a one-step resident kernel as a negative control and a
-horizon sweep to bound the required lookahead.  Cross-system, detectability, and
-runtime-cost studies then characterize the scope and operational consequences
-of the fixed attack.  Appendix~\ref{sec:appendix-benchmarks} reports the
-low-dimensional semantic benchmarks that separate current-action filtering
-from update admission.
+We first isolate the authority-transition mechanism in
+Safe-Control-Gym~\cite{yuan_safe_control_gym_2022}.  The study compares
+permanent raw release with resident authority, bounds the resident check's
+lookahead, and tests sign/envelope-constrained attacks.
+Section~\ref{sec:third-party} then examines the same transition in a published
+lifecycle; secondary mechanism and cost audits appear in the appendices.
 
 \subsection{Prospective Contract-Separation Audit}
 \label{sec:release-contract-audit}
@@ -24,97 +19,89 @@ perturbation $2\tanh(\epsilon_t(\mu^\star_t-\mu_t))$ on the development run
 indexed by seed 2070; runs 2071 and 2072 were then evaluated under the
 unchanged protocol.
 
-All 72 poisoned snapshot--state pairs pass the initial five-step check.
-Poisoned permanent raw release then failed on 11, 5, and 7 pairs across the
-three training runs, versus paired clean counts 0, 0, and 2: 21 of 23 poisoned
-failures are poison-only, two shared, none clean-only (two-sided exact paired
-$p=9.537\times10^{-7}$), and the CasADi audit identifies the same 23 failures.
-Resident predictive authority incurs 0/72 failures and switches four to five
-steps before each corresponding poisoned raw-release failure.
+The adaptation filter falls through to the learner proposal if its action
+kernel is empty, so safe adaptation is measured here rather than guaranteed by
+that implementation path.  Across the reported fixed-target runs,
+\texttt{rejected\_action\_steps} and adaptation constraint violations were
+both zero, while the filter intervened on 96 proposals.  Every executed
+training transition therefore remained within the measured constraint set.
 
-The frozen protocol was then evaluated once on five new learner/evaluation
-pairs.  The target, attacker, learner, budget, state selection, and contracts
-remained fixed.  All 120 snapshot--state pairs passed the initial five-step
-check.  Poisoned raw release failed on 5, 4, 7, 2, and 9 pairs across the five
-training runs; the paired clean counts were 2, 0, 0, 0, and 0.  Resident
-predictive authority incurred 0/120 failures and switched before all 27
-poisoned failures.  The 25 poison-only and zero clean-only discordances gave a
-two-sided exact $p=5.960\times10^{-8}$.  Poisoned failure occurred in each of
-the five independently trained runs.
+\emph{The gap without an attacker.}  A disjoint clean cohort contains 20
+learner/evaluation seed pairs.  Each clean-trained snapshot was evaluated on 24
+states accepted by its own clean five-step CasADi check, giving 480/480
+accepted pairs.  Permanent raw release failed on 10/480 pairs, distributed
+over five independent training runs, while resident predictive authority
+failed on 0/480 and switched on 11 pairs.  The 10 raw-only and zero
+resident-only discordances give a two-sided exact paired $p=0.00195$,
+conditional on the 20 trained snapshots.  At the training-run level, 5/20
+runs contained at least one raw-release failure (Wilson 95\% CI
+$[11.2\%,46.9\%]$).  The pair-level raw rate was 2.08\% (Wilson 95\% CI
+$[1.14\%,3.79\%]$), against 0/480 for residence (upper 95\% bound 0.79\%).
 
-\emph{The gap without an attacker.}  Two of the 120 clean pairs failed under
-permanent raw release after passing the same five-step check that accepted
-them.  Two in 120 is a small rate, and the paired design was built to detect
-the poisoning effect rather than to estimate the clean one, so we do not claim
-that unattacked release is unsafe in general.  We claim what the two failures
-witness: acceptance and failure are separated here only by horizon, with no
-adversary in between, and the reward-record channel widens a gap that is
-already present.
+All 72 poisoned pairs passed the five-step check.  Permanent raw release then
+failed on 23/72 (11, 5, and 7 across the runs), versus 2/72 for paired clean
+release and 0/72 under resident predictive authority.  The 21 poison-only and
+zero clean-only discordances gave two-sided exact paired
+$p=9.537\times10^{-7}$; every switch led the paired raw failure by four or five
+steps.  The frozen protocol was then evaluated once on five new
+learner/evaluation pairs.  Poisoned raw release failed on 27/120 pairs across
+all five runs, versus 2/120 clean and 0/120 resident; resident authority
+switched before every poisoned failure (25 poison-only, zero clean-only,
+$p=5.960\times10^{-8}$).
 
-State--snapshot pairs that share a trained learner are not independent
-training replicates, so the V3 and V4 exact tests summarize within-snapshot
-discordance; replication across training realizations is reported through the
-three V3 and five V4 runs.  For independent replication and the one-step
-negative control, snapshots from run indices 2040--2042 used disjoint
-evaluation pools 8040--8042; 71 of 72 states passed the initial check, and all
-mechanisms shared state--snapshot keys.
+V4 remains a harness check: resident authority removed its two clean failures,
+and replay reproduced all 27 poisoned switches with zero failures.  V4 used
+poisoned-snapshot acceptance; V5 used clean-snapshot acceptance, so their
+denominators answer different conditional questions and are not pooled.
+Pairs sharing a learner are repeated measurements: exact tests summarize
+within-snapshot discordance, while affected training runs report replication.
+The independent one-step audit used disjoint evaluation pools; 71/72 states
+passed, with shared state--snapshot keys (Table~\ref{tab:release-contract}).
 
 \begin{table}[t]
 \centering
-\caption{Contract separation after initial five-step acceptance under bounded
-reward-record write access.  V4 is the five-run confirmation; V3 contains the
-development and sequential audits.  The independent audit includes the
-one-step negative control.  A switch transfers control to the trusted LQR.}
+\caption{Contract separation after initial five-step acceptance.  V5 uses
+clean-snapshot acceptance; V4 uses the poisoned-snapshot acceptance set locked
+for its three original arms.  The independent audit uses poisoned snapshots.
+Rows are paired within a trained snapshot but training runs are the independent
+replicates.  A switch transfers control to the trusted linear-quadratic
+regulator (LQR) baseline.}
 \label{tab:release-contract}
 \small
-\begin{tabular}{@{}p{0.46\columnwidth}p{0.13\columnwidth}p{0.25\columnwidth}@{}}
+\begin{tabular}{@{}L{0.46\columnwidth}L{0.13\columnwidth}L{0.25\columnwidth}@{}}
 \toprule
 Contract & Failures & Authority event\\
 \midrule
-\multicolumn{3}{@{}l}{\emph{V4 confirmation (120 pairs; 5 training runs)}}\\
-Clean permanent raw release & 2/120 & ---\\
-Poisoned permanent raw release & 27/120 & ---\\
-Resident predictive authority & 0/120 & 27 switches\\
+\multicolumn{3}{@{}l}{\emph{V5 clean cohort (480 pairs; 20 training runs)}}\\
+Clean permanent raw release & 10/480 & none\\
+Clean resident predictive authority & 0/480 & 11 switches\\
 \addlinespace
-\multicolumn{3}{@{}l}{\emph{Development/sequential V3 (72 paired states)}}\\
-Clean permanent raw release & 2/72 & ---\\
-Poisoned permanent raw release & 23/72 & ---\\
-Resident predictive authority & 0/72 & 23 switches\\
+\multicolumn{3}{@{}l}{\emph{V4 fixed-attack confirmation (120 pairs; 5 runs)}}\\
+Clean permanent raw release & 2/120 & none\\
+Clean resident predictive authority & 0/120 & 2 switches\\
+Poisoned permanent raw release & 27/120 & none\\
+Poisoned resident predictive authority & 0/120 & 27 switches\\
 \addlinespace
-\multicolumn{3}{@{}l}{\emph{Independent audit (71 accepted states)}}\\
-Permanent raw release & 19/71 & ---\\
+\multicolumn{3}{@{}l}{\emph{Independent audit (71 accepted states, poisoned snapshots)}}\\
+Permanent raw release & 19/71 & none\\
 One-step resident kernel & 14/71 & 79 int.; 41 empty\\
 Resident predictive authority & 0/71 & 19 switches\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:release-contract} makes the three evidence blocks and
-deployment contracts explicit.
-
-\emph{How much lookahead a retained check needs.}  A locked sweep varies only
-the retained predictor's horizon on the pooled V3 cohort of 72 pairs, holding
-attack, snapshots, and deployment states fixed.  Three quantities move
-together.  Release admission falls as the horizon grows: 72, 72, 72, 57, and
-49 of 72 candidates accepted at horizons 1, 3, 5, 10, and 20.  Switching lead
-time grows: the median switch preceded the corresponding raw-release failure
-by 0, 2, 4, and 9 steps at horizons 1, 3, 5, and 10.  Resident failures track
-lead time rather than residence: 12 at horizon 1, where switches occurred with
-zero lead, and 0 at horizons 3, 5, and 10.  Horizon 1 failed the predeclared
-separation condition for insufficient lookahead; horizon 20 failed it from the
-opposite side, rejecting so many candidates that none of the 49 admitted pairs
-retained a poisoned failure to separate.  The usable lookahead is an interval,
-and its lower edge is set by the lead time the trusted baseline needs, not by
-the accuracy of the prediction.  Figure~\ref{fig:horizon-contract} plots the
-three curves.  Shielding work already observes that a finite-horizon shield
-needs enough lookahead or the agent reaches states where every action is
-unsafe~\cite{konighofer_online_shielding_2022}; the upper edge measured here
-is a different cost, paid in release admission rather than in computation.
+\emph{How much lookahead a retained check needs.}  In the locked 72-pair V3
+sweep, horizons 1, 3, 5, 10, and 20 admitted 72, 72, 72, 57, and 49 pairs.
+Median switching lead grew from 0 to 2, 4, and 9 steps through horizon 10;
+resident failures fell from 12 at horizon 1 to zero at horizons 3--10.
+Horizon 20 was safe but rejected enough candidates to eliminate the separation
+cohort.  Thus switching lead time bounds the lower edge and affordable
+admission loss the upper edge (Fig.~\ref{fig:horizon-contract}).
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.99\columnwidth]{fig10_horizon_contract.pdf}
-\caption{The retained check's horizon defines a usable interval rather than a
+\caption{The retained check's horizon defines a usable interval, not a
 threshold.  Pooled V3 cohort, 72 snapshot--state pairs, with attack,
 snapshots, and deployment states fixed; shading marks the horizons meeting the
 predeclared separation condition.  At horizon 1 the retained check switches
@@ -123,29 +110,23 @@ rejects so many candidates that no poisoned failure remains to separate.}
 \label{fig:horizon-contract}
 \end{figure}
 
-In the independent audit, permanent raw release failed on 6/24,
-3/23, and 10/24 accepted pairs.  Resident predictive authority repeats the
-same five-step raw-policy prediction at every physical step and switches on
-exactly those 19 paired states, four steps before failure; no physical failure
-remained.  In contrast, the one-step resident kernel failed on 14 pairs despite
-79 interventions and reached an empty kernel 41 times.  Repeated five-step
-prediction therefore provided an effective recoverability trigger; one-time
-authorization and one-step filtering did not.
+In the independent audit, permanent raw release failed on 19/71 and resident
+predictive authority on 0/71 after switching four steps early.  The one-step
+resident kernel failed on 14/71 despite 79 interventions and reached an empty kernel 41 times.
+Repeated prediction followed by baseline handoff contained the paired raw
+failures in this cohort; one-time authorization and one-step filtering did not.
 
 \subsection{Reward-Influence Geometry and Optimizer Boundary}
 
-We validated the reward-influence analysis on an unclipped cartpole batch
-from the learner indexed by seed 2040.  Reconstructing the implemented
-gradient from Equation~\eqref{eq:normalized-update} has error
-$2.78\times10^{-17}$, and across 22 release-gate halfspaces the largest
-discrepancy between an SOCP witness and its computed support is
-$1.07\times10^{-9}$.  Audited on all 36 poisoned V3 batches, the homogenized
-clipped formulation yields verified support witnesses on 22/36, where the
-earlier premises admitted 0/36.  Exact batch support nevertheless did not
-explain the successful multi-batch attack: the physical experiment evaluates
-the fixed target and bounded attacker without establishing joint gate
-optimality of the \(\tanh\) rule.  Appendix~\ref{sec:appendix-influence}
-reports the full implementation audit and its parameter-clipping boundary.
+Reconstructing the implemented gradient has error $2.78\times10^{-17}$, and
+the largest discrepancy between a second-order cone program (SOCP) witness and
+its computed support is $1.07\times10^{-9}$.  On all 36 poisoned V3 batches the
+homogenized formulation yields verified support witnesses on 22/36, against
+0/36 for the direct one.  Exact batch support nevertheless did not explain the
+successful multi-batch attack: the physical experiment evaluates the fixed
+target and bounded attacker without establishing joint gate optimality of the
+\(\tanh\) rule.  Appendix~\ref{sec:appendix-influence} reports the full audit
+and its parameter-clipping boundary.
 
 \subsection{Cross-System Reward-Record Poisoning}
 
@@ -153,14 +134,13 @@ We next tested the lifecycle failure with updates produced by an online
 learner: a Gaussian residual actor on a trusted controller, with standard
 reward-to-go REINFORCE gradients computed from PyBullet transitions.  A backup
 action filter protects the adaptation trajectory, and deployment then audits
-the raw learned snapshot, the object requiring lifecycle admission.  Training,
-certificate, calibration, and deployment states used disjoint run indices; all
-mechanisms within a training realization shared paired state sets; and attack
-directions and hyperparameters were fixed on a development realization before
-the three-run audits.  The exact tests operate at the paired
-deployment-state-block level conditional on the three learned snapshots, so
-their $p$-values summarize within-snapshot discordance, and Wilson and
-paired-block bootstrap intervals have the same conditional scope.
+the raw learned snapshot.  Training, certificate, calibration, and deployment
+states used disjoint run indices; all mechanisms within a training realization
+shared paired state sets; and attack directions and hyperparameters were fixed
+on a development realization before the three-run audits.  The exact tests
+operate at the paired deployment-state-block level conditional on the three
+learned snapshots, so their $p$-values summarize within-snapshot discordance,
+and the interval estimates have the same conditional scope.
 
 \begin{table*}[t]
 \centering
@@ -184,198 +164,128 @@ reward-only poisoning causes 68/72, all delayed, across all three training
 realizations (68 poison-only, zero clean-only, two-sided exact
 $p=6.776\times10^{-21}$).  Every one of those failures is delayed past
 adaptation, so protected execution reports nothing about any of them: the
-separation follows the authority transition rather than the platform.  Commit
+separation follows the authority transition, not the platform.  Commit
 admission and always-freeze again have zero observed violations, and the gate
 retains $0.55$, $0.40$, and $0.70$ of the poisoned pending updates, which
-establishes update availability under attack rather than benign learning
-utility.
+establishes update availability under attack; benign learning utility is
+measured separately.
 
-\emph{Learned-baseline variant.}  Replacing REINFORCE's constant batch-mean
-baseline with a learned per-state linear value baseline, under a protocol
-fixed before execution and retaining the same Monte Carlo return, residual
-actor, score function, and reward-record channel, poisoning caused 40/126
-raw-release failures across three independent training runs, against 2/126 for
-paired clean release, with commit admission and always-freeze at 0/126 (38
-poison-only, zero clean-only, two-sided exact $p=7.3\times10^{-12}$).  This is
-a robustness check within the Monte Carlo policy-gradient family, not a
-distinct learner family: off-policy and bootstrapped learners change the
-attack channel through a temporal-difference target, so the official-PPO audit
-below remains the learner boundary.  These rates use the full 42-state
-envelope ($126=3\times42$) without initial-acceptance filtering and are not
-directly comparable to the filtered 120-pair confirmation cohort.
+Two adjacent checks retained the result.  A learned value baseline caused
+40/126 poisoned versus 2/126 clean raw failures, with commit and freeze at
+0/126; this is a robustness check within the Monte Carlo policy-gradient
+family.  With a pole-angle bias of radius $\rho$, poisoned counts were 44/126 and 61/126,
+versus 4/126 and 3/126 clean, at $\rho=0.02$ and $0.04$; commit and freeze
+remained zero.  Appendix~\ref{sec:appendix-boundaries} reports the protocol
+and the near-singleton reference.
 
-\emph{Non-singleton adaptation set.}  Adding the observation-FDI channel of
-Section~\ref{sec:threat} to the reward-record attacker (a pole-angle bias of
-radius $\rho$, so the protective kernel ranges over a box of half-width
-$\rho$, about $\pm2.3^\circ$ at $\rho=0.04$) left the release certificate and
-deployment states unchanged and preserved the contract separation at every
-non-singleton radius.  Poisoned raw release failed on 44/126 and 61/126 pairs
-at $\rho=0.02$ and $0.04$, against 4/126 and 3/126 for clean release, with
-commit admission and always-freeze at 0/126; the near-singleton reference at
-$\rho=0.005$ was 41/126 versus 5/126.  Failure counts were non-monotone across
-training realizations, while the kernel remained nonempty throughout the grid.
+\subsection{Sign/Envelope-Constrained Duration Stress Test}
+\label{sec:constrained}
 
-\subsection{Reward-Record Integrity and Detectability Boundary}
+The fixed attack above crosses zero reward, so a task-aware nonpositive-reward
+check detects it.  To test the check as an attacker constraint rather than as a
+post hoc detector, we projected the same target-shaping edit into the
+intersection of its $L_\infty$ budget and the scalar envelope calibrated on the
+clean 12-batch development run.  If the authenticated true reward was already
+too far outside that envelope for any budget-feasible edit to enter it, the
+attacker made no edit.  A batch-mean constraint was enforced by uniform
+shrinkage.  We varied only the protected bootstrap duration over 12, 24, and 48
+batches on five new learner/evaluation seed pairs.  Clean, unconstrained, and
+constrained conditions used paired run indices and deployment-state generation.
 
-We evaluated attack detectability separately from deployment failure.  Four
-checks were fixed on the clean development run indexed by seed 2070.  The
-frozen checks were then evaluated on 84 clean and 84 poisoned batches from
-seven independent training runs.
-
-\begin{table}[t]
+\begin{table*}[t]
 \centering
-\caption{Frozen reward-integrity audit.  Rates are batch-level true- and
-false-positive rates (TPR/FPR) across seven training runs.  Each check requires
-the stated defender assumption.}
-\label{tab:reward-integrity}
-\footnotesize
-\begin{tabular}{@{}p{0.27\columnwidth}p{0.43\columnwidth}p{0.17\columnwidth}@{}}
+\caption{Duration stress test over five training runs per condition.  Raw and
+resident columns report marginal physical-failure counts among five-step
+accepted pairs; paired accounting for the 48-batch constrained condition is
+reported below.
+Known-sign and scalar-envelope columns count flagged training batches.  The
+constrained attacker respects both predicates whenever a budget-feasible edit
+exists; flags can still arise from the unedited true reward leaving the frozen
+12-batch envelope.}
+\label{tab:duration-sweep}
+\small
+\begin{tabular}{@{}rrlrrrr@{}}
 \toprule
-Check & Required trusted information & TPR/FPR\\
+Batches & Accepted & Condition & Raw failures & Resident failures & Sign flags & Envelope flags\\
 \midrule
-Reward recomputation & Authenticated transition and deterministic reward
-& 1.000/0\\
-Known-sign check & Task guarantee that reward is nonpositive & 0.905/0\\
-Scalar envelope & Clean development range transfers & 0.917/0.036\\
-Batch-mean envelope & Clean batch mean transfers & 0.012/0.036\\
+12 & 120 & Clean & 4 & 0 & 0/60 & 0/60\\
+12 & 120 & Constrained & 17 & 0 & 0/60 & 0/60\\
+12 & 119 & Unconstrained & 36 & 0 & 56/60 & 56/60\\
+24 & 120 & Clean & 6 & 0 & 0/120 & 1/120\\
+24 & 120 & Constrained & 15 & 0 & 0/120 & 0/120\\
+24 & 120 & Unconstrained & 16 & 0 & 89/120 & 96/120\\
+48 & 120 & Clean & 9 & 0 & 0/240 & 6/240\\
+48 & 116 & Constrained & 46 & 34 & 0/240 & 2/240\\
+48 & 117 & Unconstrained & 54 & 38 & 144/240 & 160/240\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-Table~\ref{tab:reward-integrity} shows that trusted recomputation blocks every
-evaluated edit, and even task-specific scalar checks detect over 90\% of
-poisoned batches.  The ineffective batch-mean envelope shows why a generic
-``monitor the average'' statement is not enough: detection depends on reward
-semantics and trusted inputs.  Cryptographic origin binding would also reject
-post-producer mutation if the trusted producer signs the reward together with
-its transition, action, and time.  That producer remains within the trusted
-computing base of the evaluated threat model.
+Table~\ref{tab:duration-sweep} changes both the detectability and contract
+outcomes.  The sign/envelope-constrained attack produced no known-sign flags at any
+duration.  It produced no scalar-envelope flags at 12 or 24 batches and 2/240
+at 48 batches, fewer than the 6/240 flags from clean training.  The frozen
+envelope therefore did not separate attack from benign duration drift.  Attack
+effect also did not remain halved: constrained raw-release failure was 17/120
+at 12 batches and 46/116 at 48, compared with 36/119 and 54/117 for the
+unconstrained positive controls.  Trusted recomputation still detects every
+nonzero edit, but it is unavailable by the applicability condition when reward
+semantics depend on an external KPI.
 
-Temporal and moment-preserving edits tested on the development realization
-satisfied their integrity constraints and moved parameters toward the harmful
-target, yet each caused 0/24 raw-release failures.  The effective fixed attack
-was therefore readily detectable by the task-aware checks.  Authentication and
-trusted reward recomputation provide upstream controls; commit admission and
-resident predictive authority provide downstream containment.
+At 48 batches, resident predictive authority failed on 34/116 constrained
+pairs, concentrated in two of the five independently trained controllers with
+17 failures each; clean resident authority remained at 0/120.  All 34 resident
+failures occurred after transfer to the trusted LQR, with violation following
+the switch by a median of one step and at most two.  Paired accounting gives a
+more precise comparison: 27 pairs failed under both contracts, 19 failed only
+under raw release, seven failed only under resident authority, and 63 failed
+under neither.  Among the 27 pairs that failed under both, the switch preceded
+the raw-policy failure by a median of four steps (range four to five).  The
+seven resident-only failures have no paired raw-policy failure from which to
+define such a lead.
 
-\emph{In-loop known-sign gate.}  We placed the same known-sign check inside the
-update loop and froze batches that violated the nonpositive reward guarantee.
-Across three independent training runs, this gate reduced poisoned raw-release
-failures from 39/126 to 0/126 and froze 35 of 36 poisoned batches.  The paired
-defended-versus-undefended test gave $p=3.6\times10^{-12}$.  The gate froze no
-clean batch but approached always-freeze availability under attack.  It detects
-the sign-violating effective attack, while the sign-respecting variants evade
-the check and independently caused no deployment harm.  This gate implements
-the measured detectability boundary.
+Repeated raw-policy checks therefore prevented 19 failures observed under raw
+release, but they did not establish the safety of the controller receiving
+authority.  Because the experiment does not characterize a certified recovery
+set for the LQR, the data do not determine whether a different switch time
+would have prevented a violation.  The supported conclusion is that warning
+evidence about the raw policy is not evidence for the baseline handoff.
 
-\subsection{Runtime Escape Conditions and Their Cost}
+The earlier frozen audit remains useful only for scoping controls.  Trusted
+recomputation achieved TPR/FPR 1.000/0, while known-sign and scalar-envelope
+checks detected above 90\% of the original sign-violating rule
+(Table~\ref{tab:reward-integrity}).  An in-loop known-sign gate likewise reduced
+that original rule from 39/126 raw-release failures to 0/126.  The duration
+stress test shows why neither result establishes channel closure: a constrained
+attacker respects the same predicate by construction.
 
-Permanent runtime filtering provides a second architectural response.  Its
-certificate covers the composed policy $F\circ\pi$, allowing the filter to
-contain raw-policy failure before physical execution.  We compared permanent
-and snapshot contracts on a result-independent pool of 144 states from three
-disjoint run indices.  For each training realization the common operating set
-held states certified for both freeze and the committed snapshot at horizon
-100 and guard 0.003, and eight order-spanning states were evaluated from
-identical state/reset pairs, giving each mechanism 24 paired rollouts and 2400
-possible steps.
+\subsection{Deployment Criteria and Measured Boundaries}
 
+The evidence supports three deployment criteria.  Permanent raw release must
+re-establish every premise changed when the assured composition relinquishes
+authority (Proposition~\ref{prop:transfer}).  Resident authority must pair its
+raw-policy warning rule with independent evidence that the baseline can accept
+the handoff states.  Finally, adaptation should provide sufficient task benefit
+to justify the transition risk and the coverage, intervention, latency, and
+recovery costs of the selected contract.  The horizon sweep measures warning
+time for raw-policy failures; it does not measure a certified baseline recovery
+margin.  The duration study's paired outcomes show why this
+baseline-handoff obligation cannot be replaced by the trigger alone.
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.94\textwidth]{tdsc_security_availability_frontier.pdf}
-\caption{The unified frontier on the same paired state blocks.  Error bars in
-(a) are 95\% Wilson intervals for violation rate and paired-block bootstrap
-intervals for mean rollout reward, conditional on the three locked learner
-snapshots.  Panel (b) separates the negligible raw
-policy latency from the permanently-online protection cost; raw, commit, and
-freeze mechanisms overlap near 0.026 ms and zero intervention.}
-\label{fig:unified-frontier}
-\end{figure*}
+The evaluated benign settings provide no measured adaptation benefit.  Under a
+$0.003$\,N actuator bias, freeze, clean
+adaptation, and LifecycleGate were all violation-free, but neither clean
+adaptation nor the accepted updates improved a paired rollout over freeze.
+Across the unified 24-block frontier, no evaluated mechanism improved on
+freeze.  For the studied deployments, the observed task outcomes provide no
+utility basis for accepting the additional transition risk.
 
-Table~\ref{tab:unified-frontier} in
-Appendix~\ref{sec:appendix-frontier} and Fig.~\ref{fig:unified-frontier} show
-the resulting separation.  The poisoned
-raw snapshots violate 23/24 rollouts and complete only one.  Clean, commit,
-freeze, the permanent five-step backup shield, and Safe-Control-Gym's
-official linear model predictive safety certification (MPSC) mechanism all
-have zero observed failures and complete 24/24.
-The shield intervenes on 511/2400 steps with no rejection, while MPSC
-intervenes on 2400/2400 with no infeasible solve, at median online latencies
-of 222 and 60 ms against 0.026 ms for raw snapshot evaluation.  These are
-single-process wall-clock measurements, not worst-case execution-time
-guarantees.
-
-The safe mechanisms differ in utility.  Mean reward ordered freeze, clean,
-commit, shield, MPSC from $-0.023$ to $-0.457$; every paired rollout delta
-relative to freeze had a bootstrap 95\% interval excluding zero, and no
-mechanism improved on freeze in any of the 24 blocks.  These values
-characterize the attack-evaluation frontier; the benign adaptation audit below
-evaluates learning utility separately.
-
-
-
-Table~\ref{tab:commit-availability} in
-Appendix~\ref{sec:appendix-boundaries} makes the snapshot-admission cost
-explicit: common operating-set coverage is 99.3\%, 100.0\%, and 90.3\% across
-the three training runs, and trusted-state admission took 8.49--9.32\,s per
-run.  Offline commit therefore avoids permanent per-action computation but
-pays finite certificate coverage and update latency.  The comparison distinguishes three
-contracts: certify a snapshot before raw deployment, retain a filter
-permanently, or stop adapting.
-
-\subsection{Sizing a Release Gate}
-
-The measurements above support a contract-specific rule.  Two decisions are
-made at the authority transition, and each has a measurable input.
-
-\emph{Retiring authority.}  The release evidence must re-establish every
-premise the transition changes (Proposition~\ref{prop:transfer}).  Here those
-premises are authority and horizon: the accepted check bounds the raw policy
-for five steps, and only while it can still hand control back.  Re-running the
-same check discharges neither obligation, which is why permanent raw release
-failed on states it had accepted, with and without an attacker.
-
-\emph{Retaining authority.}  The lookahead then has a lower and an upper edge,
-and both are measurable on the deploying system without knowing the attack.
-The lower edge is the lead time the trusted baseline needs to recover: at
-horizon 1 the retained check switched with zero lead and still left 12
-failures, whereas horizons 3 to 10 switched 2 to 9 steps early and left none.
-The upper edge is the admission the operator can afford to lose: raising the
-horizon from 5 to 10 and to 20 rejected 15 and 23 of the 72 candidates the
-shorter checks admitted.  Both edges come from the sweep of
-Fig.~\ref{fig:horizon-contract} applied to the deployer's own baseline and
-candidate pool, so the gate can be sized from the recovery dynamics of the
-backup rather than from an attack model.
-
-\subsection{Boundaries and Validity}
-
-Four locked audits bound the result.  A trusted state anchor shrinks
-certificate uncertainty without sanitizing the reward record: every anchor
-period retains all 16 certificate centers, has 0/24 violations on new paired
-blocks, and improves no reward over freeze.  Against the official pretrained
-PPO policy, which is safe on 72/72 held-out rollouts, the locked
-$L_\infty\le0.5$ budget produced 1/24 poisoned failures at one checkpoint and
-0/24 at another, so the audit showed checkpoint-level update redirection
-without a stable deep-PPO unsafe-policy effect.  Under a benign $0.003$\,N
-differential actuator bias, freeze, clean adaptation, and the
-certificate-gated learner were all violation-free; the gate accepted a nonzero
-update in 11/12 batches but improves no paired rollout over freeze, so
-certificate acceptance did not establish useful adaptation.  A fourth audit bounds how far the finite certificate transfers.  On 1728
-snapshot--state pairs at the pre-existing 100-step, 0.003-guard configuration,
-CasADi certified 1293, none of which violated the PyBullet state box within
-100 steps, while the poisoned raw snapshots violated 403/432 pairs at
-certificate coverage 0.062 --- informative rejection rather than vacuous
-evidence.  The guard margin is what separates the two regimes:
-without it the poisoned snapshots produced 1, 2, and 1 false acceptances at
-horizons 20, 50, and 100, and every locked positive guard removed the observed
-false acceptances while rejecting more physically safe pairs
-(Appendix~\ref{sec:appendix-coverage}).  The gate therefore has a second
-measurable knob beyond horizon, calibrated against model mismatch rather than
-against an attacker.
-
-The CasADi gates use fixed finite state
-sets while physical outcomes use independent PyBullet rollouts; they are
-sampled finite-horizon certificates, not continuous-state invariant-set
-proofs.  Realized state violations and pre-clip saturation are reported
-separately.  Appendix~\ref{sec:appendix-boundaries} gives the full figures.
+Appendices~\ref{sec:appendix-boundaries}, \ref{sec:appendix-coverage}, and
+\ref{sec:appendix-frontier} report the secondary infrastructure and
+measurement audits: trusted anchors, PPO, certificate coverage, model mismatch,
+admission, runtime latency, and reward cost.  In the unified frontier, poisoned
+raw release failed on 23/24 paired blocks, while clean, commit, freeze,
+permanent shield, and the official linear model predictive safety certification
+(MPSC) mechanism all had zero observed failures.  The CasADi gates remain
+sampled finite-horizon certificates, not continuous-state invariant-set proofs,
+and realized state violations and pre-clip saturation are reported separately.

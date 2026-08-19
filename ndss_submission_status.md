@@ -1,3 +1,8 @@
+> ⚠️ **前一投稿场地的历史文档（2026-08-19 标注）。** 本文件针对 NDSS/TDSC 撰写，
+> 与当前 USENIX Security 2027 的稿件状态、页面预算与结论均不一致。
+> **当前状态请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+> 保留仅为历史记录。
+
 # NDSS 2027 research-track status
 
 > Updated 2026-08-05. This is the active decision sheet; older TDSC planning

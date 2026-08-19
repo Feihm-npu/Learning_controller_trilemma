@@ -1,3 +1,6 @@
+> ⚠️ **过时的规划/形式化草稿（2026-08-19 标注）。** 早于 2026-08-19 的实验与审计。
+> **当前权威状态与方向请读 [`usenix_direction_audit_0819.md`](usenix_direction_audit_0819.md)。**
+
 # Stage-3 最小数值例子：状态歧义半径如何冻结 learning
 
 > 状态：手算数值例子 v0（2026-06-30）。配套 `stage3_toy_theorem.md`，用于展示 theorem 的非平凡性和后续 hero experiment 的最小曲线。
